@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Document Intake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+html,body{margin:0}
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --sunken:#ECEFF3; --ink:#18212B; --ink-2:#4A5563; --ink-3:#737E8C;
+  --line:#DCE1E7; --track:#E1E5EA;
+  --accent:#1F4583; --accent-soft:#E3EAF5; --on-accent:#FFFFFF; --cta:#1F2657; --on-cta:#FFFFFF;
+  --done:#6FC39C; --ok:#2E7D4F; --ok-soft:#E1F4EA; --man:#8A5A12; --man-soft:#FBEBD2;
+  --warn:#9A5B00; --warn-soft:#FDF0DA; --warn-bar:#E0A33A;
+  --bad:#B3261E; --bad-soft:#FBE4E2;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1419; --surface:#171E27; --sunken:#1F2833; --ink:#E6EBF0; --ink-2:#AAB4C0; --ink-3:#808B99;
+    --line:#2C3744; --track:#2A3440;
+    --accent:#86A9E6; --accent-soft:#1B2A45; --on-accent:#0D1830; --cta:#86A9E6; --on-cta:#0D1830;
+    --done:#5DBB8E; --ok:#6CCB93; --ok-soft:#153325; --man:#E9B25F; --man-soft:#3A2A12;
+    --warn:#E9B25F; --warn-soft:#352812; --warn-bar:#C98F2E;
+    --bad:#F2887F; --bad-soft:#3D1B19;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1419; --surface:#171E27; --sunken:#1F2833; --ink:#E6EBF0; --ink-2:#AAB4C0; --ink-3:#808B99;
+  --line:#2C3744; --track:#2A3440;
+  --accent:#86A9E6; --accent-soft:#1B2A45; --on-accent:#0D1830; --cta:#86A9E6; --on-cta:#0D1830;
+  --done:#5DBB8E; --ok:#6CCB93; --ok-soft:#153325; --man:#E9B25F; --man-soft:#3A2A12;
+  --warn:#E9B25F; --warn-soft:#352812; --warn-bar:#C98F2E;
+  --bad:#F2887F; --bad-soft:#3D1B19;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- App bar ---------- */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.appbar-in{max-width:1140px;margin:0 auto;padding-inline:16px;height:58px;display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;white-space:nowrap}
+.brand svg{width:26px;height:26px;flex:none}
+.spacer{flex:1}
+.iconbtn{appearance:none;border:0;background:transparent;color:var(--ink-2);width:36px;height:36px;border-radius:8px;display:grid;place-items:center;cursor:pointer}
+.iconbtn:hover{background:var(--sunken);color:var(--ink)}
+.iconbtn svg{width:19px;height:19px}
+.user{position:relative}
+.user-btn{appearance:none;border:0;background:transparent;display:flex;align-items:center;gap:10px;padding:4px 6px 4px 4px;border-radius:999px;cursor:pointer}
+.user-btn:hover{background:var(--sunken)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:13px;font-weight:600;flex:none}
+.user-name{font-size:14px;font-weight:500;text-align:left;line-height:1.2}
+.user-name small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
+@media (max-width:560px){.user-name{display:none}}
+.menu{position:absolute;right:0;top:calc(100% + 6px);min-width:240px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgb(0 0 0 / .12);padding:6px;display:grid}
+.menu .who{padding:10px 10px 12px;border-bottom:1px solid var(--line);margin-bottom:6px;font-size:13px;color:var(--ink-3)}
+.menu .who strong{display:block;color:var(--ink);font-size:14px}
+.menu button{appearance:none;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:6px;cursor:pointer;font-size:14px}
+.menu button:hover{background:var(--sunken)}
+
+/* ---------- Banners ---------- */
+.banner{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-radius:10px;font-size:14px}
+.banner svg{width:18px;height:18px;flex:none}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.bad{background:var(--bad-soft);color:var(--bad)}
+.banner .grow{flex:1 1 240px;color:var(--ink)}
+
+/* ---------- Page ---------- */
+main{max-width:1140px;margin:0 auto;padding-inline:16px;padding-block:26px 56px;display:grid;gap:22px}
+h1{font-size:25px;font-weight:600;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.pagehead{display:grid;gap:10px}
+.limits{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink-2);max-width:760px}
+.limits svg{width:18px;height:18px;flex:none;color:var(--accent);margin-top:2px}
+.limits b{color:var(--ink);font-weight:600}
+
+/* ---------- Stepper tabs ---------- */
+.stepper{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.stepper::-webkit-scrollbar{display:none}
+.stepbtn{appearance:none;border:0;background:none;padding:12px 14px 11px;display:flex;gap:9px;align-items:center;border-bottom:2.5px solid transparent;margin-bottom:-1px;color:var(--ink-3);font-weight:500;font-size:15px;cursor:pointer;white-space:nowrap}
+.stepbtn .dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-family:var(--mono);flex:none}
+.stepbtn .dot svg{width:13px;height:13px}
+.stepbtn:hover:not([disabled]){color:var(--ink)}
+.stepbtn[aria-current="step"]{color:var(--ink);border-bottom-color:var(--accent)}
+.stepbtn[aria-current="step"] .dot{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
+.stepbtn.done .dot{border-color:var(--done);background:var(--done);color:#fff}
+.stepbtn[disabled]{cursor:not-allowed;opacity:.55}
+.chev{color:var(--line);flex:none;width:16px;height:16px}
+
+/* ---------- Slots ---------- */
+.slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+@media (max-width:1100px){.slots{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.slots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:400px){.slots{grid-template-columns:1fr}}
+.slot{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 10px 10px 13px;display:flex;flex-direction:column;gap:5px;min-height:132px;min-width:0;transition:border-color .15s,box-shadow .15s,background .15s}
+.slot.empty{cursor:pointer}
+.slot.empty:hover{border-color:var(--accent)}
+.slot.dragover{border-style:dashed;border-color:var(--accent);background:var(--accent-soft)}
+.slot.is-error{border-color:var(--bad)}
+.slot.flash,.xrow.flash{box-shadow:0 0 0 4px var(--accent-soft);border-radius:8px}
+.slot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.slot-title{font-size:15px;font-weight:700;line-height:1.25;text-wrap:balance;padding-top:3px;min-width:0}
+.badge.sm{font-size:11px;padding:1px 8px;align-self:flex-start}
+.slot .xbtn{width:24px;height:24px;margin:-2px -2px 0 0}
+.top-right{display:flex;align-items:center;gap:4px;flex:none}
+.badge{flex:none;font-size:13px;font-weight:500;padding:3px 11px;border-radius:999px;white-space:nowrap}
+.badge.man{background:var(--man-soft);color:var(--man)}
+.badge.opt{background:var(--ok-soft);color:var(--ok)}
+.xbtn{appearance:none;border:0;background:transparent;color:var(--ink-3);width:28px;height:28px;border-radius:7px;display:grid;place-items:center;cursor:pointer;flex:none}
+.xbtn:hover{background:var(--bad-soft);color:var(--bad)}
+.xbtn svg{width:16px;height:16px}
+.fname{font-size:13px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fname.none{color:var(--ink-3)}
+.slot-err{font-size:13px;color:var(--bad);line-height:1.4;margin-top:4px}
+.slot-foot{display:grid;gap:6px;margin-top:auto;padding-top:6px}
+.slot .track{height:6px}
+.slot .slot-err{font-size:12px}
+.track{height:8px;border-radius:8px;background:var(--track);overflow:hidden;position:relative}
+.track i{display:block;height:100%;width:0;border-radius:8px;background:var(--accent);transition:width .2s linear}
+.track i.done{background:var(--done)}
+.track i.bad{background:var(--bad);width:100%}
+.track i.paused{background:var(--warn-bar)}
+.track.indet i{width:35%;position:absolute;animation:indet 1.1s ease-in-out infinite}
+@keyframes indet{0%{left:-35%}100%{left:100%}}
+.slot-meta{display:flex;justify-content:space-between;align-items:center;gap:4px;font-size:12px;color:var(--ink-3);min-height:26px;font-variant-numeric:tabular-nums}
+.slot-meta .st{font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slot-meta .st.ok{color:var(--ok)} .slot-meta .st.warn{color:var(--warn)}
+.slot-meta .add{font-family:var(--sans);color:var(--accent);font-weight:500}
+.act{appearance:none;border:0;background:transparent;color:var(--accent);font-size:12px;font-weight:500;padding:3px 7px;border-radius:5px;cursor:pointer;flex:none}
+.act:hover{background:var(--accent-soft)}
+.count-badge{background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;white-space:nowrap}
+
+/* ---------- Additional documents (extras) ---------- */
+.extra-head{padding:16px 20px 6px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.extra-head h2{margin:0;font-size:16px;font-weight:600}
+.extra-head span{font-size:13px;color:var(--ink-3)}
+.xlist{padding:0 20px 6px}
+.xrow{padding:12px 2px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.xrow:last-child{border-bottom:0}
+.xrow.is-error{background:var(--bad-soft);border-radius:8px;padding:10px 10px}
+.xrow-main{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.xrow-main .fname{font-size:14px;color:var(--ink);font-weight:500;min-width:0}
+.xrow-acts{display:flex;align-items:center;gap:6px;flex:none}
+.move{font:inherit;font-size:13px;color:var(--accent);background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:5px 8px;cursor:pointer;max-width:200px}
+.move:hover{border-color:var(--accent)}
+.slot .move{max-width:100%;width:100%;font-size:12px;padding:3px 4px}
+
+/* ---------- Extraction preview ---------- */
+.extract-head{padding:16px 20px 6px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.extract-head h2{margin:0;font-size:16px;font-weight:600}
+.extract-head span{font-size:13px;color:var(--ink-3)}
+.extract-tbl{padding:0 20px}
+.extract-tbl table{min-width:520px;table-layout:fixed}
+.extract-tbl th:nth-child(1){width:38%}.extract-tbl th:nth-child(2){width:28%}
+.extract-tbl td{padding:2px 4px}
+.extract-tbl th:last-child,.extract-tbl td:last-child{width:36px}
+.ex-in{width:100%;font:inherit;font-size:13px;padding:8px 9px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--ink)}
+.ex-in:hover{background:var(--sunken)}
+.ex-in:focus{background:var(--surface);border-color:var(--accent);outline:none}
+.extract-foot{padding:10px 20px 14px}
+#extract-panel{border-width:1.5px}
+.ex-group td{padding:14px 8px 6px!important;border-bottom:1px solid var(--line)}
+.ex-group td{display:table-cell}
+.ex-src{font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:2px 9px;border-radius:999px;margin-right:8px}
+.ex-file{font-size:13px;color:var(--ink-2);font-family:var(--mono)}
+.ex-n{font-size:12px;color:var(--ink-3);margin-left:8px}
+.ex-empty{color:var(--ink-3);font-size:13px;padding:14px 8px!important}
+
+/* ---------- Intake ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.intake{overflow:hidden}
+.confirm{display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap;padding:12px 20px;background:var(--warn-soft);border-bottom:1px solid var(--line);font-size:14px}
+.confirm span{flex:1 1 260px;overflow-wrap:anywhere}
+.tabs{display:grid;grid-template-columns:repeat(2,1fr);border-bottom:1px solid var(--line);background:var(--sunken)}
+.tab{appearance:none;border:0;background:transparent;color:var(--ink-2);font-weight:500;padding:13px 10px 11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab svg{width:18px;height:18px;flex:none}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--accent);border-bottom-color:var(--accent)}
+@media (max-width:520px){.tab{flex-direction:column;gap:4px;font-size:13px}}
+.pane{padding:22px 20px 20px;display:grid;gap:14px}
+.hint{margin:0;color:var(--ink-2);font-size:14px}
+label{font-size:13px;font-weight:500;color:var(--ink-2)}
+.field{display:grid;gap:6px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=url],input[type=text],select.inp,textarea{flex:1 1 260px;min-width:0;font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+select.inp{flex:0 1 220px}
+textarea{width:100%;min-height:70px;resize:vertical}
+input::placeholder,textarea::placeholder{color:var(--ink-3)}
+[aria-invalid="true"]{border-color:var(--bad)!important}
+.msg{font-size:13px;margin:0;display:grid;gap:3px}
+.msg:empty{display:none}
+.msg .e{color:var(--bad)} .msg .o{color:var(--ok)}
+.browse{display:grid;place-items:center;gap:10px;text-align:center;padding:28px 16px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.browse small{color:var(--ink-3);font-size:13px}
+.drop{display:grid;place-items:center;gap:6px;text-align:center;padding:34px 16px;border:2px dashed var(--line);border-radius:10px;background:var(--bg);cursor:pointer;transition:border-color .15s,background .15s}
+.drop svg{width:32px;height:32px;color:var(--accent)}
+.drop span{color:var(--ink-2);font-size:14px}
+.drop .btn{margin-top:6px}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop u{color:var(--accent);text-underline-offset:3px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+fieldset[disabled]{opacity:.5}
+
+/* ---------- Buttons ---------- */
+.btn{appearance:none;font-weight:600;font-size:14px;border-radius:9px;padding:10px 18px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;gap:8px;justify-content:center;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn-cta{background:var(--cta);color:var(--on-cta);font-size:17px;padding:14px 30px;border-radius:10px}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-cta:hover,.btn-primary:hover{filter:brightness(1.12)}
+.btn-ghost{background:transparent;color:var(--ink-2);border-color:var(--line)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink-3)}
+.btn-sm{padding:6px 12px;font-size:13px}
+.btn[disabled]{opacity:.4;cursor:not-allowed;filter:none}
+.spin{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.actionbar{display:flex;justify-content:space-between;align-items:center;gap:12px 18px;flex-wrap:wrap}
+.todo{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap;font-size:14px;color:var(--ink-2);flex:1 1 300px}
+.todo .ic{width:18px;height:18px;flex:none}
+.todo.warn .ic{color:var(--man)}
+.todo.ok .ic{color:var(--ok)}
+.linkbtn{appearance:none;border:0;background:none;padding:0;color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:14px}
+.todo .sep{color:var(--line)}
+
+/* ---------- Review / adjudicate / summary ---------- */
+.step-panel{padding:22px 20px;display:grid;gap:18px}
+.step-panel h2{margin:0;font-size:19px}
+.step-panel .lead{margin:-10px 0 0;color:var(--ink-2);font-size:14px;max-width:70ch}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:600px}
+th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.miss{background:var(--sunken);color:var(--ink-3)}
+.pill.man{background:var(--man-soft);color:var(--man)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink);font-weight:400}
+.check input{margin-top:3px;width:16px;height:16px;accent-color:var(--accent);flex:none}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+
+.adj-list{display:grid;gap:12px}
+.adj{border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px;background:var(--bg)}
+.adj.missing{opacity:.7}
+.adj-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.adj-head strong{font-size:16px}
+.adj-head .f{display:block;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface);flex-wrap:wrap}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:8px 14px;font-size:13px;font-weight:500;color:var(--ink-2);cursor:pointer;border-right:1px solid var(--line);display:flex;gap:6px;align-items:center}
+.seg label:last-of-type{border-right:0}
+.seg input:focus-visible+label{outline:2px solid var(--accent);outline-offset:-2px}
+.seg input[value="approve"]:checked+label{background:var(--ok-soft);color:var(--ok)}
+.seg input[value="changes"]:checked+label{background:var(--warn-soft);color:var(--warn)}
+.seg input[value="reject"]:checked+label{background:var(--bad-soft);color:var(--bad)}
+.outcome{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-radius:10px;background:var(--sunken);font-size:14px}
+.outcome strong{font-size:15px}
+
+.sum-head{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.sum-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;flex:none}
+.sum-icon svg{width:26px;height:26px}
+.sum-icon.ok{background:var(--ok-soft);color:var(--ok)}
+.sum-icon.warn{background:var(--warn-soft);color:var(--warn)}
+.sum-icon.bad{background:var(--bad-soft);color:var(--bad)}
+.sum-head p{margin:2px 0 0;color:var(--ink-2);font-size:14px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.fact{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.fact span{display:block;font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.fact b{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fact b.mono{font-family:var(--mono);font-weight:500}
+
+/* ---------- Toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 12px 10px 16px;border-radius:9px;font-size:14px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;max-width:calc(100% - 32px);display:flex;align-items:center;gap:14px;z-index:40}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{appearance:none;border:0;background:transparent;color:var(--bg);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px}
+
+/* ---------- Scenario panel (#scenarios only) ---------- */
+.scen{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--surface);border:1px dashed var(--ink-3);border-radius:10px;padding:12px 14px;display:grid;gap:8px;font-size:12px;width:250px;box-shadow:0 8px 24px rgb(0 0 0 / .1)}
+.scen strong{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.scen label{display:grid;gap:3px;font-size:12px}
+.scen select{font:inherit;font-size:13px;padding:5px 6px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.track.indet i{animation:none;left:0;width:100%;opacity:.5}.spin{animation-duration:2s}}
+</style>
+</head>
+<body>
+<!-- ============ App bar ============ -->
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="var(--cta)"/><path d="M7 9.5a1.5 1.5 0 0 1 1.5-1.5h3l1.5 1.5h4.5A1.5 1.5 0 0 1 19 11v5.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 7 16.5z" fill="none" stroke="var(--on-cta)" stroke-width="1.6"/></svg>
+      Upload Documents
+    </div>
+    <div class="spacer"></div>
+    <button class="iconbtn" type="button" aria-label="Help" id="help-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.5.2-.8.6-.8 1.1v.5M12 17h.01"/></svg></button>
+    <div class="user">
+      <button class="user-btn" type="button" id="user-btn" aria-haspopup="menu" aria-expanded="false">
+        <span class="avatar" id="avatar"></span>
+        <span class="user-name" id="user-name"></span>
+      </button>
+      <div class="menu" id="user-menu" role="menu" hidden>
+        <div class="who" id="menu-who"></div>
+        <button role="menuitem" type="button" id="signout">Sign out</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="banners" style="display:grid;gap:10px" aria-live="polite"></div>
+
+  <div class="pagehead">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h1>Upload campaign documents</h1>
+      <span class="count-badge" id="doc-count" hidden></span>
+    </div>
+    <div class="limits" id="limits">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      <span id="limits-text"></span>
+    </div>
+  </div>
+
+  <!-- ===== Upload ===== -->
+  <div id="view-1" style="display:grid;gap:22px">
+    <div id="docs-area" style="display:grid;gap:22px">
+        <section aria-label="Documents" class="slots" id="slots"></section>
+
+    <section class="panel" id="extract-panel" aria-label="Extracted campaign details">
+      <div class="extract-head">
+        <h2>Extracted campaign details</h2>
+        <span>Grouped by the document each row was pulled from. Review and correct before continuing.</span>
+      </div>
+      <div class="extract-tbl tbl-wrap"><table>
+        <thead><tr><th>Line item</th><th>Insertion order</th><th>Campaign name</th><th></th></tr></thead>
+        <tbody id="extract-body"></tbody>
+      </table></div>
+      <div class="extract-foot"><button class="btn btn-ghost btn-sm" type="button" id="extract-add">+ Add row</button></div>
+    </section>
+
+    <section class="panel" id="extra-panel" hidden aria-label="Additional documents">
+      <div class="extra-head">
+        <h2>Additional documents</h2>
+        <span>Anything that isn't one of the documents above</span>
+      </div>
+      <div class="xlist" id="extra-list"></div>
+    </section>
+
+    <section class="panel intake" id="intake" aria-label="Add documents">
+      <div class="confirm" id="confirm" hidden>
+        <span id="confirm-text"></span>
+        <div class="row">
+          <button class="btn btn-ghost btn-sm" type="button" id="confirm-no">Keep current</button>
+          <button class="btn btn-primary btn-sm" type="button" id="confirm-yes">Replace</button>
+        </div>
+      </div>
+      <div class="tabs" role="tablist" aria-label="How to add">
+        <button class="tab" role="tab" id="tab-pc" aria-controls="pane-pc" aria-selected="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>From your computer</button>
+        <button class="tab" role="tab" id="tab-sp" aria-controls="pane-sp" aria-selected="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>SharePoint link</button>
+      </div>
+      <fieldset id="intake-fields">
+        <div class="pane" role="tabpanel" id="pane-pc" aria-labelledby="tab-pc">
+          <div class="drop" id="drop">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg>
+            <strong>Drag and drop files here</strong>
+            <span>You can drop several at once, of any file type. Each one goes to the matching document, or to Additional documents.</span>
+            <button class="btn btn-primary" type="button" id="browse-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>Browse files…</button>
+            <small id="browse-types" style="color:var(--ink-3);font-size:13px"></small>
+          </div>
+          <div class="msg" id="pc-msg" role="status"></div>
+        </div>
+        <form class="pane" role="tabpanel" id="pane-sp" aria-labelledby="tab-sp" novalidate hidden>
+          <p class="hint">Paste a sharing link from SharePoint or OneDrive for Business (in SharePoint: <em>Share → Copy link</em>). Links have no size limit.</p>
+          <div class="field">
+            <label for="sp-url">SharePoint link</label>
+            <div class="row">
+              <input type="url" id="sp-url" placeholder="https://yourcompany.sharepoint.com/:b:/s/Team/EaBc…" autocomplete="off">
+              <button class="btn btn-primary" type="submit">Add link</button>
+            </div>
+          </div>
+          <div class="msg" id="sp-msg" role="status"></div>
+        </form>
+      </fieldset>
+    </section>
+
+
+
+    <div class="actionbar">
+      <div class="todo" id="todo" role="status"></div>
+      <button class="btn btn-cta" id="to-review" type="button">Review documents</button>
+    </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toast-text"></span><button type="button" id="toast-act" hidden></button></div>
+<input type="file" id="file-input" multiple hidden>
+
+<script>
+/* =====================================================================
+   CONFIG — wire to your backend. Leave endpoints empty to run the built-in
+   simulator (add #scenarios to the URL to force failures for demos).
+   ===================================================================== */
+const CONFIG = {
+  uploadEndpoint: "",   // POST multipart {slot, campaignId, file} → 2xx {id, scan:"clean"|"infected"}
+  linkEndpoint:   "",   // POST JSON {slot, campaignId, url}      → 2xx {id,name,size} | 401 | 403 | 404
+  submitEndpoint: "",   // "Review documents": POST JSON {campaign, documents, extracted} → 2xx {reference}
+  reviewUrl:      "",   // optional: page of your review system to open after a successful hand-off
+  signInUrl: "/login",
+  maxBytes: null,       // no file size limit
+};
+/* Signed-in user and campaign normally come from your session/API. */
+const USER = {name:"Alex Morgan", email:"alex.morgan@company.com", role:"Campaign Manager"};
+/* The campaign these documents belong to. Set it from your app (URL, session or campaign API). */
+const CAMPAIGN = {id:"CMP-4821", name:"Q4 Regional Auto"};
+/* One card per document. `match` routes files by name when several documents take the same type. */
+const SLOTS = [
+  {key:"mediaplan", title:"Media Plan",   required:true,  accept:["pdf","doc","docx","ppt","pptx","xlsx","xlsm","xlsb","xls"], match:/media[\s_-]*plan|\bbrief\b/i},
+  {key:"budget",    title:"Budget tracker", required:false, accept:["xlsx","xlsm","xlsb","xls","csv"],                          match:/budget|spend|cost|tracker/i},
+  {key:"geo",       title:"Geo mapping doc", required:false, accept:["csv","xlsx","xlsm","xlsb","xls"],                         match:/geo|zip|dma|postal|map|region/i},
+  {key:"maf",       title:"MAF",           required:false, accept:["pdf","doc","docx"],                          match:/maf|authori[sz]ation/i, full:"Media Authorization Form"},
+  {key:"tsheet",    title:"T-Sheet",       required:false, accept:["xlsx","xlsm","xlsb","xls","csv","pdf"],                    match:/\bt[\s_-]?sheets?\b|tsheet|traffic/i, full:"Traffic Sheet"},
+  {key:"tag",       title:"Tag Sheet",     required:false, accept:["xlsx","xlsm","xlsb","xls","csv","pdf","doc","docx"],       match:/tag[\s_-]?sheet/i},
+];
+/* Mock line items per document, used only to simulate the extraction preview below. */
+const LINE_ITEM_POOL = {
+  mediaplan: ["Display – Prospecting","Video – Retargeting"],
+  budget:    ["Paid Social – Awareness"],
+  geo:       ["Local Search – Tier 1 DMAs"],
+  maf:       ["Connected TV – Launch"],
+  tsheet:    ["Traffic Instructions – All Placements"],
+  tag:       ["Ad Tags – Trafficking"],
+};
+const STEPS = ["Upload","Review","Adjudicate","Summary"];
+
+/* ============================ helpers ============================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const extOf = n => ((/\.([a-z0-9]+)$/i.exec(n)||[])[1]||"").toLowerCase();
+const fmt = b => b==null?"—":b<1024?b+" B":b<1048576?Math.max(1,Math.round(b/1024))+" KB":(+(b/1048576).toFixed(1))+" MB";
+const allSlots = () => SLOTS.concat(extraSlots);
+const slotOf = k => allSlots().find(s=>s.key===k);
+const typeList = s => s.accept.map(a=>a.toUpperCase()).join(", ");
+const ALL_EXT = [...new Set(SLOTS.flatMap(s=>s.accept))];
+const SRC = {sharepoint:"SharePoint", upload:"Uploaded", attach:"Attached"};
+const LINK_KIND = {w:["docx","Word document"], x:["xlsx","Excel workbook"], p:["pptx","PowerPoint deck"], b:["pdf","PDF"], t:["txt","text file"], f:[null,"folder"], v:[null,"video"], i:[null,"image"], u:[null,"web page"]};
+const ACTIVE = ["checking","uploading","scanning","paused"];
+const DECISION = {approve:["Approved","ok"], changes:["Needs changes","warn"], reject:["Rejected","bad"]};
+
+/* ============================ state ============================ */
+let docs = {};
+let step = 1, maxStep = 1, finished = false;
+let online = navigator.onLine !== false, sessionValid = true;
+let pending = null, pickTarget = null;
+let decisions = {};   // slot key → {serverId, decision, comment}
+let result = null;
+const campaign = CAMPAIGN;
+const handles = {};
+let extraSlots = [], extraSeq = 0;      // documents added beyond the named cards
+let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaign name preview rows
+
+/* ============================ shell ============================ */
+(function shell(){
+  $("#avatar").textContent = USER.name.split(/\s+/).map(p=>p[0]).slice(0,2).join("").toUpperCase();
+  $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(USER.role)}</small>`;
+  $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}`;
+  $("#limits-text").innerHTML = `<b>No file size limit.</b> PDF, Word, PowerPoint, Excel and CSV are matched to a document automatically — any other file type is welcome too, as an additional document.`;
+  $("#browse-types").textContent = `${ALL_EXT.map(a=>a.toUpperCase()).join(", ")} match automatically · any other file type is added as an additional document`;
+  const btn=$("#user-btn"), menu=$("#user-menu");
+  const close=()=>{ menu.hidden=true; btn.setAttribute("aria-expanded","false"); };
+  btn.addEventListener("click",e=>{ e.stopPropagation(); const open=menu.hidden; menu.hidden=!open; btn.setAttribute("aria-expanded",open); });
+  document.addEventListener("click",e=>{ if(!menu.hidden && !menu.contains(e.target)) close(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !menu.hidden){ close(); btn.focus(); } });
+  $("#signout").addEventListener("click",()=>{ close();
+    if(Object.values(docs).some(d=>ACTIVE.includes(d.status))){ toast("Finish or cancel uploads in progress before signing out."); return; }
+    location.href = CONFIG.signInUrl; });
+  $("#help-btn").addEventListener("click",()=>toast("Add files of any type or size. Matching types go straight to a document; anything else is added as an additional document."));
+})();
+
+/* Review happens in a separate system; this page only handles upload. */
+function invalidate(){}
+
+/* ============================ banners ============================ */
+function renderBanners(){
+  const b=[];
+  if(!online) b.push(`<div class="banner warn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 8.8a15 15 0 0 1 4.2-2.6M22 8.8A15 15 0 0 0 10.7 5M5 12.5a10 10 0 0 1 3.5-2M19 12.5a10 10 0 0 0-2-1.4M8.5 16a5 5 0 0 1 7 0M12 20h.01M3 3l18 18"/></svg><span class="grow"><strong>You're offline.</strong> Uploads are paused and will resume when you reconnect.</span></div>`);
+  if(!sessionValid) b.push(`<div class="banner bad"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span class="grow"><strong>Your session has expired.</strong> Sign in again to continue. Files already uploaded are kept.</span><button class="btn btn-primary btn-sm" type="button" data-reauth>Sign in again</button></div>`);
+  $("#banners").innerHTML=b.join("");
+  $("#intake-fields").disabled = !sessionValid;
+}
+function reauth(){
+  if(CONFIG.uploadEndpoint){ location.href = CONFIG.signInUrl + "?return=" + encodeURIComponent(location.pathname); return; }
+  sessionValid=true; renderBanners(); resumePaused(); renderSlots(); toast("Signed in. Uploads resumed.");
+}
+document.addEventListener("click",e=>{ if(e.target.closest("[data-reauth]")) reauth(); });
+
+/* ============================ cards ============================ */
+const X = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>`;
+function cardParts(d, s){
+  if(!d) return {bar:`<div class="track"><i></i></div>`, st:`<span class="add">+ Add file</span>`};
+  switch(d.status){
+    case "checking":  return {bar:`<div class="track indet"><i></i></div>`, st:`<span class="st">Checking…</span>`};
+    case "uploading": { const p=Math.floor(d.progress); return {bar:`<div class="track"><i style="width:${p}%"></i></div>`, st:`<span class="st">${p}%</span>`}; }
+    case "paused":    return {bar:`<div class="track"><i class="paused" style="width:${Math.max(4,Math.floor(d.progress))}%"></i></div>`, st:`<span class="st warn" title="${d.pauseReason==="session"?"Sign in needed":"Offline"}">Paused</span>`};
+    case "scanning":  return {bar:`<div class="track indet"><i></i></div>`, st:`<span class="st">Scanning…</span>`};
+    case "ready":     return {bar:`<div class="track"><i class="done" style="width:100%"></i></div>`, st:`${movingKey===s.key&&!s.extra?"":`<span class="st ok" title="${SRC[d.source]}">${d.size?fmt(d.size):"Link"}</span>`}${s.extra?"":(movingKey===s.key?moveSelect(s.key,d):`<span><button type="button" class="act" data-act="move">Move</button><button type="button" class="act" data-act="replace">Replace</button></span>`)}`};
+    case "error":     return {bar:`<div class="track"><i class="bad"></i></div>`, st:`<span class="st"></span>`+(d.retryable?`<button type="button" class="act" data-act="retry">Retry</button>`:(s.extra?"":`<button type="button" class="act" data-act="replace">Choose another</button>`))};
+  }
+}
+function renderSlots(){
+  $("#slots").innerHTML = SLOTS.map(s=>{
+    const d=docs[s.key], c=cardParts(d,s), inflight=d&&ACTIVE.includes(d.status);
+    const xLabel = inflight?`Cancel ${s.title} upload`:`Remove ${s.title} file`;
+    const empty=!d;
+    return `<div class="slot${empty?" empty":""}${d&&d.status==="error"?" is-error":""}" data-slot="${s.key}"
+        ${empty?`role="button" tabindex="0" aria-label="${esc(s.title)}, ${s.required?"mandatory":"optional"}, no file. Add file"`:`role="group" aria-label="${esc(s.title)}"`}>
+      <div class="slot-top">
+        <span class="slot-title" ${s.full?`title="${esc(s.full)}"`:""}>${esc(s.title)}</span>
+        ${d?`<button type="button" class="xbtn" data-act="${inflight?"cancel":"remove"}" aria-label="${esc(xLabel)}" title="${inflight?"Cancel upload":"Remove"}">${X}</button>`:""}
+      </div>
+      <span class="badge sm ${s.required?"man":"opt"}">${s.required?"Mandatory":"Optional"}</span>
+      <div class="fname ${d?"":"none"}" title="${d?esc(d.name):esc(typeList(s))}">${d?esc(d.name):esc(s.accept.slice(0,3).map(a=>a.toUpperCase()).join(" · "))}</div>
+      <div>${d&&d.status==="error"?`<div class="slot-err">${esc(d.error)}</div>`:""}</div>
+      <div class="slot-foot">${c.bar}<div class="slot-meta">${c.st}</div></div>
+    </div>`;
+  }).join("");
+  renderExtraList();
+  renderCount();
+  renderTodo();
+  syncExtraction();
+}
+function renderCount(){
+  const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length, el=$("#doc-count");
+  el.hidden = n===0; el.textContent = `${n} document${n===1?"":"s"} uploaded`;
+}
+function renderExtraList(){
+  $("#extra-panel").hidden = extraSlots.length===0;
+  $("#extra-list").innerHTML = extraSlots.map(s=>{
+    const d=docs[s.key]; if(!d) return "";
+    const c=cardParts(d,s), inflight=ACTIVE.includes(d.status);
+    return `<div class="xrow${d.status==="error"?" is-error":""}" data-slot="${s.key}">
+      <div class="xrow-main">
+        <span class="fname" title="${esc(d.name)}">${esc(d.name)}</span>
+        <span class="xrow-acts">${d.status==="ready"?moveSelect(s.key,d):""}
+        <button type="button" class="xbtn" data-act="${inflight?"cancel":"remove"}" aria-label="${inflight?"Cancel":"Remove"} ${esc(d.name)}" title="${inflight?"Cancel upload":"Remove"}">${X}</button></span>
+      </div>
+      ${d.status==="error"?`<div class="slot-err">${esc(d.error)}</div>`:""}
+      <div class="slot-foot">${c.bar}<div class="slot-meta">${c.st}</div></div>
+    </div>`;
+  }).join("");
+}
+function paintProgress(key){
+  const d=docs[key], card=document.querySelector(`[data-slot="${key}"]`); if(!d||!card) return;
+  const bar=card.querySelector(".track i"), st=card.querySelector(".slot-meta .st");
+  if(d.status==="uploading" && bar && !card.querySelector(".indet")){ const p=Math.floor(d.progress); bar.style.width=p+"%"; st.textContent=`${p}%`; }
+  else renderSlots();
+}
+function flash(key){ const c=document.querySelector(`[data-slot="${key}"]`); if(!c) return; c.scrollIntoView({block:"nearest"}); c.classList.add("flash"); setTimeout(()=>c.classList.remove("flash"),1400); }
+
+/* The to-do line next to Review: every item is actionable. */
+function blockers(){
+  const r=[], list=Object.entries(docs);
+  SLOTS.filter(s=>s.required && docs[s.key]?.status!=="ready" && !ACTIVE.includes(docs[s.key]?.status)).forEach(s=>r.push({text:`Add the ${s.title.toLowerCase()}`, act:()=>{ pickFor(s.key); }}));
+  const busy=list.filter(([,d])=>ACTIVE.includes(d.status));
+  if(busy.length) r.push({text:`${busy.length} upload${busy.length>1?"s":""} in progress`});
+  const errs=list.filter(([,d])=>d.status==="error");
+  if(errs.length) r.push({text:`Fix ${errs.length} file${errs.length>1?"s":""} with a problem`, act:()=>{ flash(errs[0][0]); document.querySelector(`[data-slot="${errs[0][0]}"] .act`)?.focus(); }});
+  if(!sessionValid) r.push({text:"Sign in again", act:reauth});
+  return r;
+}
+function renderTodo(){
+  const r=blockers(), el=$("#todo");
+  const warnIc=`<svg width="18" height="18" class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>`;
+  const okIc=`<svg width="18" height="18" class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>`;
+  if(r.length){
+    el.className="todo warn";
+    el.innerHTML = warnIc + `<span>To continue:</span>` + r.map((x,i)=>(i?`<span class="sep">·</span>`:"")+(x.act?`<button type="button" class="linkbtn" data-todo="${i}">${esc(x.text)}</button>`:`<span>${esc(x.text)}</span>`)).join("");
+    el.querySelectorAll("[data-todo]").forEach(b=>b.addEventListener("click",()=>r[+b.dataset.todo].act()));
+  } else {
+    const n=SLOTS.filter(s=>docs[s.key]?.status==="ready").length;
+    const xn=extraSlots.filter(s=>docs[s.key]?.status==="ready").length;
+    el.className="todo ok"; el.innerHTML = okIc + `<span>${n} of ${SLOTS.length} documents ready${n<SLOTS.length?". Optional documents can be left out.":"."}${xn?` · ${xn} additional document${xn>1?"s":""} added`:""}</span>`;
+  }
+  $("#to-review").disabled = r.length>0;
+}
+function setMsg(el, ok=[], errs=[]){ el.innerHTML = ok.map(t=>`<span class="o">${esc(t)}</span>`).join("")+errs.map(t=>`<span class="e">${esc(t)}</span>`).join(""); }
+let toastT;
+function toast(text, action){
+  $("#toast-text").textContent=text; const a=$("#toast-act");
+  if(action){ a.hidden=false; a.textContent=action.label; a.onclick=()=>{ action.run(); $("#toast").classList.remove("show"); }; } else { a.hidden=true; a.onclick=null; }
+  $("#toast").classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>$("#toast").classList.remove("show"), action?6000:3400);
+}
+
+/* ============================ local file checks ============================ */
+function readSlice(file, start, end){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(new Uint8Array(r.result)); r.onerror=()=>rej(r.error); r.readAsArrayBuffer(file.slice(start,end)); }); }
+const startsWith=(b,sig)=>sig.every((v,i)=>b[i]===v);
+const ZIP=[0x50,0x4B,0x03,0x04], OLE=[0xD0,0xCF,0x11,0xE0,0xA1,0xB1,0x1A,0xE1];
+async function inspect(file, ext){
+  let head; const latin=b=>Array.from(b,c=>String.fromCharCode(c)).join("");
+  try{ head=await readSlice(file,0,Math.min(file.size,4096)); }
+  catch{ return "We couldn't read this file. If it's stored online only (for example a OneDrive placeholder), download it first or add it as a SharePoint link."; }
+  if(ext==="pdf"){
+    if(latin(head.slice(0,1024)).indexOf("%PDF")<0) return "This doesn't look like a real PDF. It may be damaged or renamed from another format.";
+    const tail=await readSlice(file,Math.max(0,file.size-65536),file.size).catch(()=>new Uint8Array());
+    if((latin(head)+latin(tail)).includes("/Encrypt")) return "This PDF is password-protected. Remove the password and upload it again.";
+  } else if(["docx","xlsx","xlsm","xlsb","pptx"].includes(ext)){
+    if(startsWith(head,OLE)) return "This file is password-protected. Remove the password in Office and upload it again.";
+    if(!startsWith(head,ZIP)) return `This doesn't look like a real .${ext} file. It may be damaged or renamed.`;
+  } else if(["doc","xls","ppt"].includes(ext)){
+    if(startsWith(head,ZIP)) return `This is actually a .${ext}x file. Rename it to .${ext}x and try again.`;
+    if(!startsWith(head,OLE)) return `This doesn't look like a real .${ext} file. It may be damaged or renamed.`;
+  } else if(ext==="csv"){
+    if(head.includes(0)) return "This doesn't look like a CSV. If it's a spreadsheet, upload the .xlsx or save it as CSV.";
+    if(!latin(head).trim()) return "This CSV has no data in it.";
+  }
+  return null;
+}
+function precheck(file, slot){
+  const ext=extOf(file.name);
+  if(!ext) return "It has no file extension, so we can't tell what type it is.";
+  if(slot && slot.accept.length && !slot.accept.includes(ext)) return `${slot.title} takes ${typeList(slot)} files, and this is a .${ext} file.`;
+  if(file.size===0) return "The file is empty (0 bytes).";
+  return null;
+}
+/* Pick the document a file belongs to: name keywords first, then first empty slot of that type.
+   Returns null when nothing matches — the caller then adds it as an additional document. */
+function route(name, ext){
+  const open=SLOTS.filter(s=>!docs[s.key] && s.accept.includes(ext));
+  return (open.find(s=>s.match && s.match.test(name)) || open[0])?.key || null;
+}
+function findDuplicateFile(file){
+  return allSlots().find(s=>{ const f=docs[s.key]?.file; return f && f.name===file.name && f.size===file.size && f.lastModified===file.lastModified; });
+}
+function findDuplicateLink(href){ return allSlots().find(s=>docs[s.key]?.url===href); }
+/* A file or link that doesn't match a named document is added here instead of being rejected. */
+function addExtra(doc){
+  const key="extra_"+(++extraSeq);
+  extraSlots.push({key, title:doc.name, required:false, accept:[], extra:true});
+  commit(key, doc, {skipConfirm:true});
+  return key;
+}
+
+/* ============================ transport ============================ */
+const scen={upload:"success", link:"success", submit:"success"};
+function takeScen(k){ const v=scen[k]; scen[k]="success"; const sel=document.getElementById("scen-"+k); if(sel) sel.value="success"; return v; }
+function apiUpload(key, d, cb){
+  if(CONFIG.uploadEndpoint){
+    const xhr=new XMLHttpRequest(), fd=new FormData(); fd.append("slot",key); fd.append("campaignName",campaign.name); if(campaign.id) fd.append("campaignId",campaign.id); fd.append("file",d.file,d.name);
+    xhr.open("POST",CONFIG.uploadEndpoint); xhr.withCredentials=true;
+    xhr.upload.onprogress=e=>{ if(e.lengthComputable) cb.progress(e.loaded,e.total); };
+    xhr.upload.onload=()=>cb.scanning();
+    xhr.onload=()=>{ let b={}; try{ b=JSON.parse(xhr.responseText||"{}"); }catch{}
+      if(xhr.status===401) return cb.fail({kind:"session"});
+      if(xhr.status===413) return cb.fail({kind:"rejected",message:"The server rejected this file because it's too large."});
+      if(xhr.status===415) return cb.fail({kind:"rejected",message:"The server doesn't accept this file type."});
+      if(xhr.status>=400&&xhr.status<500) return cb.fail({kind:"rejected",message:b.message||"The server rejected this file."});
+      if(xhr.status>=500) return cb.fail({kind:"server"});
+      if(b.scan==="infected") return cb.fail({kind:"infected"});
+      cb.done(b.id); };
+    xhr.onerror=()=>cb.fail({kind:"network"});
+    xhr.send(fd); return {abort:()=>xhr.abort()};
+  }
+  const outcome=takeScen("upload"), rate=outcome==="slow"?350e3:2.5e6;
+  let loaded=d.loaded||0, t, stopped=false; const total=d.size;
+  const tick=()=>{ if(stopped) return;
+    loaded=Math.min(total, loaded+rate*0.15*(0.7+Math.random()*0.6)); const pct=loaded/total;
+    if(outcome==="network"&&pct>0.6) return cb.fail({kind:"network"});
+    if(outcome==="session"&&pct>0.4) return cb.fail({kind:"session"});
+    cb.progress(loaded,total);
+    if(loaded>=total){ cb.scanning(); t=setTimeout(()=>{ if(stopped) return;
+        if(outcome==="server") return cb.fail({kind:"server"});
+        if(outcome==="infected") return cb.fail({kind:"infected"});
+        if(outcome==="rejected") return cb.fail({kind:"rejected",message:"This file has already been uploaded to this campaign."});
+        cb.done("f_"+Math.random().toString(36).slice(2,9)); }, 900+Math.random()*700); return; }
+    t=setTimeout(tick,150); };
+  t=setTimeout(tick,150);
+  return {abort:()=>{ stopped=true; clearTimeout(t); }};
+}
+function apiLink(key, url, cb){
+  const noAccess=`You don't have access to this file. Ask the owner to share it with ${USER.email}.`, gone="This link doesn't point to a file anymore. It may have been moved or deleted.";
+  if(CONFIG.linkEndpoint){
+    const ctrl=new AbortController();
+    fetch(CONFIG.linkEndpoint,{method:"POST",credentials:"include",signal:ctrl.signal,headers:{"Content-Type":"application/json"},body:JSON.stringify({slot:key,campaignId:campaign.id,campaignName:campaign.name,url})})
+      .then(async r=>{ const b=await r.json().catch(()=>({}));
+        if(r.status===401) return cb.fail({kind:"session"});
+        if(r.status===403) return cb.fail({kind:"rejected",message:noAccess});
+        if(r.status===404) return cb.fail({kind:"rejected",message:gone});
+        if(!r.ok) return cb.fail({kind:r.status>=500?"server":"rejected",message:b.message});
+        cb.done(b.id,b.name,b.size); })
+      .catch(e=>{ if(e.name!=="AbortError") cb.fail({kind:"network"}); });
+    return {abort:()=>ctrl.abort()};
+  }
+  const outcome=takeScen("link");
+  const t=setTimeout(()=>{
+    if(outcome==="noaccess") return cb.fail({kind:"rejected",message:noAccess});
+    if(outcome==="notfound") return cb.fail({kind:"rejected",message:gone});
+    if(outcome==="session") return cb.fail({kind:"session"});
+    cb.done("l_"+Math.random().toString(36).slice(2,9)); },1100);
+  return {abort:()=>clearTimeout(t)};
+}
+
+/* ============================ upload lifecycle ============================ */
+function failMessage(err){
+  switch(err.kind){
+    case "network":  return {msg:"The upload was interrupted. Check your connection and retry.", retry:true};
+    case "server":   return {msg:"Something went wrong on our side. Retry in a moment.", retry:true};
+    case "infected": return {msg:"Blocked: this file failed the virus scan. Contact IT if you think this is wrong.", retry:false};
+    default:         return {msg:err.message||"The server rejected this file.", retry:false};
+  }
+}
+function start(key){
+  const d=docs[key]; if(!d) return;
+  if(!online){ d.status="paused"; d.pauseReason="offline"; renderSlots(); return; }
+  if(!sessionValid){ d.status="paused"; d.pauseReason="session"; renderSlots(); return; }
+  const isLink=d.source==="sharepoint";
+  d.status=isLink?"checking":"uploading"; d.error=null;
+  const cb={
+    progress:(loaded,total)=>{ if(docs[key]!==d) return; d.loaded=loaded; d.progress=Math.min(99.5,loaded/total*100); paintProgress(key); },
+    scanning:()=>{ if(docs[key]!==d) return; d.status="scanning"; d.progress=100; renderSlots(); },
+    done:(id,name,size)=>{ if(docs[key]!==d) return; delete handles[key]; d.status="ready"; d.progress=100; d.serverId=id; if(name) d.name=name; if(size) d.size=size; d.prev=null; renderSlots(); },
+    fail:(err)=>{ if(docs[key]!==d) return; delete handles[key];
+      if(err.kind==="session"){ sessionValid=false; d.status="paused"; d.pauseReason="session"; pauseAll("session"); renderBanners(); renderSlots(); return; }
+      if(err.kind==="network" && !navigator.onLine){ online=false; d.status="paused"; d.pauseReason="offline"; renderBanners(); renderSlots(); return; }
+      const f=failMessage(err);
+      if(d.prev && !f.retry){ docs[key]=d.prev; toast(`${slotOf(key).title}: ${f.msg} Your previous file was kept.`); }
+      else { d.status="error"; d.error=f.msg; d.retryable=f.retry; }
+      renderSlots(); },
+  };
+  handles[key]=isLink?apiLink(key,d.url,cb):apiUpload(key,d,cb);
+  renderSlots();
+}
+function pauseAll(reason){ for(const k in docs){ const d=docs[k]; if(["uploading","checking"].includes(d.status)){ handles[k]?.abort(); delete handles[k]; d.status="paused"; d.pauseReason=reason; if(CONFIG.uploadEndpoint){ d.loaded=0; d.progress=0; } } } }
+function resumePaused(){ for(const k in docs) if(docs[k].status==="paused" && online && sessionValid) start(k); }
+
+function commit(key, doc, {skipConfirm=false}={}){
+  const cur=docs[key];
+  if(cur && cur.status==="ready" && !skipConfirm){
+    pending={key,doc}; $("#confirm-text").innerHTML=`Replace <strong>${esc(cur.name)}</strong> with <strong>${esc(doc.name)}</strong> in ${esc(slotOf(key).title)}?`;
+    $("#confirm").hidden=false; $("#confirm-yes").focus(); return false;
+  }
+  if(cur){ handles[key]?.abort(); delete handles[key]; }
+  invalidate();
+  docs[key]={...doc, status:"checking", progress:0, loaded:0, prev:cur&&cur.status==="ready"?cur:(cur?.prev||null)};
+  renderSlots();
+  if(doc.file){
+    inspect(doc.file, extOf(doc.file.name)).then(problem=>{
+      if(docs[key]?.file!==doc.file) return;
+      if(problem){ const prev=docs[key].prev;
+        if(prev){ docs[key]=prev; toast(`${slotOf(key).title}: ${problem} Your previous file was kept.`); }
+        else Object.assign(docs[key],{status:"error",error:problem,retryable:false});
+        renderSlots(); return; }
+      start(key);
+    });
+  } else start(key);
+  return true;
+}
+/* target: a specific slot (card click, drop on card, Replace) or null to route automatically.
+   A file that doesn't match a named document is added to "Additional documents" instead of being rejected. */
+function addFiles(list, source, msgEl, target=null, explicit=false){
+  if(finished) return;
+  if(!sessionValid){ setMsg(msgEl,[],["Sign in again before adding files."]); return; }
+  const ok=[], errs=[];
+  [...list].forEach((f,i)=>{
+    const ext=extOf(f.name);
+    if(f.size===0){ errs.push(`${f.name}: The file is empty (0 bytes).`); return; }
+    const dup=findDuplicateFile(f);
+    if(dup){ errs.push(`${f.name}: It's already added as ${dup.title}.`); return; }
+    const isTarget = i===0 && target;
+    const key = isTarget ? target : route(f.name, ext);
+    if(key){
+      const s=slotOf(key);
+      if(isTarget){ const problem=precheck(f,s); if(problem){ errs.push(`${f.name}: ${problem}`); return; } }
+      const placed=commit(key,{name:f.name,size:f.size,source,file:f},{skipConfirm:explicit&&i===0});
+      ok.push(placed?`${f.name} → ${s.title}`:`${f.name} is waiting for you to confirm the replacement`);
+    } else {
+      addExtra({name:f.name,size:f.size,source,file:f});
+      ok.push(`${f.name} → Additional documents`);
+    }
+  });
+  setMsg(msgEl, ok.length?[`Added: ${ok.join(", ")}.`]:[], errs);
+  if(errs.length && msgEl.closest("[hidden]")) toast(errs[0]);
+  renderSlots();
+}
+
+/* ============================ card interactions ============================ */
+function pickFor(key, replace=false){ pickTarget={key,replace}; $("#file-input").click(); }
+$("#slots").addEventListener("click",e=>{
+  const card=e.target.closest("[data-slot]"); if(!card) return;
+  const key=card.dataset.slot, act=e.target.closest("[data-act]")?.dataset.act;
+  if(act) return slotAction(key,act);
+  if(!docs[key]) pickFor(key);
+});
+$("#slots").addEventListener("keydown",e=>{ if(e.target.matches(".slot.empty")&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); pickFor(e.target.dataset.slot); } });
+function slotAction(key, act){
+  const d=docs[key], s=slotOf(key), isExtra=!!s?.extra;
+  if(act==="cancel"){ handles[key]?.abort(); delete handles[key];
+    if(d.prev){ docs[key]=d.prev; toast(`Upload cancelled. ${s.title} still has ${d.prev.name}.`); }
+    else { delete docs[key]; if(isExtra) extraSlots=extraSlots.filter(x=>x.key!==key); toast("Upload cancelled."); }
+    renderSlots(); return; }
+  if(act==="retry"){ d.loaded=0; d.progress=0; start(key); return; }
+  if(act==="move"){ movingKey=key; renderSlots(); document.querySelector(`[data-slot="${key}"] select.move`)?.focus(); return; }
+  if(act==="replace"){
+    if(isExtra) return; // extras have no fixed slot to replace into — remove and re-add instead
+    if(d?.source==="sharepoint"){ selectTab($("#tab-sp")); $("#sp-url").focus(); pickTarget={key,replace:true,link:true}; }
+    else pickFor(key,true);
+    return; }
+  if(act==="remove"){
+    invalidate();
+    if(d.prev){ docs[key]=d.prev; renderSlots(); toast(`Failed file removed. ${s.title} still has ${d.prev.name}.`); return; }
+    delete docs[key]; if(isExtra) extraSlots=extraSlots.filter(x=>x.key!==key);
+    renderSlots();
+    if(d.status==="ready") toast(`${d.name} removed.`,{label:"Undo",run:()=>{ if(!docs[key]){ if(isExtra && !extraSlots.find(x=>x.key===key)) extraSlots.push(s); docs[key]=d; renderSlots(); } }});
+  }
+}
+/* "Move to" lets the user put a file that landed in Additional documents into the right card. */
+let movingKey=null;
+function moveSelect(from,d){
+  const ext=extOf(d.name), fromExtra=slotOf(from)?.extra;
+  const opts=SLOTS.filter(t=>t.key!==from && (!ext||t.accept.includes(ext)))
+    .map(t=>`<option value="${t.key}">${esc(t.title)}${docs[t.key]?" (has a file)":""}</option>`).join("");
+  const toExtra=fromExtra?"":`<option value="__extra">Additional documents</option>`;
+  return `<select class="move" data-move="${from}" aria-label="Move ${esc(d.name)} to another document"><option value="">Move to…</option>${opts}${toExtra}</select>`;
+}
+/* Move a finished file between cards / Additional documents. A file already in the target
+   card is never lost: it moves to Additional documents. */
+function moveDoc(from, to){
+  const d=docs[from]; movingKey=null;
+  if(!d || !to || from===to){ renderSlots(); return; }
+  invalidate();
+  const fromExtra=!!slotOf(from)?.extra;
+  delete docs[from]; delete decisions[from];
+  if(fromExtra) extraSlots=extraSlots.filter(x=>x.key!==from);
+  let msg;
+  if(to==="__extra"){
+    const k="extra_"+(++extraSeq); extraSlots.push({key:k,title:d.name,required:false,accept:[],extra:true}); docs[k]={...d,prev:null};
+    msg=`${d.name} moved to Additional documents.`;
+  } else {
+    const cur=docs[to], s=slotOf(to); delete decisions[to];
+    if(cur){ const k="extra_"+(++extraSeq); extraSlots.push({key:k,title:cur.name,required:false,accept:[],extra:true}); docs[k]={...cur,prev:null}; }
+    docs[to]={...d,prev:null};
+    msg = cur ? `${d.name} moved to ${s.title}. ${cur.name} moved to Additional documents.` : `${d.name} moved to ${s.title}.`;
+    setTimeout(()=>flash(to),0);
+  }
+  renderSlots(); toast(msg);
+}
+$("#extra-list").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel && sel.value) moveDoc(sel.dataset.move, sel.value); });
+$("#slots").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel) moveDoc(sel.dataset.move, sel.value); });
+$("#slots").addEventListener("keydown",e=>{ if(e.key==="Escape" && movingKey){ movingKey=null; renderSlots(); } });
+$("#extra-list").addEventListener("click",e=>{
+  const row=e.target.closest("[data-slot]"); if(!row) return;
+  const act=e.target.closest("[data-act]")?.dataset.act; if(act) slotAction(row.dataset.slot,act);
+});
+$("#confirm-yes").addEventListener("click",()=>{ const p=pending; hideConfirm(); commit(p.key,p.doc,{skipConfirm:true}); });
+$("#confirm-no").addEventListener("click",()=>{ hideConfirm(); toast("Kept the current file."); });
+function hideConfirm(){ pending=null; $("#confirm").hidden=true; }
+
+/* Drop straight onto a card */
+$("#slots").addEventListener("dragover",e=>{ const c=e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); document.querySelectorAll(".slot.dragover").forEach(x=>x!==c&&x.classList.remove("dragover")); c.classList.add("dragover"); });
+$("#slots").addEventListener("dragleave",e=>{ const c=e.target.closest("[data-slot]"); if(c && !c.contains(e.relatedTarget)) c.classList.remove("dragover"); });
+$("#slots").addEventListener("drop",e=>{ const c=e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); e.stopPropagation(); c.classList.remove("dragover");
+  if(!e.dataTransfer.files.length){ toast("Only files can be dropped here. For a SharePoint file, paste its link instead."); return; }
+  selectTab($("#tab-pc"),false); addFiles(e.dataTransfer.files,"upload",$("#pc-msg"),c.dataset.slot,false); });
+
+/* ============================ intake tabs ============================ */
+const tabs=[...document.querySelectorAll(".tab")];
+function selectTab(t,focus=true){ tabs.forEach(x=>{ const on=x===t; x.setAttribute("aria-selected",on); x.tabIndex=on?0:-1; document.getElementById(x.getAttribute("aria-controls")).hidden=!on; }); if(focus) t.focus(); }
+tabs.forEach((t,i)=>{ t.tabIndex=i?-1:0; t.addEventListener("click",()=>selectTab(t));
+  t.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ e.preventDefault(); selectTab(tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length]); } }); });
+
+/* SharePoint link — routed automatically like a file; anything that doesn't match a
+   named document is still accepted, as an additional document (no "pick a type" step). */
+$("#pane-sp").addEventListener("submit",e=>{
+  e.preventDefault();
+  const inp=$("#sp-url"), msg=$("#sp-msg"), raw=inp.value.trim();
+  const bad=t=>{ inp.setAttribute("aria-invalid","true"); setMsg(msg,[],[t]); inp.focus(); };
+  if(!online) return bad("You're offline. Reconnect to add a link.");
+  if(!raw) return bad("Paste a SharePoint link first.");
+  let u; try{ u=new URL(raw); }catch{ return bad("That isn't a complete link. It should start with https://"); }
+  if(u.protocol!=="https:") return bad("Only secure (https://) links are accepted.");
+  if(!/(^|\.)sharepoint\.(com|us|cn)$|(^|\.)1drv\.ms$/i.test(u.hostname)){
+    if(/onedrive\.live\.com|drive\.google\.com|dropbox\.com|box\.com/i.test(u.hostname)) return bad("Personal OneDrive, Google Drive, Dropbox and Box links aren't supported. Use a company SharePoint or OneDrive for Business link.");
+    return bad("This isn't a SharePoint link. It should point to a *.sharepoint.com address.");
+  }
+  const code=(/\/:([a-z]):\//i.exec(u.pathname)||[])[1]?.toLowerCase(), kind=code?LINK_KIND[code]:null;
+  if(code==="f") return bad("This link opens a folder, not a file. Open the specific file in SharePoint and copy its link instead.");
+  const last=decodeURIComponent(u.pathname.split("/").filter(Boolean).pop()||"");
+  const ext=extOf(last)||(kind?kind[0]:"")||"";
+  const dup=findDuplicateLink(u.href);
+  if(dup) return bad(`This link is already added as ${dup.title}.`);
+  const name = extOf(last) ? last : (kind ? `${kind[1]} from SharePoint` : `SharePoint file (${u.hostname.split(".")[0]})`);
+  const targetKey = pickTarget?.key, explicit = !!pickTarget?.link; pickTarget=null;
+  let key = targetKey || route(name, ext);
+  if(targetKey){
+    const s=slotOf(targetKey);
+    if(ext && s.accept.length && !s.accept.includes(ext)) return bad(`This link is ${kind?"a "+kind[1]:ext?"a ."+ext+" file":"a different file type"}. ${s.title} needs ${typeList(s)}.`);
+  }
+  inp.removeAttribute("aria-invalid");
+  let placed, label;
+  if(key){ label=slotOf(key).title; placed=commit(key,{name,size:null,source:"sharepoint",url:u.href},{skipConfirm:explicit}); }
+  else { addExtra({name,size:null,source:"sharepoint",url:u.href}); placed=true; label="Additional documents"; }
+  inp.value="";
+  setMsg(msg,[placed?`Checking access to the link for ${label}…`:"Confirm the replacement above."]);
+});
+$("#sp-url").addEventListener("input",e=>e.target.removeAttribute("aria-invalid"));
+
+/* File browser (Upload tab, card click, Replace) */
+$("#browse-btn").addEventListener("click",()=>{ pickTarget=null; $("#file-input").click(); });
+$("#file-input").addEventListener("change",e=>{
+  const t=pickTarget; pickTarget=null;
+  if(e.target.files.length){
+    addFiles(e.target.files,"upload",$("#pc-msg"),t?.key||null,!!t?.replace);
+  }
+  e.target.value="";
+});
+$("#file-input").addEventListener("cancel",()=>{ pickTarget=null; });
+
+/* Attach (drag & drop / paste) */
+const drop=$("#drop"); let depth=0;
+drop.addEventListener("click",e=>{ if(e.target.closest("button")) return; pickTarget=null; $("#file-input").click(); });
+drop.addEventListener("dragenter",e=>{ e.preventDefault(); depth++; drop.classList.add("over"); });
+drop.addEventListener("dragover",e=>e.preventDefault());
+drop.addEventListener("dragleave",()=>{ if(--depth<=0){ depth=0; drop.classList.remove("over"); } });
+drop.addEventListener("drop",e=>{ e.preventDefault(); e.stopPropagation(); depth=0; drop.classList.remove("over");
+  if(!e.dataTransfer.files.length){ setMsg($("#pc-msg"),[],["Only files can be dropped here. For a SharePoint file, paste its link in the SharePoint tab."]); return; }
+  addFiles(e.dataTransfer.files,"upload",$("#pc-msg")); });
+addEventListener("dragover",e=>e.preventDefault());
+addEventListener("drop",e=>{ e.preventDefault(); if(step!==1||finished) return; if(e.dataTransfer.files.length){ selectTab($("#tab-pc"),false); addFiles(e.dataTransfer.files,"upload",$("#pc-msg")); } });
+document.addEventListener("paste",e=>{
+  if(step!==1||finished||e.target.matches("input,textarea")) return;
+  const f=[...(e.clipboardData?.files||[])]; if(!f.length) return;
+  e.preventDefault(); selectTab($("#tab-pc"),false); addFiles(f,"upload",$("#pc-msg"));
+});
+
+/* ============================ connectivity ============================ */
+addEventListener("offline",()=>{ online=false; pauseAll("offline"); renderBanners(); renderSlots(); });
+addEventListener("online",()=>{ online=true; renderBanners(); resumePaused(); renderSlots(); toast("Back online. Uploads resumed."); });
+addEventListener("beforeunload",e=>{ if(!finished && (Object.values(docs).some(d=>ACTIVE.includes(d.status)) || step>1)){ e.preventDefault(); e.returnValue=""; } });
+
+/* ============================ hand-off to review ============================ */
+/* "Review documents" sends everything to your review system (CONFIG.submitEndpoint).
+   Payload: {campaign, documents:[{slot, title, name, source, id}], extracted:[{lineItem, insertionOrder, campaignName, sourceDocument}]} */
+const provided = () => allSlots().filter(s=>docs[s.key]?.status==="ready");
+$("#to-review").addEventListener("click",async()=>{
+  if(blockers().length) return;
+  const btn=$("#to-review");
+  if(!online){ toast("You're offline. Reconnect and try again."); return; }
+  const payload={
+    campaign:{id:campaign.id,name:campaign.name},
+    documents:provided().map(s=>({slot:s.extra?null:s.key, title:s.extra?"Additional document":s.title, name:docs[s.key].name, source:docs[s.key].source, id:docs[s.key].serverId})),
+    extracted:extraction.map(r=>({lineItem:r.li, insertionOrder:r.io, campaignName:r.cn, sourceDocument:r.source?docs[r.source]?.name||null:null})),
+  };
+  btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Sending…`;
+  try{
+    if(CONFIG.submitEndpoint){
+      const r=await fetch(CONFIG.submitEndpoint,{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+      if(r.status===401){ sessionValid=false; renderBanners(); throw new Error("Your session has expired. Sign in again, then try again."); }
+      if(!r.ok) throw new Error((await r.json().catch(()=>({}))).message||"We couldn't send the documents for review. Nothing was lost; try again.");
+      const b=await r.json().catch(()=>({}));
+      if(CONFIG.reviewUrl){ location.href=CONFIG.reviewUrl+(b.reference?("?ref="+encodeURIComponent(b.reference)):""); return; }
+    } else {
+      await new Promise(r=>setTimeout(r,900));
+      if(takeScen("submit")==="fail") throw new Error("We couldn't send the documents for review. Nothing was lost; try again.");
+    }
+    btn.textContent="Review documents"; renderTodo();
+    toast(`${payload.documents.length} document${payload.documents.length===1?"":"s"} sent for review.`);
+  }catch(err){ btn.textContent="Review documents"; renderTodo(); toast(err.message); }
+});
+
+/* ============================ extraction preview ============================ */
+/* Simulates parsing Line item / Insertion order / Campaign name out of the uploaded
+   documents. Wire this to a real extraction service by replacing extractedFor(). */
+function extractedFor(slot){
+  const pool = LINE_ITEM_POOL[slot.key] || ["Line item"];
+  return pool.map(li=>{
+    extractSeq++;
+    return {id:extractSeq, source:slot.key, li, io:`IO-${(campaign.id||"0000").replace(/\D/g,"")}-${String(extractSeq).padStart(2,"0")}`, cn:campaign.name};
+  });
+}
+let extractSig="";
+function syncExtraction(){
+  const readyKeys=new Set(allSlots().filter(s=>docs[s.key]?.status==="ready").map(s=>s.key));
+  extraction = extraction.filter(r=>!r.source || readyKeys.has(r.source));
+  const have=new Set(extraction.map(r=>r.source).filter(Boolean));
+  allSlots().forEach(s=>{ if(readyKeys.has(s.key) && !have.has(s.key)) extractedFor(s).forEach(row=>extraction.push(row)); });
+  /* re-render only when the set of rows or their source files changed, so typing isn't interrupted */
+  const sig=extraction.map(r=>r.id+":"+(r.source?docs[r.source]?.name:"")).join("|");
+  if(sig!==extractSig){ extractSig=sig; renderExtraction(); }
+}
+function renderExtraction(){
+  if(!extraction.length){ $("#extract-body").innerHTML=`<tr><td colspan="4" class="ex-empty">Line items, insertion orders and campaign names appear here as soon as documents are uploaded.</td></tr>`; return; }
+  /* group rows under the document they were extracted from */
+  const order=[...allSlots().map(s=>s.key), null], html=[];
+  order.forEach(src=>{
+    const rows=extraction.filter(r=>(r.source||null)===src); if(!rows.length) return;
+    const sl=src?slotOf(src):null, d=src?docs[src]:null;
+    const label = !src ? "Added manually" : sl.extra ? "Additional document" : sl.title;
+    html.push(`<tr class="ex-group"><td colspan="4"><span class="ex-src">${esc(label)}</span>${d?`<span class="ex-file" title="${esc(d.name)}">${esc(d.name)}</span>`:""}<span class="ex-n">${rows.length} row${rows.length>1?"s":""}</span></td></tr>`);
+    rows.forEach(r=>html.push(`<tr data-row="${r.id}">
+      <td><input class="ex-in" data-f="li" value="${esc(r.li)}" aria-label="Line item${d?", from "+esc(d.name):""}"></td>
+      <td><input class="ex-in" data-f="io" value="${esc(r.io)}" aria-label="Insertion order"></td>
+      <td><input class="ex-in" data-f="cn" value="${esc(r.cn)}" aria-label="Campaign name"></td>
+      <td><button type="button" class="xbtn" data-rm-row="${r.id}" aria-label="Remove row">${X}</button></td>
+    </tr>`));
+  });
+  $("#extract-body").innerHTML=html.join("");
+}
+$("#extract-body").addEventListener("input",e=>{
+  const tr=e.target.closest("[data-row]"); if(!tr) return;
+  const row=extraction.find(r=>r.id==tr.dataset.row); if(row) row[e.target.dataset.f]=e.target.value;
+});
+$("#extract-body").addEventListener("click",e=>{
+  const b=e.target.closest("[data-rm-row]"); if(!b) return;
+  extraction=extraction.filter(r=>r.id!=b.dataset.rmRow); extractSig=""; syncExtraction();
+});
+$("#extract-add").addEventListener("click",()=>{
+  extraction.push({id:++extractSeq, source:null, li:"", io:"", cn:campaign.name});
+  extractSig=""; syncExtraction();
+  $("#extract-body").querySelector("tr:last-child input")?.focus();
+});
+
+/* ============================ scenario panel (#scenarios) ============================ */
+if(location.hash==="#scenarios"){
+  const p=document.createElement("div"); p.className="scen"; p.setAttribute("aria-label","Scenario controls");
+  p.innerHTML=`<strong>Scenario preview</strong>
+    <label>Next file upload<select id="scen-upload"><option value="success">Succeeds</option><option value="slow">Slow connection</option><option value="network">Network drops at 60%</option><option value="server">Server error</option><option value="infected">Virus found in scan</option><option value="rejected">Server rejects (duplicate)</option><option value="session">Session expires mid-upload</option></select></label>
+    <label>Next SharePoint link<select id="scen-link"><option value="success">Access OK</option><option value="noaccess">No access</option><option value="notfound">File moved or deleted</option><option value="session">Session expired</option></select></label>
+    <label>Review documents hand-off<select id="scen-submit"><option value="success">Succeeds</option><option value="fail">Fails</option></select></label>
+    <button class="btn btn-ghost btn-sm" type="button" id="scen-offline">Simulate going offline</button>`;
+  document.body.appendChild(p);
+  ["upload","link","submit"].forEach(k=>$("#scen-"+k).addEventListener("change",e=>scen[k]=e.target.value));
+  $("#scen-offline").addEventListener("click",e=>{
+    if(online){ online=false; pauseAll("offline"); e.target.textContent="Simulate reconnecting"; }
+    else { online=true; e.target.textContent="Simulate going offline"; resumePaused(); toast("Back online. Uploads resumed."); }
+    renderBanners(); renderSlots(); });
+}
+
+renderBanners();
+renderSlots();
+</script>
+</body>
+</html>
