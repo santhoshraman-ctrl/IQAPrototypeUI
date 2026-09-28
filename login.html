@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+html,body{margin:0}
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --sunken:#ECEFF3; --ink:#18212B; --ink-2:#4A5563; --ink-3:#737E8C;
+  --line:#DCE1E7;
+  --accent:#1F4583; --accent-soft:#E3EAF5; --on-accent:#FFFFFF; --cta:#1F2657; --on-cta:#FFFFFF;
+  --bad:#B3261E; --bad-soft:#FBE4E2;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1419; --surface:#171E27; --sunken:#1F2833; --ink:#E6EBF0; --ink-2:#AAB4C0; --ink-3:#808B99;
+    --line:#2C3744;
+    --accent:#86A9E6; --accent-soft:#1B2A45; --on-accent:#0D1830; --cta:#86A9E6; --on-cta:#0D1830;
+    --bad:#F2887F; --bad-soft:#3D1B19;
+  }
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;min-height:100vh;display:grid;place-items:center;padding:24px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:32px 28px;display:grid;gap:22px;box-shadow:0 10px 30px rgb(0 0 0 / .06)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;justify-content:center}
+.brand svg{width:28px;height:28px;flex:none}
+h1{margin:0;font-size:20px;font-weight:600;text-align:center;letter-spacing:-.01em}
+.sub{margin:0;color:var(--ink-2);font-size:14px;text-align:center}
+form{display:grid;gap:16px}
+.field{display:grid;gap:6px}
+label{font-size:13px;font-weight:500;color:var(--ink-2)}
+input{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+input::placeholder{color:var(--ink-3)}
+input[aria-invalid="true"]{border-color:var(--bad)}
+.err{font-size:13px;color:var(--bad);margin:0;min-height:1em}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px}
+.link{appearance:none;border:0;background:none;padding:0;color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:13px}
+.btn{appearance:none;font-weight:600;font-size:14px;border-radius:9px;padding:11px 18px;cursor:pointer;border:1px solid transparent;background:var(--cta);color:var(--on-cta);width:100%}
+.btn:hover{filter:brightness(1.12)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;filter:none}
+.foot{margin:0;color:var(--ink-3);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <svg viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="var(--cta)"/><path d="M7 9.5a1.5 1.5 0 0 1 1.5-1.5h3l1.5 1.5h4.5A1.5 1.5 0 0 1 19 11v5.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 7 16.5z" fill="none" stroke="var(--on-cta)" stroke-width="1.6"/></svg>
+    Document Intake
+  </div>
+  <div>
+    <h1>Sign in</h1>
+    <p class="sub">Use your work email to continue.</p>
+  </div>
+  <form id="login-form" novalidate>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@company.com" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+    </div>
+    <p class="err" id="form-err" role="alert"></p>
+    <div class="row">
+      <span></span>
+      <button type="button" class="link" id="forgot">Forgot password?</button>
+    </div>
+    <button class="btn" type="submit" id="submit-btn">Sign in</button>
+  </form>
+  <p class="foot">This is a prototype — any email and password will sign you in.</p>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const params = new URLSearchParams(location.search);
+const returnTo = params.get("return") || "index.html";
+$("#login-form").addEventListener("submit", e=>{
+  e.preventDefault();
+  const email=$("#email"), password=$("#password"), err=$("#form-err");
+  email.removeAttribute("aria-invalid"); password.removeAttribute("aria-invalid"); err.textContent="";
+  if(!email.value.trim()){ email.setAttribute("aria-invalid","true"); err.textContent="Enter your email."; email.focus(); return; }
+  if(!password.value){ password.setAttribute("aria-invalid","true"); err.textContent="Enter your password."; password.focus(); return; }
+  sessionStorage.setItem("iqa_auth", JSON.stringify({email: email.value.trim()}));
+  location.href = returnTo;
+});
+$("#forgot").addEventListener("click", ()=>{
+  $("#form-err").textContent = "";
+  alert("Contact your admin to reset your password. (Prototype: no email is sent.)");
+});
+</script>
+</body>
+</html>

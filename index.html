@@ -419,7 +419,7 @@ const CONFIG = {
   linkEndpoint:   "",   // POST JSON {slot, campaignId, url}      → 2xx {id,name,size} | 401 | 403 | 404
   submitEndpoint: "",   // "Review documents": POST JSON {campaign, documents, extracted} → 2xx {reference}
   reviewUrl:      "",   // optional: page of your review system to open after a successful hand-off
-  signInUrl: "/login",
+  signInUrl: "login.html",
   maxBytes: null,       // no file size limit
 };
 /* Signed-in user and campaign normally come from your session/API. */
@@ -472,6 +472,14 @@ const handles = {};
 let extraSlots = [], extraSeq = 0;      // documents added beyond the named cards
 let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaign name preview rows
 
+/* ============================ auth gate ============================ */
+(function requireAuth(){
+  if(CONFIG.uploadEndpoint) return; // real backend: let the server enforce auth
+  if(!sessionStorage.getItem("iqa_auth")){
+    location.href = CONFIG.signInUrl + "?return=" + encodeURIComponent(location.pathname + location.search);
+  }
+})();
+
 /* ============================ shell ============================ */
 (function shell(){
   $("#avatar").textContent = USER.name.split(/\s+/).map(p=>p[0]).slice(0,2).join("").toUpperCase();
@@ -486,6 +494,7 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
   document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !menu.hidden){ close(); btn.focus(); } });
   $("#signout").addEventListener("click",()=>{ close();
     if(Object.values(docs).some(d=>ACTIVE.includes(d.status))){ toast("Finish or cancel uploads in progress before signing out."); return; }
+    sessionStorage.removeItem("iqa_auth");
     location.href = CONFIG.signInUrl; });
   $("#help-btn").addEventListener("click",()=>toast("Add files of any type or size. Matching types go straight to a document; anything else is added as an additional document."));
 })();
