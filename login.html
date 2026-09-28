@@ -31,6 +31,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15p
 .card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:32px 28px;display:grid;gap:22px;box-shadow:0 10px 30px rgb(0 0 0 / .06)}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;justify-content:center}
 .brand svg{width:28px;height:28px;flex:none}
+.brand-logo{width:34px;height:34px;flex:none;object-fit:contain;border-radius:6px}
 h1{margin:0;font-size:20px;font-weight:600;text-align:center;letter-spacing:-.01em}
 .sub{margin:0;color:var(--ink-2);font-size:14px;text-align:center}
 form{display:grid;gap:16px}
@@ -51,8 +52,8 @@ input[aria-invalid="true"]{border-color:var(--bad)}
 <body>
 <div class="card">
   <div class="brand">
-    <svg viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="var(--cta)"/><path d="M7 9.5a1.5 1.5 0 0 1 1.5-1.5h3l1.5 1.5h4.5A1.5 1.5 0 0 1 19 11v5.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 7 16.5z" fill="none" stroke="var(--on-cta)" stroke-width="1.6"/></svg>
-    Document Intake
+    <img class="brand-logo" src="assets/iqa-logo.png" alt="dentsu iQA logo">
+    IQA Programmatic display
   </div>
   <div>
     <h1>Sign in</h1>
