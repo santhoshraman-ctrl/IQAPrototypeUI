@@ -46,6 +46,18 @@ see "Connected to Driven Brands / Q3 2026 Display" with **View files** and
 - **View files** re-runs the read/found flow.
 - **Change location** clears the saved connection and reopens the connect modal.
 
+## Resetting to demo as a new user
+
+To redo the first-time experience (welcome screen, connect flow, etc.) instead of
+seeing the returning-user "Connected to..." screen:
+
+- **Easiest**: open the site in a private/incognito window. Fresh state every time.
+- **In-app**: click **Change location** on the "Connected to..." screen. This
+  resets just the SharePoint connection.
+- **Full reset in the same window**: open DevTools (Cmd+Option+I) - Console tab,
+  run `localStorage.clear(); sessionStorage.clear();`, then reload the page.
+  This clears sign-in and the SharePoint connection.
+
 ## What to flag as a bug vs. expected behavior
 
 | Expected (not a bug) | Actually a bug |
