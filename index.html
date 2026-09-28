@@ -291,6 +291,37 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
 .scen label{display:grid;gap:3px;font-size:12px}
 .scen select{font:inherit;font-size:13px;padding:5px 6px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 
+/* ---------- Connect / ingestion experience ---------- */
+.connect-panel{padding:36px 28px;display:grid;gap:20px;max-width:600px;margin:0 auto;text-align:center}
+.connect-hero svg{width:38px;height:38px;color:var(--accent);margin:0 auto;display:block}
+.connect-hero h2{margin:12px 0 0;font-size:21px;font-weight:600;letter-spacing:-.01em}
+.connect-lead{margin:8px auto 0;color:var(--ink-2);font-size:15px;max-width:46ch}
+.connect-info{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:12px 14px;font-size:14px;text-align:left}
+.connect-info svg{width:18px;height:18px;flex:none;color:var(--accent);margin-top:1px}
+.connect-tip{margin:0;color:var(--ink-3);font-size:13px}
+.connect-actions{display:flex;flex-direction:column;gap:10px;align-items:center;margin-top:4px}
+.connect-state{display:grid;gap:16px}
+.connected-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;text-align:left}
+.connected-badge{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--ok);background:var(--ok-soft);padding:6px 12px;border-radius:999px}
+.connected-badge svg{width:16px;height:16px;flex:none}
+.found-list{display:grid;gap:2px;text-align:left;max-width:460px;margin:0 auto;width:100%}
+.found-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line);font-size:13px}
+.found-row:last-child{border-bottom:0}
+.found-row .fn{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.found-row .reason{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
+.modal-backdrop{position:fixed;inset:0;background:rgb(15 20 25 / .45);display:grid;place-items:center;z-index:50;padding:16px}
+.modal{background:var(--surface);border-radius:14px;width:100%;max-width:440px;max-height:min(560px,90vh);display:grid;grid-template-rows:auto 1fr;overflow:hidden;box-shadow:0 20px 60px rgb(0 0 0 / .25)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.modal-head h3{margin:0;font-size:16px;font-weight:600}
+.modal-body{padding:18px;display:grid;gap:14px;overflow-y:auto;text-align:left}
+.crumbs{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
+.crumbs button{appearance:none;border:0;background:none;color:var(--accent);font:inherit;font-size:13px;cursor:pointer;padding:0}
+.browse-row{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;font-size:14px;text-align:left}
+.browse-row:hover{background:var(--sunken)}
+.browse-row svg{width:18px;height:18px;color:var(--ink-3);flex:none}
+.browse-row.file svg{color:var(--accent)}
+.browse-empty{color:var(--ink-3);font-size:14px;text-align:center;padding:20px 0}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.track.indet i{animation:none;left:0;width:100%;opacity:.5}.spin{animation-duration:2s}}
 </style>
 </head>
@@ -320,7 +351,7 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
 <main>
   <div id="banners" style="display:grid;gap:10px" aria-live="polite"></div>
 
-  <div class="pagehead">
+  <div class="pagehead" id="pagehead" hidden>
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <h1>Upload campaign documents</h1>
       <span class="count-badge" id="doc-count" hidden></span>
@@ -331,9 +362,60 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
     </div>
   </div>
 
+  <!-- ===== Connect / first ingestion experience ===== -->
+  <section class="panel connect-panel" id="connect-view" aria-label="Connect your documents">
+    <div id="connect-welcome" class="connect-state">
+      <div class="connect-hero">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-1-7.9A5 5 0 0 1 15.9 8H16a4 4 0 0 1 1 7.9"/><path d="M12 12v7M9 16l3-3 3 3"/></svg>
+        <h2>Welcome to the IQA Programmatic Display Experiment</h2>
+        <p class="connect-lead">Connect your campaign artifacts. We'll spot potential issues early and help prevent costly errors before you go live.</p>
+      </div>
+      <div class="connect-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+        <span>We'll read the files in this location to find what's needed for merchandising.</span>
+      </div>
+      <p class="connect-tip">Tip: keep the files you use before working in DV360 in one SharePoint location. If they're not organized yet, do that first.</p>
+      <div class="connect-actions">
+        <button class="btn btn-cta" type="button" id="connect-sp-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+          Connect SharePoint
+        </button>
+        <button class="linkbtn" type="button" id="connect-skip-btn">Or upload files from your computer instead</button>
+      </div>
+    </div>
+
+    <div id="connect-returning" class="connect-state" hidden>
+      <div class="connected-row">
+        <span class="connected-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>
+          Connected to <strong id="connected-name"></strong>
+        </span>
+        <div class="row">
+          <button class="btn btn-ghost btn-sm" type="button" id="connect-view-btn">View files</button>
+          <button class="btn btn-ghost btn-sm" type="button" id="connect-change-btn">Change location</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="connect-reading" class="connect-state" hidden>
+      <p class="hint">Reading your files.</p>
+      <div class="track indet"><i></i></div>
+    </div>
+
+    <div id="connect-found" class="connect-state" hidden>
+      <h2 style="margin:0;font-size:19px">Here's what we found</h2>
+      <div class="facts" id="found-summary"></div>
+      <div class="found-list" id="found-list"></div>
+      <div class="connect-actions">
+        <button class="btn btn-cta" type="button" id="connect-continue-btn">Looks good, continue</button>
+        <button class="linkbtn" type="button" id="connect-back-btn">Choose a different folder</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== Upload ===== -->
   <div id="view-1" style="display:grid;gap:22px">
-    <div id="docs-area" style="display:grid;gap:22px">
+    <div id="docs-area" style="display:grid;gap:22px" hidden>
         <section aria-label="Documents" class="slots" id="slots"></section>
 
     <section class="panel" id="extract-panel" aria-label="Extracted campaign details">
@@ -407,12 +489,42 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
 
 </main>
 
+<div class="modal-backdrop" id="sp-modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sp-modal-title">
+    <div class="modal-head">
+      <h3 id="sp-modal-title">Connect SharePoint or OneDrive</h3>
+      <button class="iconbtn" type="button" id="sp-modal-close" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div id="sp-step-link">
+        <p class="hint">Paste the link to the SharePoint or OneDrive location where your campaign files are stored.</p>
+        <div class="field">
+          <label for="sp-modal-url">SharePoint or OneDrive link</label>
+          <input type="url" id="sp-modal-url" placeholder="https://yourcompany.sharepoint.com/sites/...">
+          <small style="color:var(--ink-3);font-size:12px">Demo: <button type="button" class="linkbtn" id="sp-use-demo" style="font-size:12px">use the sample link</button></small>
+        </div>
+        <p class="msg" id="sp-modal-msg" role="status"></p>
+        <div class="row" style="justify-content:flex-end">
+          <button class="btn btn-primary" type="button" id="sp-modal-connect">Connect</button>
+        </div>
+      </div>
+      <div id="sp-step-browse" hidden>
+        <div class="crumbs" id="sp-crumbs"></div>
+        <div id="sp-browse-list"></div>
+        <div class="row" style="justify-content:flex-end">
+          <button class="btn btn-cta" type="button" id="sp-use-folder" hidden>Use this folder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toast-text"></span><button type="button" id="toast-act" hidden></button></div>
 <input type="file" id="file-input" multiple hidden>
 
 <script>
 /* =====================================================================
-   CONFIG — wire to your backend. Leave endpoints empty to run the built-in
+   CONFIG. Wire to your backend. Leave endpoints empty to run the built-in
    simulator (add #scenarios to the URL to force failures for demos).
    ===================================================================== */
 const CONFIG = {
@@ -451,7 +563,7 @@ const STEPS = ["Upload","Review","Adjudicate","Summary"];
 const $ = s => document.querySelector(s);
 const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const extOf = n => ((/\.([a-z0-9]+)$/i.exec(n)||[])[1]||"").toLowerCase();
-const fmt = b => b==null?"—":b<1024?b+" B":b<1048576?Math.max(1,Math.round(b/1024))+" KB":(+(b/1048576).toFixed(1))+" MB";
+const fmt = b => b==null?"-":b<1024?b+" B":b<1048576?Math.max(1,Math.round(b/1024))+" KB":(+(b/1048576).toFixed(1))+" MB";
 const allSlots = () => SLOTS.concat(extraSlots);
 const slotOf = k => allSlots().find(s=>s.key===k);
 const typeList = s => s.accept.map(a=>a.toUpperCase()).join(", ");
@@ -486,7 +598,7 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
   $("#avatar").textContent = USER.name.split(/\s+/).map(p=>p[0]).slice(0,2).join("").toUpperCase();
   $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(USER.role)}</small>`;
   $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}`;
-  $("#limits-text").innerHTML = `<b>No file size limit.</b> PDF, Word, PowerPoint, Excel and CSV are matched to a document automatically — any other file type is welcome too, as an additional document.`;
+  $("#limits-text").innerHTML = `<b>No file size limit.</b> PDF, Word, PowerPoint, Excel and CSV are matched to a document automatically. Any other file type is welcome too, as an additional document.`;
   $("#browse-types").textContent = `${ALL_EXT.map(a=>a.toUpperCase()).join(", ")} match automatically · any other file type is added as an additional document`;
   const btn=$("#user-btn"), menu=$("#user-menu");
   const close=()=>{ menu.hidden=true; btn.setAttribute("aria-expanded","false"); };
@@ -646,7 +758,7 @@ function precheck(file, slot){
   return null;
 }
 /* Pick the document a file belongs to: name keywords first, then first empty slot of that type.
-   Returns null when nothing matches — the caller then adds it as an additional document. */
+   Returns null when nothing matches. The caller then adds it as an additional document. */
 function route(name, ext){
   const open=SLOTS.filter(s=>!docs[s.key] && s.accept.includes(ext));
   return (open.find(s=>s.match && s.match.test(name)) || open[0])?.key || null;
@@ -823,7 +935,7 @@ function slotAction(key, act){
   if(act==="retry"){ d.loaded=0; d.progress=0; start(key); return; }
   if(act==="move"){ movingKey=key; renderSlots(); document.querySelector(`[data-slot="${key}"] select.move`)?.focus(); return; }
   if(act==="replace"){
-    if(isExtra) return; // extras have no fixed slot to replace into — remove and re-add instead
+    if(isExtra) return; // extras have no fixed slot to replace into, remove and re-add instead
     if(d?.source==="sharepoint"){ selectTab($("#tab-sp")); $("#sp-url").focus(); pickTarget={key,replace:true,link:true}; }
     else pickFor(key,true);
     return; }
@@ -890,7 +1002,7 @@ function selectTab(t,focus=true){ tabs.forEach(x=>{ const on=x===t; x.setAttribu
 tabs.forEach((t,i)=>{ t.tabIndex=i?-1:0; t.addEventListener("click",()=>selectTab(t));
   t.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ e.preventDefault(); selectTab(tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length]); } }); });
 
-/* SharePoint link — routed automatically like a file; anything that doesn't match a
+/* SharePoint link, routed automatically like a file; anything that doesn't match a
    named document is still accepted, as an additional document (no "pick a type" step). */
 $("#pane-sp").addEventListener("submit",e=>{
   e.preventDefault();
@@ -1056,6 +1168,119 @@ if(location.hash==="#scenarios"){
     else { online=true; e.target.textContent="Simulate going offline"; resumePaused(); toast("Back online. Uploads resumed."); }
     renderBanners(); renderSlots(); });
 }
+
+/* ============================ connect / ingestion experience ============================ */
+const DEMO_LINK = "https://dentsu.sharepoint.com/sites/DrivenBrands/CampaignDocuments";
+const DEMO_FOLDERS = {
+  "Q3 2026 Display": [
+    {name:"Q3_2026_Display_MediaPlan.pdf", size:862*1024, slot:"mediaplan"},
+    {name:"Budget_Tracker_Q3.xlsx", size:58*1024, slot:"budget"},
+    {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
+    {name:"MAF_Signed.pdf", size:301*1024, slot:"maf"},
+    {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"tsheet"},
+    {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"tag"},
+    {name:"MediaPlan_OLD_v1.pdf", size:790*1024, skip:"An older version, already replaced"},
+    {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
+  ],
+  "Archive": [],
+  "Templates": [],
+};
+const CONN_KEY = "iqa_sp_connection";
+const fileSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>`;
+const folderSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`;
+
+function showConnectState(id){ ["connect-welcome","connect-returning","connect-reading","connect-found"].forEach(s=>$("#"+s).hidden = s!==id); }
+function revealDocsArea(){ $("#connect-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; }
+
+function openSpModal(){
+  $("#sp-modal-backdrop").hidden=false;
+  $("#sp-step-link").hidden=false; $("#sp-step-browse").hidden=true;
+  $("#sp-modal-url").value=""; setMsg($("#sp-modal-msg"));
+  $("#sp-modal-url").focus();
+}
+function closeSpModal(){ $("#sp-modal-backdrop").hidden=true; }
+$("#connect-sp-btn").addEventListener("click", openSpModal);
+$("#connect-change-btn").addEventListener("click", ()=>{ localStorage.removeItem(CONN_KEY); openSpModal(); });
+$("#sp-modal-close").addEventListener("click", closeSpModal);
+$("#sp-modal-backdrop").addEventListener("click", e=>{ if(e.target.id==="sp-modal-backdrop") closeSpModal(); });
+$("#sp-use-demo").addEventListener("click", ()=>{ $("#sp-modal-url").value=DEMO_LINK; });
+$("#connect-skip-btn").addEventListener("click", ()=>{ closeSpModal(); revealDocsArea(); });
+
+$("#sp-modal-connect").addEventListener("click", ()=>{
+  const raw=$("#sp-modal-url").value.trim(), msg=$("#sp-modal-msg"), btn=$("#sp-modal-connect");
+  if(!raw){ setMsg(msg,[],["Enter a SharePoint or OneDrive link to continue."]); return; }
+  btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Connecting.`;
+  setTimeout(()=>{
+    btn.disabled=false; btn.textContent="Connect";
+    if(raw.replace(/\/+$/,"").toLowerCase() !== DEMO_LINK.toLowerCase()){
+      setMsg(msg,[],["We couldn't connect to this location. Check the link and that you have access, then try again."]);
+      return;
+    }
+    setMsg(msg); openFolderBrowser();
+  }, 800);
+});
+
+let currentFolder=null;
+function openFolderBrowser(){ $("#sp-step-link").hidden=true; $("#sp-step-browse").hidden=false; renderCrumbs(null); renderFolderList(); }
+function renderCrumbs(folder){
+  $("#sp-crumbs").innerHTML = folder
+    ? `<button type="button" data-crumb="root">Driven Brands</button><span>/</span><span>${esc(folder)}</span>`
+    : `<span>Driven Brands</span>`;
+}
+$("#sp-crumbs").addEventListener("click", e=>{ if(e.target.closest("[data-crumb]")){ renderCrumbs(null); renderFolderList(); } });
+function renderFolderList(){
+  currentFolder=null; $("#sp-use-folder").hidden=true;
+  $("#sp-browse-list").innerHTML = Object.keys(DEMO_FOLDERS).map(name=>
+    `<div class="browse-row" data-folder="${esc(name)}">${folderSvg}<span>${esc(name)}</span></div>`
+  ).join("");
+}
+$("#sp-browse-list").addEventListener("click", e=>{
+  const row=e.target.closest("[data-folder]"); if(!row) return;
+  currentFolder = row.dataset.folder;
+  renderCrumbs(currentFolder);
+  const files = DEMO_FOLDERS[currentFolder] || [];
+  if(!files.length){ $("#sp-browse-list").innerHTML = `<div class="browse-empty">No campaign files found in this folder.</div>`; $("#sp-use-folder").hidden=true; return; }
+  $("#sp-browse-list").innerHTML = files.map(f=>`<div class="browse-row file">${fileSvg}<span>${esc(f.name)}</span></div>`).join("");
+  $("#sp-use-folder").hidden=false;
+});
+$("#sp-use-folder").addEventListener("click", ()=>{
+  closeSpModal();
+  localStorage.setItem(CONN_KEY, JSON.stringify({site:"Driven Brands", folder:currentFolder, url:DEMO_LINK}));
+  runIngestion(currentFolder);
+});
+
+function runIngestion(folder){
+  showConnectState("connect-reading");
+  const files = DEMO_FOLDERS[folder] || [];
+  setTimeout(()=>{ renderFound(files); showConnectState("connect-found"); }, 1200);
+}
+let foundFiles=[];
+function renderFound(files){
+  foundFiles=files;
+  const ready=files.filter(f=>f.slot), skipped=files.filter(f=>f.skip);
+  $("#found-summary").innerHTML = `
+    <div class="fact"><span>Files found</span><b>${files.length}</b></div>
+    <div class="fact"><span>Ready to use</span><b>${ready.length}</b></div>
+    <div class="fact"><span>Skipped</span><b>${skipped.length}</b></div>`;
+  $("#found-list").innerHTML = files.map(f=>`<div class="found-row">
+      <span class="fn">${esc(f.name)}${f.skip?`<span class="reason">${esc(f.skip)}</span>`:""}</span>
+      <span class="pill ${f.slot?"ok":"miss"}">${f.slot?"Ready":"Skipped"}</span>
+    </div>`).join("");
+}
+$("#connect-back-btn").addEventListener("click", ()=>{ openSpModal(); openFolderBrowser(); });
+$("#connect-continue-btn").addEventListener("click", ()=>{
+  const ready=foundFiles.filter(f=>f.slot);
+  ready.forEach(f=>commit(f.slot, {name:f.name, size:f.size, source:"sharepoint"}, {skipConfirm:true}));
+  revealDocsArea();
+  toast(`${ready.length} document${ready.length===1?"":"s"} added from SharePoint.`);
+});
+$("#connect-view-btn").addEventListener("click", ()=>{ const c=JSON.parse(localStorage.getItem(CONN_KEY)||"null"); if(c) runIngestion(c.folder); });
+
+(function initConnect(){
+  const c=JSON.parse(localStorage.getItem(CONN_KEY)||"null");
+  if(c){ $("#connected-name").textContent = `${c.site} / ${c.folder}`; showConnectState("connect-returning"); }
+  else showConnectState("connect-welcome");
+})();
 
 renderBanners();
 renderSlots();
