@@ -343,24 +343,17 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
 .conf-row .cr-pct{font-weight:700;font-size:14px;color:var(--ok)}
 .conf-row.crit .cr-pct{color:var(--bad)}
 .conf-row.review .cr-pct{color:var(--warn)}
-.issue-card{border-left:4px solid var(--bad);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0 10px 10px 0;background:var(--surface);padding:14px 16px;display:grid;gap:6px}
+.issue-card{border-left:4px solid var(--bad);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0 8px 8px 0;background:var(--surface);padding:10px 14px;display:grid;gap:3px}
 .issue-card.high{border-left-color:var(--warn-bar)}
-.issue-card h3{margin:0;font-size:15px;font-weight:600}
+.issue-card h3{margin:0;font-size:14px;font-weight:600}
 .issue-card p{margin:0;font-size:13px;color:var(--ink-2)}
 .issue-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
 .issue-meta b{color:var(--bad)}
-.journey{display:flex;gap:0;margin:10px 0 4px}
-.jstep{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;font-size:12px;color:var(--ink-3);text-align:center}
-.jstep .jdot{width:28px;height:28px;border-radius:50%;background:var(--sunken);color:var(--ink-3);display:grid;place-items:center;font-size:12px;font-weight:600}
-.jstep.done .jdot{background:var(--ok);color:#fff}
-.jstep.current{color:var(--ink)}
-.jstep.current .jdot{background:var(--accent);color:var(--on-accent)}
-.jstep.done{color:var(--ok)}
-.fix-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.fix-row{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
 .fix-row:last-child{border-bottom:0}
-.fix-num{width:26px;height:26px;border-radius:50%;background:var(--cta);color:var(--on-cta);display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
-.fix-row h4{margin:0;font-size:14px;font-weight:600}
-.fix-row p{margin:2px 0 0;font-size:13px;color:var(--ink-2)}
+.fix-num{width:22px;height:22px;border-radius:50%;background:var(--cta);color:var(--on-cta);display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+.fix-row h4{margin:0;font-size:13px;font-weight:600}
+.fix-row p{margin:1px 0 0;font-size:12px;color:var(--ink-2)}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.track.indet i{animation:none;left:0;width:100%;opacity:.5}.spin{animation-duration:2s}}
 </style>
@@ -559,15 +552,14 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
     </section>
 
     <section>
-      <h2 style="font-size:18px;margin:0 0 12px">Potential issues</h2>
-      <div style="display:grid;gap:10px" id="issue-list"></div>
+      <h2 style="font-size:16px;margin:0 0 8px">Potential issues</h2>
+      <div style="display:grid;gap:6px" id="issue-list"></div>
     </section>
 
-    <section class="panel" style="padding:20px;display:grid;gap:6px">
-      <h2 style="margin:0;font-size:19px">Here's what to fix</h2>
+    <section class="panel" style="padding:16px;display:grid;gap:4px">
+      <h2 style="margin:0;font-size:16px">Here's what to fix</h2>
       <p style="margin:0;color:var(--ink-2);font-size:14px">Focus on these priorities to prevent the issues above.</p>
-      <div class="journey" id="journey"></div>
-      <h3 style="margin:14px 0 0;font-size:15px">Priority fixes</h3>
+      <h3 style="margin:10px 0 0;font-size:15px">Priority fixes</h3>
       <div id="fix-list"></div>
     </section>
 
@@ -1388,7 +1380,6 @@ const FIXES = [
   {title:"Define budget split for 3 line items", desc:"Add split logic to LineItem_Details_Master.xlsx rows 23, 35 and 41.", time:"5 minutes"},
   {title:"Activate conversion tracking IDs in DV360", desc:"Add 4 conversion tracking IDs to the campaign in DV360.", time:"5 minutes"},
 ];
-const JOURNEY = ["Connect","Ingest","Understand","Identify risk","Act"];
 const money = n => "$"+(n>=1000?Math.round(n/1000)+"K":n);
 const checkSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>`;
 const warnSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 16.5h.01M10.3 3.9 2.6 17.5a1.7 1.7 0 0 0 1.5 2.5h15.8a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/></svg>`;
@@ -1405,7 +1396,7 @@ function renderValidation(){
     return `<div class="conf-row ${cls}">
       <span class="cr-ic">${r.tag?warnSvg:checkSvg}</span>
       <span class="cr-body"><span class="cr-title">${esc(r.label)}${r.tag?` - ${r.tag}`:""}</span><span class="cr-desc">${esc(r.desc)}</span></span>
-      <span class="cr-right"><span class="cr-pct">${r.conf}% conf.</span>${r.tag?`<button type="button" class="btn btn-ghost btn-sm">Auto-correct</button>`:""}</span>
+      <span class="cr-right"><span class="cr-pct">${r.conf}% conf.</span></span>
     </div>`;
   }).join("");
   $("#issue-list").innerHTML = ISSUES.map(i=>`<div class="issue-card ${i.sev==="critical"?"":"high"}">
@@ -1413,10 +1404,6 @@ function renderValidation(){
     <p>${esc(i.desc)}</p>
     <div class="issue-meta"><span class="pill ${i.sev==="critical"?"bad":"warn"}">${i.sev==="critical"?"Critical":"High"}</span><b>Est. impact: ${money(i.impact)}</b><span>Source: ${esc(i.source)}</span></div>
   </div>`).join("");
-  $("#journey").innerHTML = JOURNEY.map((s,i)=>{
-    const cur=i===JOURNEY.length-1;
-    return `<div class="jstep ${cur?"current":"done"}"><span class="jdot">${cur?(i+1):checkSvg}</span>${esc(s)}</div>`;
-  }).join("");
   $("#fix-list").innerHTML = FIXES.map((f,i)=>`<div class="fix-row">
     <span class="fix-num">${i+1}</span>
     <div><h4>${esc(f.title)}</h4><p>${esc(f.desc)} Time: ${esc(f.time)}.</p></div>
