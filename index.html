@@ -323,6 +323,45 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
 .browse-row.file svg{color:var(--accent)}
 .browse-empty{color:var(--ink-3);font-size:14px;text-align:center;padding:20px 0}
 
+/* ---------- Validation results ---------- */
+.val-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.val-head .lbl{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:700}
+.val-sub{color:var(--ink-2);font-size:13px;margin:0}
+.conf-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;background:var(--sunken)}
+.conf-row.crit{background:var(--bad-soft)}
+.conf-row.review{background:var(--warn-soft)}
+.conf-row .cr-ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff;background:var(--ok)}
+.conf-row.crit .cr-ic{background:var(--bad)}
+.conf-row.review .cr-ic{background:var(--warn-bar)}
+.conf-row .cr-ic svg{width:18px;height:18px}
+.conf-row .cr-body{flex:1;min-width:0;display:grid;gap:2px}
+.conf-row .cr-title{display:block;font-weight:600;font-size:14px}
+.conf-row.crit .cr-title{color:var(--bad)}
+.conf-row.review .cr-title{color:var(--warn)}
+.conf-row .cr-desc{display:block;font-size:13px;color:var(--ink-2)}
+.conf-row .cr-right{display:flex;align-items:center;gap:12px;flex:none}
+.conf-row .cr-pct{font-weight:700;font-size:14px;color:var(--ok)}
+.conf-row.crit .cr-pct{color:var(--bad)}
+.conf-row.review .cr-pct{color:var(--warn)}
+.issue-card{border-left:4px solid var(--bad);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0 10px 10px 0;background:var(--surface);padding:14px 16px;display:grid;gap:6px}
+.issue-card.high{border-left-color:var(--warn-bar)}
+.issue-card h3{margin:0;font-size:15px;font-weight:600}
+.issue-card p{margin:0;font-size:13px;color:var(--ink-2)}
+.issue-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
+.issue-meta b{color:var(--bad)}
+.journey{display:flex;gap:0;margin:10px 0 4px}
+.jstep{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;font-size:12px;color:var(--ink-3);text-align:center}
+.jstep .jdot{width:28px;height:28px;border-radius:50%;background:var(--sunken);color:var(--ink-3);display:grid;place-items:center;font-size:12px;font-weight:600}
+.jstep.done .jdot{background:var(--ok);color:#fff}
+.jstep.current{color:var(--ink)}
+.jstep.current .jdot{background:var(--accent);color:var(--on-accent)}
+.jstep.done{color:var(--ok)}
+.fix-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.fix-row:last-child{border-bottom:0}
+.fix-num{width:26px;height:26px;border-radius:50%;background:var(--cta);color:var(--on-cta);display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.fix-row h4{margin:0;font-size:14px;font-weight:600}
+.fix-row p{margin:2px 0 0;font-size:13px;color:var(--ink-2)}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.track.indet i{animation:none;left:0;width:100%;opacity:.5}.spin{animation-duration:2s}}
 </style>
 </head>
@@ -417,6 +456,18 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
   <!-- ===== Upload ===== -->
   <div id="view-1" style="display:grid;gap:22px">
     <div id="docs-area" style="display:grid;gap:22px" hidden>
+        <section class="panel" style="padding:18px 20px" aria-label="Campaign summary">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap">
+            <h2 style="margin:0;font-size:16px;font-weight:600">Campaign summary</h2>
+            <span style="font-size:13px;color:var(--ink-3)">Cloned from Spring_Auto_2025</span>
+          </div>
+          <div class="facts" style="margin-top:12px">
+            <div class="fact"><span>Campaign</span><b id="cs-name"></b></div>
+            <div class="fact"><span>Campaign ID</span><b class="mono" id="cs-id"></b></div>
+            <div class="fact"><span>Documents attached</span><b id="cs-doc-count">0</b></div>
+            <div class="fact"><span>Platform</span><b>Google DV360</b></div>
+          </div>
+        </section>
         <section aria-label="Documents" class="slots" id="slots"></section>
 
     <section class="panel" id="extract-panel" aria-label="Extracted campaign details">
@@ -486,6 +537,44 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
     </div>
     </div>
   </div>
+
+  <!-- ===== Validation results ===== -->
+  <section id="validation-view" hidden style="display:grid;gap:22px">
+    <div class="pagehead">
+      <h1>Mismatches surfaced across documents</h1>
+      <p style="margin:0;color:var(--ink-2)">Every parameter is scored for confidence, with critical and review-level flags called out inline.</p>
+    </div>
+
+    <section class="panel val-card" style="padding:20px;display:grid;gap:16px">
+      <div class="val-head">
+        <span class="lbl">Geo validation engine <span class="badge opt">Live</span></span>
+        <button class="btn btn-ghost btn-sm" type="button" id="recheck-btn">Re-check</button>
+      </div>
+      <p class="val-sub" id="val-campaign-line"></p>
+      <div class="facts" id="val-facts"></div>
+      <div>
+        <h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Parameter validation</h3>
+        <div style="display:grid;gap:10px" id="val-rows"></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 style="font-size:18px;margin:0 0 12px">Potential issues</h2>
+      <div style="display:grid;gap:10px" id="issue-list"></div>
+    </section>
+
+    <section class="panel" style="padding:20px;display:grid;gap:6px">
+      <h2 style="margin:0;font-size:19px">Here's what to fix</h2>
+      <p style="margin:0;color:var(--ink-2);font-size:14px">Focus on these priorities to prevent the issues above.</p>
+      <div class="journey" id="journey"></div>
+      <h3 style="margin:14px 0 0;font-size:15px">Priority fixes</h3>
+      <div id="fix-list"></div>
+    </section>
+
+    <div class="foot">
+      <button class="btn btn-ghost" type="button" id="back-to-upload">Back to upload</button>
+    </div>
+  </section>
 
 </main>
 
@@ -599,6 +688,7 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
   $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(USER.role)}</small>`;
   $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}`;
   $("#limits-text").innerHTML = `<b>No file size limit.</b> PDF, Word, PowerPoint, Excel and CSV are matched to a document automatically. Any other file type is welcome too, as an additional document.`;
+  $("#cs-name").textContent = campaign.name; $("#cs-id").textContent = campaign.id;
   $("#browse-types").textContent = `${ALL_EXT.map(a=>a.toUpperCase()).join(", ")} match automatically · any other file type is added as an additional document`;
   const btn=$("#user-btn"), menu=$("#user-menu");
   const close=()=>{ menu.hidden=true; btn.setAttribute("aria-expanded","false"); };
@@ -667,6 +757,7 @@ function renderSlots(){
 function renderCount(){
   const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length, el=$("#doc-count");
   el.hidden = n===0; el.textContent = `${n} document${n===1?"":"s"} uploaded`;
+  $("#cs-doc-count").textContent = n;
 }
 function renderExtraList(){
   $("#extra-panel").hidden = extraSlots.length===0;
@@ -1097,7 +1188,7 @@ $("#to-review").addEventListener("click",async()=>{
       if(takeScen("submit")==="fail") throw new Error("We couldn't send the documents for review. Nothing was lost; try again.");
     }
     btn.textContent="Review documents"; renderTodo();
-    toast(`${payload.documents.length} document${payload.documents.length===1?"":"s"} sent for review.`);
+    showValidationView();
   }catch(err){ btn.textContent="Review documents"; renderTodo(); toast(err.message); }
 });
 
@@ -1181,7 +1272,7 @@ const fileSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 const folderSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`;
 
 function showConnectState(id){ ["connect-welcome","connect-returning","connect-reading","connect-found"].forEach(s=>$("#"+s).hidden = s!==id); }
-function revealDocsArea(){ $("#connect-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; }
+function revealDocsArea(){ $("#connect-view").hidden=true; $("#validation-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; }
 
 function openSpModal(){
   $("#sp-modal-backdrop").hidden=false;
@@ -1272,6 +1363,78 @@ $("#connect-view-btn").addEventListener("click", ()=>{ const c=JSON.parse(localS
   if(c){ $("#connected-name").textContent = `${c.site} / ${c.folder}`; showConnectState("connect-returning"); }
   else showConnectState("connect-welcome");
 })();
+
+/* ============================ validation results (mock) ============================ */
+/* Placeholder data only. The real comparison will be run by an agent against the QA SDF. */
+const VALIDATION = {
+  confidence:96.2, paramsChecked:142, flagsRaised:2, writeOffAvoided:260000,
+  rows:[
+    {label:"DMA boundary check", tag:"critical", desc:"Suburban zone mapped as rural. Expected 600K reach, projected 85K.", conf:31},
+    {label:"Postal code overlap", tag:"review", desc:"3 postal codes span state lines without delineation.", conf:62},
+    {label:"Rural area density coding", desc:"Matches Census density bands for target ZIPs.", conf:99.1},
+    {label:"Master taxonomy reconciliation", desc:"140 of 142 fields synced with master document.", conf:98.5},
+  ],
+};
+const ISSUES = [
+  {sev:"critical", title:"Geographic mismatch: EU targeting in DV360, but budget allocated to US only", desc:"Your brief allocates all budget to 12 US DMAs, but DV360 is configured to target EU, UK and CA as well. This could result in significant budget wasted.", impact:420000, source:"Geo_Tiers vs DV360 config"},
+  {sev:"high", title:"Frequency cap mismatch: 8/day in DV360, but brief recommends 3/day", desc:"Your brief shows a 3/day frequency cap performs best, but DV360 has 8/day. This could increase costs and reduce ROI.", impact:234000, source:"Campaign_Brief vs DV360 config"},
+  {sev:"high", title:"Missing creative assignments: 12 line items have no creative mapped", desc:"12 of 47 line items don't have creative assets assigned. These line items won't be able to serve until creatives are added.", impact:156000, source:"LineItem_Map vs Creative_AssetMap"},
+  {sev:"high", title:"Budget split logic undefined for 3 line items", desc:"3 line items don't have clear budget split rules. When you push to DV360, these will need manual budget allocation.", impact:23000, source:"LineItem_Details_Master.xlsx"},
+];
+const FIXES = [
+  {title:"Fix geographic targeting in DV360", desc:"Remove EU, UK and CA targets. Keep only the 12 US DMAs.", time:"5 minutes"},
+  {title:"Update frequency cap from 8/day to 3/day", desc:"Change the frequency cap setting in DV360 campaign settings.", time:"3 minutes"},
+  {title:"Assign creatives to 12 line items", desc:"Map the missing creative assets from Creative_AssetMap.xlsx to these line items.", time:"15 minutes"},
+  {title:"Define budget split for 3 line items", desc:"Add split logic to LineItem_Details_Master.xlsx rows 23, 35 and 41.", time:"5 minutes"},
+  {title:"Activate conversion tracking IDs in DV360", desc:"Add 4 conversion tracking IDs to the campaign in DV360.", time:"5 minutes"},
+];
+const JOURNEY = ["Connect","Ingest","Understand","Identify risk","Act"];
+const money = n => "$"+(n>=1000?Math.round(n/1000)+"K":n);
+const checkSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>`;
+const warnSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 16.5h.01M10.3 3.9 2.6 17.5a1.7 1.7 0 0 0 1.5 2.5h15.8a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/></svg>`;
+
+function renderValidation(){
+  $("#val-campaign-line").textContent = `Campaign: ${campaign.name}, cloned from Spring_Auto_2025`;
+  $("#val-facts").innerHTML = `
+    <div class="fact"><span>Overall confidence</span><b style="color:var(--ok)">${VALIDATION.confidence}%</b></div>
+    <div class="fact"><span>Parameters checked</span><b>${VALIDATION.paramsChecked}</b></div>
+    <div class="fact"><span>Flags raised</span><b style="color:var(--bad)">${VALIDATION.flagsRaised}</b></div>
+    <div class="fact"><span>Est. write-off avoided</span><b>${money(VALIDATION.writeOffAvoided)}</b></div>`;
+  $("#val-rows").innerHTML = VALIDATION.rows.map(r=>{
+    const cls = r.tag==="critical"?"crit":r.tag==="review"?"review":"";
+    return `<div class="conf-row ${cls}">
+      <span class="cr-ic">${r.tag?warnSvg:checkSvg}</span>
+      <span class="cr-body"><span class="cr-title">${esc(r.label)}${r.tag?` - ${r.tag}`:""}</span><span class="cr-desc">${esc(r.desc)}</span></span>
+      <span class="cr-right"><span class="cr-pct">${r.conf}% conf.</span>${r.tag?`<button type="button" class="btn btn-ghost btn-sm">Auto-correct</button>`:""}</span>
+    </div>`;
+  }).join("");
+  $("#issue-list").innerHTML = ISSUES.map(i=>`<div class="issue-card ${i.sev==="critical"?"":"high"}">
+    <h3>${esc(i.title)}</h3>
+    <p>${esc(i.desc)}</p>
+    <div class="issue-meta"><span class="pill ${i.sev==="critical"?"bad":"warn"}">${i.sev==="critical"?"Critical":"High"}</span><b>Est. impact: ${money(i.impact)}</b><span>Source: ${esc(i.source)}</span></div>
+  </div>`).join("");
+  $("#journey").innerHTML = JOURNEY.map((s,i)=>{
+    const cur=i===JOURNEY.length-1;
+    return `<div class="jstep ${cur?"current":"done"}"><span class="jdot">${cur?(i+1):checkSvg}</span>${esc(s)}</div>`;
+  }).join("");
+  $("#fix-list").innerHTML = FIXES.map((f,i)=>`<div class="fix-row">
+    <span class="fix-num">${i+1}</span>
+    <div><h4>${esc(f.title)}</h4><p>${esc(f.desc)} Time: ${esc(f.time)}.</p></div>
+  </div>`).join("");
+}
+function showValidationView(){
+  $("#pagehead").hidden=true; $("#docs-area").hidden=true; $("#connect-view").hidden=true;
+  $("#validation-view").hidden=false;
+  renderValidation();
+  scrollTo({top:0});
+}
+$("#back-to-upload").addEventListener("click", revealDocsArea);
+$("#recheck-btn").addEventListener("click", ()=>{
+  const btn=$("#recheck-btn");
+  btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Re-checking…`;
+  setTimeout(()=>{ btn.disabled=false; btn.textContent="Re-check"; renderValidation();
+    toast("Re-check complete. The same 2 flags remain until the fixes above are applied."); }, 900);
+});
 
 renderBanners();
 renderSlots();
