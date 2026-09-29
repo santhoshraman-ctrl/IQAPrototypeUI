@@ -1272,7 +1272,7 @@ function openSpModal(){
 }
 function closeSpModal(){ $("#sp-modal-backdrop").hidden=true; }
 $("#connect-sp-btn").addEventListener("click", openSpModal);
-$("#connect-change-btn").addEventListener("click", ()=>{ localStorage.removeItem(CONN_KEY); openSpModal(); });
+$("#connect-change-btn").addEventListener("click", ()=>{ sessionStorage.removeItem(CONN_KEY); openSpModal(); });
 $("#sp-modal-close").addEventListener("click", closeSpModal);
 $("#sp-modal-backdrop").addEventListener("click", e=>{ if(e.target.id==="sp-modal-backdrop") closeSpModal(); });
 $("#sp-use-demo").addEventListener("click", ()=>{ $("#sp-modal-url").value=DEMO_LINK; });
@@ -1317,7 +1317,7 @@ $("#sp-browse-list").addEventListener("click", e=>{
 });
 $("#sp-use-folder").addEventListener("click", ()=>{
   closeSpModal();
-  localStorage.setItem(CONN_KEY, JSON.stringify({site:"Driven Brands", folder:currentFolder, url:DEMO_LINK}));
+  sessionStorage.setItem(CONN_KEY, JSON.stringify({site:"Driven Brands", folder:currentFolder, url:DEMO_LINK}));
   runIngestion(currentFolder);
 });
 
@@ -1346,10 +1346,10 @@ $("#connect-continue-btn").addEventListener("click", ()=>{
   revealDocsArea();
   toast(`${ready.length} document${ready.length===1?"":"s"} added from SharePoint.`);
 });
-$("#connect-view-btn").addEventListener("click", ()=>{ const c=JSON.parse(localStorage.getItem(CONN_KEY)||"null"); if(c) runIngestion(c.folder); });
+$("#connect-view-btn").addEventListener("click", ()=>{ const c=JSON.parse(sessionStorage.getItem(CONN_KEY)||"null"); if(c) runIngestion(c.folder); });
 
 (function initConnect(){
-  const c=JSON.parse(localStorage.getItem(CONN_KEY)||"null");
+  const c=JSON.parse(sessionStorage.getItem(CONN_KEY)||"null");
   if(c){ $("#connected-name").textContent = `${c.site} / ${c.folder}`; showConnectState("connect-returning"); }
   else showConnectState("connect-welcome");
 })();
