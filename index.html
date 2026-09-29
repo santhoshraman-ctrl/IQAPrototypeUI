@@ -166,6 +166,7 @@ h1{font-size:25px;font-weight:600;margin:0;letter-spacing:-.01em;text-wrap:balan
 .ex-in{width:100%;font:inherit;font-size:13px;padding:8px 9px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--ink)}
 .ex-in:hover{background:var(--sunken)}
 .ex-in:focus{background:var(--surface);border-color:var(--accent);outline:none}
+.ex-ro{font-size:13px;padding:8px 9px;color:var(--ink)}
 .extract-foot{padding:10px 20px 14px}
 #extract-panel{border-width:1.5px}
 .ex-group td{padding:14px 8px 6px!important;border-bottom:1px solid var(--line)}
@@ -421,13 +422,12 @@ td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;
     <section class="panel" id="extract-panel" aria-label="Extracted campaign details">
       <div class="extract-head">
         <h2>Extracted campaign details</h2>
-        <span>Grouped by the document each row was pulled from. Review and correct before continuing.</span>
+        <span>Grouped by the document each row was pulled from. Review before continuing.</span>
       </div>
       <div class="extract-tbl tbl-wrap"><table>
         <thead><tr><th>Line item</th><th>Insertion order</th><th>Campaign name</th><th></th></tr></thead>
         <tbody id="extract-body"></tbody>
       </table></div>
-      <div class="extract-foot"><button class="btn btn-ghost btn-sm" type="button" id="extract-add">+ Add row</button></div>
     </section>
 
     <section class="panel" id="extra-panel" hidden aria-label="Additional documents">
@@ -1131,26 +1131,17 @@ function renderExtraction(){
     const label = !src ? "Added manually" : sl.extra ? "Additional document" : sl.title;
     html.push(`<tr class="ex-group"><td colspan="4"><span class="ex-src">${esc(label)}</span>${d?`<span class="ex-file" title="${esc(d.name)}">${esc(d.name)}</span>`:""}<span class="ex-n">${rows.length} row${rows.length>1?"s":""}</span></td></tr>`);
     rows.forEach(r=>html.push(`<tr data-row="${r.id}">
-      <td><input class="ex-in" data-f="li" value="${esc(r.li)}" aria-label="Line item${d?", from "+esc(d.name):""}"></td>
-      <td><input class="ex-in" data-f="io" value="${esc(r.io)}" aria-label="Insertion order"></td>
-      <td><input class="ex-in" data-f="cn" value="${esc(r.cn)}" aria-label="Campaign name"></td>
+      <td class="ex-ro">${esc(r.li)}</td>
+      <td class="ex-ro">${esc(r.io)}</td>
+      <td class="ex-ro">${esc(r.cn)}</td>
       <td><button type="button" class="xbtn" data-rm-row="${r.id}" aria-label="Remove row">${X}</button></td>
     </tr>`));
   });
   $("#extract-body").innerHTML=html.join("");
 }
-$("#extract-body").addEventListener("input",e=>{
-  const tr=e.target.closest("[data-row]"); if(!tr) return;
-  const row=extraction.find(r=>r.id==tr.dataset.row); if(row) row[e.target.dataset.f]=e.target.value;
-});
 $("#extract-body").addEventListener("click",e=>{
   const b=e.target.closest("[data-rm-row]"); if(!b) return;
   extraction=extraction.filter(r=>r.id!=b.dataset.rmRow); extractSig=""; syncExtraction();
-});
-$("#extract-add").addEventListener("click",()=>{
-  extraction.push({id:++extractSeq, source:null, li:"", io:"", cn:campaign.name});
-  extractSig=""; syncExtraction();
-  $("#extract-body").querySelector("tr:last-child input")?.focus();
 });
 
 /* ============================ scenario panel (#scenarios) ============================ */
