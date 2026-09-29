@@ -720,7 +720,7 @@ function cardParts(d, s){
     case "uploading": { const p=Math.floor(d.progress); return {bar:`<div class="track"><i style="width:${p}%"></i></div>`, st:`<span class="st">${p}%</span>`}; }
     case "paused":    return {bar:`<div class="track"><i class="paused" style="width:${Math.max(4,Math.floor(d.progress))}%"></i></div>`, st:`<span class="st warn" title="${d.pauseReason==="session"?"Sign in needed":"Offline"}">Paused</span>`};
     case "scanning":  return {bar:`<div class="track indet"><i></i></div>`, st:`<span class="st">Scanning…</span>`};
-    case "ready":     return {bar:`<div class="track"><i class="done" style="width:100%"></i></div>`, st:`${movingKey===s.key&&!s.extra?"":`<span class="st ok" title="${SRC[d.source]}">${d.size?fmt(d.size):"Link"}</span>`}${s.extra?"":(movingKey===s.key?moveSelect(s.key,d):`<span><button type="button" class="act" data-act="move">Move</button><button type="button" class="act" data-act="replace">Replace</button></span>`)}`};
+    case "ready":     return {bar:`<div class="track"><i class="done" style="width:100%"></i></div>`, st:`<span class="st ok" title="${SRC[d.source]}">${d.size?fmt(d.size):"Link"}</span>${s.extra?"":`<span><button type="button" class="act" data-act="remove">Remove</button><button type="button" class="act" data-act="replace">Replace</button></span>`}`};
     case "error":     return {bar:`<div class="track"><i class="bad"></i></div>`, st:`<span class="st"></span>`+(d.retryable?`<button type="button" class="act" data-act="retry">Retry</button>`:(s.extra?"":`<button type="button" class="act" data-act="replace">Choose another</button>`))};
   }
 }
@@ -1016,7 +1016,6 @@ function slotAction(key, act){
     else { delete docs[key]; if(isExtra) extraSlots=extraSlots.filter(x=>x.key!==key); toast("Upload cancelled."); }
     renderSlots(); return; }
   if(act==="retry"){ d.loaded=0; d.progress=0; start(key); return; }
-  if(act==="move"){ movingKey=key; renderSlots(); document.querySelector(`[data-slot="${key}"] select.move`)?.focus(); return; }
   if(act==="replace"){
     if(isExtra) return; // extras have no fixed slot to replace into, remove and re-add instead
     if(d?.source==="sharepoint"){ selectTab($("#tab-sp")); $("#sp-url").focus(); pickTarget={key,replace:true,link:true}; }
@@ -1063,7 +1062,6 @@ function moveDoc(from, to){
 }
 $("#extra-list").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel && sel.value) moveDoc(sel.dataset.move, sel.value); });
 $("#slots").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel) moveDoc(sel.dataset.move, sel.value); });
-$("#slots").addEventListener("keydown",e=>{ if(e.key==="Escape" && movingKey){ movingKey=null; renderSlots(); } });
 $("#extra-list").addEventListener("click",e=>{
   const row=e.target.closest("[data-slot]"); if(!row) return;
   const act=e.target.closest("[data-act]")?.dataset.act; if(act) slotAction(row.dataset.slot,act);
