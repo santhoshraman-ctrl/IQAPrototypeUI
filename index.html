@@ -57,14 +57,11 @@ body #connect-view:not(.wide){max-width:920px;width:100%;box-sizing:border-box;m
 /* SharePoint window: wider, with larger rows that are easy to click */
 body .modal{width:min(760px,calc(100vw - 32px));max-width:none}
 body .modal .modal-body{padding:20px 24px 24px}
-<<<<<<< HEAD
 /* The folder browser gets a much larger window so long file lists and their read-outs fit. */
 body .modal.browsing{width:min(1120px,calc(100vw - 48px));max-height:calc(100vh - 48px);display:flex;flex-direction:column}
 body .modal.browsing .modal-body{flex:1;min-height:0;overflow:auto}
 body .modal.browsing .browse-list{max-height:clamp(340px,calc(100vh - 340px),760px)}
 body .modal.browsing .browse-row .bs{font-size:13px}
-=======
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 body .modal .field input{min-height:44px;font-size:15px}
 .browse-bar{padding:4px 0 10px;border-bottom:1px solid var(--line,#DCE1E7);margin-bottom:6px}
 .browse-bar .iconbtn{width:36px;height:36px}
@@ -83,7 +80,6 @@ body #extract-panel{padding:0;overflow:hidden}
 .extract-toggle[aria-expanded="true"] .et-chev{transform:rotate(180deg)}
 #extract-content{padding:0 20px 16px;border-top:1px solid var(--line,#DCE1E7)}
 #extract-content .et-note{margin:12px 0 4px;font-size:13px;color:var(--ink-3,#6B7785)}
-<<<<<<< HEAD
 /* Profile menu must open above the progress steps */
 body .appbar-in{position:relative;z-index:40}
 body .user{position:relative}
@@ -562,8 +558,6 @@ html{scroll-behavior:smooth}
 .rv-actions{display:flex;align-items:center;justify-content:flex-end;gap:16px;margin-top:18px;flex-wrap:wrap}
 /* Hidden demo controls: revealed with Ctrl+Shift+D, 5 clicks on the logo, or ?demo=1 */
 body .demo-switch.is-hidden{display:none !important}
-=======
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 /* SharePoint folder browser */
 .browse-bar{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .browse-bar .iconbtn[disabled]{opacity:.35;cursor:default}
@@ -758,24 +752,8 @@ body .demo-switch.is-hidden{display:none !important}
         </div>
       </div>
       <fieldset id="intake-fields">
-<<<<<<< HEAD
         <form class="pane" id="pane-sp" aria-label="Add a SharePoint file link" novalidate>
           <p class="hint">Paste a sharing link from SharePoint (in SharePoint: <em>Share → Copy link</em>). Links have no size limit.</p>
-=======
-        <div class="pane" role="tabpanel" id="pane-pc" aria-labelledby="tab-pc">
-          <div class="drop" id="drop">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg>
-            <strong>Drag and drop files here</strong>
-            <span>You can drop several at once, of any file type. Each one goes to the matching box, or to Supporting documents.</span>
-            <button class="btn btn-primary" type="button" id="browse-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>Browse files…</button>
-            <small id="browse-types" style="color:var(--ink-3);font-size:13px"></small>
-          </div>
-          <div class="msg" id="pc-msg" role="status"></div>
-        </div>
-        <form class="pane" role="tabpanel" id="pane-sp" aria-labelledby="tab-sp" novalidate hidden>
-          <p class="hint">Paste a sharing link from SharePoint or OneDrive for Business (in SharePoint: <em>Share → Copy link</em>). Links have no size limit.</p>
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
           <div class="field">
             <label for="sp-url">SharePoint link</label>
             <div class="row">
@@ -979,12 +957,8 @@ body .demo-switch.is-hidden{display:none !important}
         <div id="sp-browse-list" class="browse-list" role="list"></div>
         <div class="browse-foot">
           <span class="browse-note" id="sp-folder-note" role="status"></span>
-<<<<<<< HEAD
           <span class="foot-actions"><button class="linkbtn" type="button" id="sp-recheck" hidden>Check folder again</button>
           <button class="btn btn-cta" type="button" id="sp-use-folder">Use this folder</button></span>
-=======
-          <button class="btn btn-cta" type="button" id="sp-use-folder">Use this folder</button>
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
         </div>
       </div>
     </div>
@@ -1062,11 +1036,7 @@ else USER.groups = (window.IQA_OKTA_GROUPS && window.IQA_OKTA_GROUPS.length) ? w
 const CAMPAIGN = {id:"CMP-4821", name:"Q4 Regional Auto"};
 /* Single-file boxes: one document each. `match` routes files to a box by their name. */
 const SLOTS = [
-<<<<<<< HEAD
   {key:"qasdf", title:"DV360 QA SDF",    required:true, accept:["csv","xlsx","xlsm","xlsb","xls"], match:/sdf|dv360|structured[\s_-]*data/i, full:"DV360 Structured Data File (QA export)"},
-=======
-  {key:"qasdf", title:"DV360 QA SDF",    required:false,  accept:["csv","xlsx","xlsm","xlsb","xls"], match:/sdf|dv360|structured[\s_-]*data/i, full:"DV360 Structured Data File (QA export)"},
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
   {key:"geo",   title:"Geo mapping doc", required:false, accept:["csv","xlsx","xlsm","xlsb","xls"], match:/geo|zip|dma|postal|mapping|region/i},
 ];
 /* Multi-file boxes. max: how many files the box holds (Infinity = no limit). accept: [] = any file type. */
@@ -1127,7 +1097,6 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
 function paintUser(){
   if(window.IQA_TRIAGE && IQA_TRIAGE.setActor) IQA_TRIAGE.setActor({name:USER.name, role:primaryRole()});
   $("#avatar").textContent = USER.name.split(/\s+/).map(p=>p[0]).slice(0,2).join("").toUpperCase();
-<<<<<<< HEAD
   $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(primaryRole())}${myRoles().length>1?` +${myRoles().length-1}`:""}</small>`;
   $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}<span class="role-chips">${myRoles().map(r=>`<span class="rchip">${esc(ROLES[r].label)}</span>`).join("")}</span>`;
 }
@@ -1135,13 +1104,6 @@ function paintUser(){
   paintUser();
   $("#limits-text").innerHTML = `<b>Files are read from your SharePoint folder.</b> Nothing is uploaded. Up to ${SP_RULES.maxFileMB} MB per file. Campaign Briefs takes as many files as you need; Supporting documents up to ${groupOf("extra").max}.`;
   $("#cs-name").textContent = campaign.name; $("#cs-id").textContent = campaign.id;
-=======
-  $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(USER.role)}</small>`;
-  $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}`;
-  $("#limits-text").innerHTML = `<b>No file size limit.</b> Campaign Briefs takes as many files as you need. Supporting documents takes up to ${groupOf("extra").max} files of any type.`;
-  $("#cs-name").textContent = campaign.name; $("#cs-id").textContent = campaign.id;
-  $("#browse-types").textContent = `Files are matched to a box by name · anything else goes to Supporting documents`;
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
   const btn=$("#user-btn"), menu=$("#user-menu");
   const close=()=>{ menu.hidden=true; btn.setAttribute("aria-expanded","false"); };
   btn.addEventListener("click",e=>{ e.stopPropagation(); const open=menu.hidden; menu.hidden=!open; btn.setAttribute("aria-expanded",open); });
@@ -1590,18 +1552,9 @@ $("#confirm-yes").addEventListener("click",()=>{ const p=pending; hideConfirm();
 $("#confirm-no").addEventListener("click",()=>{ hideConfirm(); toast("Kept the current file."); });
 function hideConfirm(){ pending=null; $("#confirm").hidden=true; }
 
-<<<<<<< HEAD
 /* Files can't be dropped or uploaded from a computer: documents come from the user's SharePoint folder. */
 $("#slots").addEventListener("dragover",e=>{ if(e.target.closest("[data-group],[data-slot]")) e.preventDefault(); });
 $("#slots").addEventListener("drop",e=>{ e.preventDefault(); e.stopPropagation(); toast("Uploading from your computer isn't available. Add the file to your SharePoint folder instead."); });
-=======
-/* Drop straight onto a card */
-$("#slots").addEventListener("dragover",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); document.querySelectorAll(".slot.dragover").forEach(x=>x!==c&&x.classList.remove("dragover")); c.classList.add("dragover"); });
-$("#slots").addEventListener("dragleave",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(c && !c.contains(e.relatedTarget)) c.classList.remove("dragover"); });
-$("#slots").addEventListener("drop",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); e.stopPropagation(); c.classList.remove("dragover");
-  if(!e.dataTransfer.files.length){ toast("Only files can be dropped here. For a SharePoint file, paste its link instead."); return; }
-  selectTab($("#tab-pc"),false); addFiles(e.dataTransfer.files,"upload",$("#pc-msg"),c.dataset.group?"grp:"+c.dataset.group:c.dataset.slot,false); });
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 
 function selectTab(){}  // the intake has a single SharePoint pane now
 
@@ -1766,11 +1719,7 @@ const DEMO_TREE = {
   folders: {
     "2026 Campaigns": { files: [], folders: {
       "Q3 2026 Display": { folders:{}, files: [
-<<<<<<< HEAD
         {name:"Q3_2026_Display_MediaPlan.pdf", size:862*1024, slot:"grp:briefs", camp:"Q3 2026 Display", cid:"CMP-4710"},
-=======
-        {name:"Q3_2026_Display_MediaPlan.pdf", size:862*1024, slot:"grp:briefs"},
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
         {name:"Budget_Tracker_Q3.xlsx", size:58*1024, slot:"grp:extra"},
         {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
         {name:"MAF_Signed.pdf", size:301*1024, slot:"grp:extra"},
@@ -1778,7 +1727,6 @@ const DEMO_TREE = {
         {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"grp:extra"},
         {name:"MediaPlan_OLD_v1.pdf", size:790*1024, skip:"An older version, already replaced"},
         {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
-<<<<<<< HEAD
       ], later:[
         /* Demo only: the QA SDF "appears" after the user adds it to SharePoint and taps Check again. */
         {name:"DV360_QA_SDF_Q3_2026.csv", size:33*1024, slot:"qasdf", camp:"Q3 2026 Display", cid:"CMP-4710", items:12},
@@ -1789,37 +1737,22 @@ const DEMO_TREE = {
         {name:"DV360_QA_SDF_LineItems.csv", size:36*1024, slot:"qasdf", camp:"Q4 Regional Auto", cid:"CMP-4821", items:7},
         {name:"DV360_QA_SDF_Q3_Display_Export.csv", size:33*1024, slot:"qasdf", camp:"Q3 2026 Display", cid:"CMP-4710", items:12},
         {name:"DV360_QA_SDF_Spring_Export.csv", size:31*1024, slot:"qasdf", camp:"Spring Auto 2025", cid:"CMP-3902", items:9},
-=======
-      ]},
-      "Q4 Regional Auto": { folders:{}, files: [
-        {name:"Q4_Regional_Auto_Media_Plan.xlsx", size:214*1024, slot:"grp:briefs"},
-        {name:"Q4_Regional_Auto_Creative_Brief.pdf", size:1240*1024, slot:"grp:briefs"},
-        {name:"DV360_QA_SDF_LineItems.csv", size:36*1024, slot:"qasdf"},
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
         {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
         {name:"Budget_Tracker_Q4.xlsx", size:58*1024, slot:"grp:extra"},
         {name:"MAF_Signed.pdf", size:301*1024, slot:"grp:extra"},
         {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"grp:extra"},
         {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"grp:extra"},
         {name:"MediaPlan_OLD_v1.xlsx", size:190*1024, skip:"An older version, already replaced"},
-<<<<<<< HEAD
         {name:"Historic_Delivery_Export_2025.csv", size:180*1024*1024, slot:"grp:extra"},
         {name:"Finance_Approvals.xlsx", size:76*1024, slot:"grp:extra", noaccess:true},
         {name:"~$Q4_Regional_Auto_Media_Plan.xlsx", size:1*1024, slot:"grp:briefs"},
-=======
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
         {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
       ]},
     }},
     "Archive": { files: [], folders: {
       "Spring_Auto_2025": { folders:{}, files: [
-<<<<<<< HEAD
         {name:"Spring_Auto_2025_Media_Plan.xlsx", size:198*1024, slot:"grp:briefs", camp:"Spring Auto 2025", cid:"CMP-3902"},
         {name:"DV360_QA_SDF_Spring_2025.csv", size:31*1024, slot:"qasdf", camp:"Spring Auto 2025", cid:"CMP-3902", items:9},
-=======
-        {name:"Spring_Auto_2025_Media_Plan.xlsx", size:198*1024, slot:"grp:briefs"},
-        {name:"DV360_QA_SDF_Spring_2025.csv", size:31*1024, slot:"qasdf"},
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
         {name:"Geo_Mapping_Spring.csv", size:10*1024, slot:"geo"},
       ]},
     }},
@@ -1831,7 +1764,6 @@ const DEMO_TREE = {
 };
 /* The folder the demo "Returning view" opens. Paths are folder names joined with "/". */
 const DEMO_DEFAULT_FOLDER = "2026 Campaigns/Q4 Regional Auto";
-<<<<<<< HEAD
 
 
 /* Why a file is not used, or null when it is fine. Checked before anything else. */
@@ -1899,8 +1831,6 @@ function applyCampaign(name){
   if(!c) return; campaign.name=c.name; if(c.id) campaign.id=c.id;
   $("#cs-name").textContent=campaign.name; $("#cs-id").textContent=campaign.id;
 }
-=======
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 const pathParts = p => (p||"").split("/").filter(Boolean);
 function nodeAt(path){ let n=DEMO_TREE; for(const part of pathParts(path)){ n=n.folders?.[part]; if(!n) return null; } return n; }
 /* Older saved connections stored only the folder name; find it anywhere in the tree. */
@@ -1956,11 +1886,7 @@ $("#sp-modal-connect").addEventListener("click", ()=>{
 });
 
 let currentFolder="";   // path of the folder being browsed ("" = site root)
-<<<<<<< HEAD
 function openFolderBrowser(path=""){ $("#sp-modal-backdrop .modal").classList.add("browsing"); $("#sp-step-link").hidden=true; $("#sp-step-browse").hidden=false; browseTo(resolvePath(path)); }
-=======
-function openFolderBrowser(path=""){ $("#sp-step-link").hidden=true; $("#sp-step-browse").hidden=false; browseTo(resolvePath(path)); }
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 function browseTo(path){
   const node=nodeAt(path) || DEMO_TREE; currentFolder=nodeAt(path)?path:"";
   const parts=pathParts(currentFolder);
@@ -1976,7 +1902,6 @@ function browseTo(path){
   $("#sp-browse-list").innerHTML =
     subs.map(([name,n])=>{ const p=currentFolder?currentFolder+"/"+name:name;
       return `<div class="browse-row folder" role="listitem button" tabindex="0" data-path="${esc(p)}" aria-label="Open folder ${esc(name)}">${folderSvg}<span>${esc(name)}</span><span class="b-meta">${countIn(n)}</span>${chev}</div>`; }).join("") +
-<<<<<<< HEAD
     files.map(f=>{ const d=describeFile(f), rs=ruleSkip(f), sub=rs?`<small class="bs skip">Skipped · ${esc(rs)}</small>`:`<small class="bs">${d.kind?`<b>${esc(d.kind)}</b> · `:""}${esc(d.help)}</small>`;
       return `<div class="browse-row file${rs?" is-skip":""}" role="listitem">${fileSvg}<div class="bf"><span class="bn">${esc(f.name)}</span>${sub}</div><span class="b-meta">${fmt(f.size)}</span></div>`; }).join("") +
     (!subs.length && !files.length ? `<div class="browse-empty">This folder is empty.</div>` : "");
@@ -1989,16 +1914,6 @@ function browseTo(path){
   $("#sp-folder-note").innerHTML = usable
     ? `${usable} campaign file${usable===1?"":"s"}${skippedN?`, ${skippedN} skipped`:""}` + (hasSdf?"":` · <span class="note-warn">No DV360 QA SDF yet</span>`)
     : esc(subs.length ? "No campaign files here. Open a folder to look inside." : "No campaign files in this folder.");
-=======
-    files.map(f=>`<div class="browse-row file" role="listitem">${fileSvg}<span>${esc(f.name)}</span><span class="b-meta">${fmt(f.size)}</span></div>`).join("") +
-    (!subs.length && !files.length ? `<div class="browse-empty">This folder is empty.</div>` : "");
-  const usable=files.filter(f=>f.slot).length, btn=$("#sp-use-folder");
-  btn.disabled = !usable;
-  btn.textContent = parts.length ? `Use “${folderName(currentFolder)}”` : "Use this folder";
-  $("#sp-folder-note").textContent = usable
-    ? `${usable} campaign file${usable===1?"":"s"} in this folder`
-    : subs.length ? "No campaign files here. Open a folder to look inside." : "No campaign files in this folder.";
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 }
 function openRow(el){ const p=el.dataset.path; if(p!=null) browseTo(p); }
 $("#sp-crumbs").addEventListener("click", e=>{ const b=e.target.closest("[data-path]"); if(b) browseTo(b.dataset.path); });
@@ -2008,7 +1923,6 @@ $("#sp-browse-list").addEventListener("keydown", e=>{
   const r=e.target.closest(".browse-row.folder");
   if(r && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); openRow(r); $("#sp-browse-list .browse-row")?.focus(); }
   if(e.key==="Backspace" && pathParts(currentFolder).length){ e.preventDefault(); $("#sp-up").click(); }
-<<<<<<< HEAD
 });
 /* Re-read the folder. Demo: files waiting in node.later "arrive" as if the user had just added them to SharePoint. */
 $("#sp-recheck").addEventListener("click", e=>{
@@ -2019,17 +1933,11 @@ $("#sp-recheck").addEventListener("click", e=>{
     else toast("No new files yet. Add the file to your SharePoint folder, then check again.");
     browseTo(currentFolder);
   }, 900);
-=======
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 });
 $("#sp-use-folder").addEventListener("click", ()=>{
   if($("#sp-use-folder").disabled) return;
   closeSpModal();
-<<<<<<< HEAD
   connStore.set({site:DEMO_SITE, folder:currentFolder, url:DEMO_LINK, connectedAt:Date.now(), lastUsedAt:Date.now()});
-=======
-  connStore.set({site:DEMO_SITE, folder:currentFolder, url:DEMO_LINK});
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
   runIngestion(currentFolder);
 });
 
@@ -2038,14 +1946,10 @@ function runIngestion(folder){
   showConnectState("connect-reading");
   folder = resolvePath(folder);
   const files = (nodeAt(folder)?.files) || [];
-<<<<<<< HEAD
   setTimeout(()=>{
     foundCtx={folder, choice:defaultChoice(files,folder,connStore.get()?.campaign), confirmed:false};
     $("#found-where").innerHTML=`From <b>${esc(pathLabel(folder))}</b> on SharePoint`;
     renderFound(files); showConnectState("connect-found"); }, 1200);
-=======
-  setTimeout(()=>{ $("#found-where").innerHTML=`From <b>${esc(pathLabel(folder))}</b> on SharePoint`; renderFound(files); showConnectState("connect-found"); }, 1200);
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 }
 const tickSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4 4 10-10"/></svg>`;
 const nudgeSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>`;
@@ -2060,16 +1964,10 @@ function renderFound(files){
     <div class="fact"><span class="ic">${ic.found}</span><div><span>Files found</span><b>${files.length}</b></div></div>
     <div class="fact ok"><span class="ic">${ic.ok}</span><div><span>Ready to use</span><b>${ready.length}</b></div></div>
     <div class="fact skip"><span class="ic">${ic.skip}</span><div><span>Skipped</span><b>${skipped.length}</b></div></div>`;
-<<<<<<< HEAD
   $("#found-list").innerHTML = rows.map(({f,ok,reason})=>{ const d=describeFile(f);
     return `<tr class="${ok?"":"is-skip"}">
       <td><div class="fcell">${fileSvg}<div class="fname2"><span class="fn" title="${esc(f.name)}">${esc(f.name)}</span>${ok&&d.kind?`<small class="fsub"><b>${esc(d.kind)}</b> · ${esc(d.help)}</small>`:""}</div></div></td>
       <td>${ok?esc(boxTitle(f.slot.replace(/^grp:/,""))||"—"):"—"}</td>
-=======
-  $("#found-list").innerHTML = files.map(f=>`<tr class="${f.slot?"":"is-skip"}">
-      <td><div class="fcell">${fileSvg}<span title="${esc(f.name)}">${esc(f.name)}</span></div></td>
-      <td>${f.slot?esc(boxTitle(f.slot.replace(/^grp:/,""))||"—"):"—"}</td>
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
       <td class="num">${fmt(f.size)}</td>
       <td><span class="pill ${ok?"ok":"miss"}">${ok?"Ready":"Skipped"}</span>${ok?"":`<span class="why">${esc(reason)}</span>`}</td>
     </tr>`; }).join("");
@@ -2112,7 +2010,6 @@ function renderFound(files){
   $("#connect-continue-btn").disabled = ready.length===0 || missing.length>0 || needConfirm;
   $("#found-hint").textContent = missing.length ? `Add the ${missing.join(" and the ")} to continue` : needConfirm ? "Confirm the campaign to continue" : "";
 }
-<<<<<<< HEAD
 $("#connect-found").addEventListener("change", e=>{ if(e.target.name==="cand"){ foundCtx.choice=e.target.value; foundCtx.confirmed=false; renderFound(foundFiles); } });
 $("#connect-found").addEventListener("click", e=>{
   const id=e.target.closest("button")?.id;
@@ -2131,14 +2028,6 @@ $("#connect-found").addEventListener("click", e=>{
       else { toast("No new files yet. Add the file to your SharePoint folder, then check again."); renderFound(foundFiles); }
     }, 900);
   }
-=======
-$("#connect-back-btn").addEventListener("click", ()=>{ const c=connStore.get(); openSpModal(); openFolderBrowser(c ? pathParts(resolvePath(c.folder)).slice(0,-1).join("/") : ""); });
-$("#connect-continue-btn").addEventListener("click", ()=>{
-  const ready=foundFiles.filter(f=>f.slot);
-  ready.forEach(f=>place(f.slot, {name:f.name, size:f.size, source:"sharepoint"}, {skipConfirm:true}));
-  revealDocsArea();
-  toast(`${ready.length} document${ready.length===1?"":"s"} added from SharePoint.`);
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
 });
 $("#connect-back-btn").addEventListener("click", ()=>{ const c=connStore.get(); openSpModal(); openFolderBrowser(c ? pathParts(resolvePath(c.folder)).slice(0,-1).join("/") : ""); });
 function finishIngest(quiet){
@@ -2184,11 +2073,7 @@ function renderReturning(c){
 function initConnect(){
   if(!can("connect")){ showConnectState("connect-welcome"); return; }   // view-only roles never see a connected location
   const c=connStore.get();
-<<<<<<< HEAD
   if(c){ renderReturning(c); showConnectState("connect-returning"); }
-=======
-  if(c){ $("#connected-name").textContent = pathLabel(resolvePath(c.folder)); showConnectState("connect-returning"); }
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
   else showConnectState("connect-welcome");
 }
 function touchConnection(){ const c=connStore.get(); if(c) connStore.set({...c, lastUsedAt:Date.now()}); }
@@ -2325,11 +2210,7 @@ applyAccess();
   box.addEventListener("click", e=>{
     const b = e.target.closest("button[data-mode]"); if(!b) return;
     if(b.dataset.mode==="new") connStore.clear();
-<<<<<<< HEAD
     else connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK, connectedAt:Date.now()-2*864e5, lastUsedAt:Date.now()-26*36e5});
-=======
-    else connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK});
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
     sessionStorage.removeItem("iqa_intake_state");
     if(b.dataset.mode==="new" && window.IQA_TRIAGE) IQA_TRIAGE.clearAll();   // returning view keeps the saved triage + audit log
     location.href = location.pathname;          // reload so the whole screen starts clean
@@ -2350,11 +2231,7 @@ const issueIds = () => ISSUES.map((_,i)=>"iss-"+i);
 const issueTally = () => IQA_TRIAGE.counts(issueIds());
 
 function stepSub(i){
-<<<<<<< HEAD
   if(i===1){ const c=connStore.get(); return c ? folderName(resolvePath(c.folder)) : "Link your files"; }
-=======
-  if(i===1){ const c=connStore.get(); return c ? folderName(resolvePath(c.folder)) : (flow.reached>=2 ? "From your computer" : "Link your files"); }
->>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
   if(i===2){ const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length; return n ? `${n} document${n===1?"":"s"}` : "Add documents"; }
   if(i===3){ if(!flow.checked) return "Run the checks"; const t=issueTally(); return t.open ? `${t.open} open` : "All resolved"; }
   if(!flow.checked) return "After the checks";
