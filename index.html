@@ -9,6 +9,94 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/compare.css">
+<style>
+/* Multi-file boxes (Campaign Briefs, Supporting documents).
+   They look like the single-file boxes; the file list opens as a dropdown so the boxes stay the same size. */
+body .slots{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1100px){body .slots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){body .slots{grid-template-columns:1fr}}
+.slot.group{position:relative}
+.slot.group.popup-open{z-index:20}
+.grp-toggle{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;max-width:100%;cursor:pointer;font-size:14px;color:var(--ink,#18212B);border-radius:6px;padding:2px 0}
+.grp-toggle:hover .grp-toggle-txt{text-decoration:underline}
+.grp-toggle:focus-visible{outline:2px solid var(--accent,#1F4583);outline-offset:2px}
+.grp-toggle svg{width:16px;height:16px;flex:none;transition:transform .15s}
+.grp-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.grp-pop{position:absolute;left:-1px;top:calc(100% + 6px);width:max(100%,480px);max-width:calc(100vw - 32px);box-sizing:border-box;background:var(--surface,#fff);border:1px solid var(--line,#DCE1E7);border-radius:10px;box-shadow:0 8px 24px rgba(24,33,43,.14);padding:6px;display:grid;gap:2px;max-height:min(420px,60vh);overflow:auto}
+.slot.group[data-group="extra"] .grp-pop{left:auto;right:-1px}
+@media (max-width:1100px){.slot.group .grp-pop{left:-1px;right:auto}.slots > .slot.group:nth-child(4) .grp-pop{left:auto;right:-1px}}
+.grp-pop .gi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 12px;border-radius:8px}
+.grp-pop .gi:hover{background:var(--sunken,#F4F6F8)}
+.grp-pop .gi-name{font-size:14px;font-weight:500;min-width:0;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+.grp-pop .gi-meta{font-size:12px;color:var(--ink-3,#6B7785);display:flex;align-items:center;gap:8px;min-width:0}
+.grp-pop .gi-meta .ok{color:var(--ok,#276B43)}
+.grp-pop .gi-meta .bad{color:var(--bad,#B42318)}
+.grp-pop .gi-acts{grid-row:1 / span 2;grid-column:2;display:flex;align-items:center;gap:6px}
+.grp-pop .move{font:inherit;font-size:13px;width:200px;flex:none;box-sizing:border-box;padding:2px 4px;border:1px solid var(--line,#DCE1E7);border-radius:6px;background:transparent;color:inherit}
+.grp-pop .gi .track{height:3px;margin-top:4px;grid-column:1}
+.grp-pop .gi-err{grid-column:1;font-size:12px;color:var(--bad,#B42318)}
+@media (max-width:600px){body .slots > .slot.group:nth-child(n) .grp-pop{left:-1px;right:-1px;width:auto}.grp-pop .gi{grid-template-columns:1fr}.grp-pop .gi-acts{grid-row:auto;grid-column:1}}
+/* ---------- Wider layout: use more of the screen on desktop ---------- */
+body main,
+body .appbar-in,
+body .stepper-in{max-width:1440px;width:100%;box-sizing:border-box;margin-left:auto;margin-right:auto}
+body main{padding-left:32px;padding-right:32px}
+body .appbar-in,body .stepper-in{padding-left:32px;padding-right:32px}
+/* progress steps spread across the bar, with room for their full captions */
+body .stepper-in{display:flex;justify-content:space-between}
+body .stepper-in .step{flex:1 1 0}
+body .stepper-in .step:last-child{flex:0 0 auto}
+body .stepper-in .step-line{flex:1 1 auto}
+body .stepper .step-sub,body .stepper .step-name{max-width:none;overflow:visible;text-overflow:clip;white-space:nowrap}
+/* welcome / connect card */
+body #connect-view:not(.wide){max-width:920px;width:100%;box-sizing:border-box;margin-left:auto;margin-right:auto}
+@media (max-width:720px){
+  body main,body .appbar-in,body .stepper-in{padding-left:16px;padding-right:16px}
+  body .stepper-in{overflow-x:auto}
+}
+/* SharePoint window: wider, with larger rows that are easy to click */
+body .modal{width:min(760px,calc(100vw - 32px));max-width:none}
+body .modal .modal-body{padding:20px 24px 24px}
+body .modal .field input{min-height:44px;font-size:15px}
+.browse-bar{padding:4px 0 10px;border-bottom:1px solid var(--line,#DCE1E7);margin-bottom:6px}
+.browse-bar .iconbtn{width:36px;height:36px}
+.crumbs{font-size:14px}
+.crumbs button,.crumbs .here{padding:6px 6px}
+/* Collapsible "Extracted campaign details" tile */
+body #extract-panel{padding:0;overflow:hidden}
+.extract-toggle{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer}
+.extract-toggle:hover{background:var(--sunken,#F4F6F8)}
+.extract-toggle:focus-visible{outline:2px solid var(--accent,#1F4583);outline-offset:-2px}
+.extract-toggle .et-main{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;flex:1;min-width:0}
+.extract-toggle .et-title{font-size:16px;font-weight:600;color:var(--ink,#18212B)}
+.extract-toggle .et-sum{font-size:13px;color:var(--ink-3,#6B7785)}
+.extract-toggle .et-hint{font-size:13px;font-weight:600;color:var(--accent,#1F4583)}
+.extract-toggle .et-chev{width:18px;height:18px;flex:none;color:var(--ink-3,#6B7785);transition:transform .15s}
+.extract-toggle[aria-expanded="true"] .et-chev{transform:rotate(180deg)}
+#extract-content{padding:0 20px 16px;border-top:1px solid var(--line,#DCE1E7)}
+#extract-content .et-note{margin:12px 0 4px;font-size:13px;color:var(--ink-3,#6B7785)}
+/* SharePoint folder browser */
+.browse-bar{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.browse-bar .iconbtn[disabled]{opacity:.35;cursor:default}
+.crumbs{display:flex;align-items:center;flex-wrap:wrap;gap:2px;font-size:13px;min-width:0}
+.crumbs button{all:unset;cursor:pointer;color:var(--accent,#1F4583);font-weight:500;padding:2px 4px;border-radius:4px}
+.crumbs button:hover{text-decoration:underline}
+.crumbs button:focus-visible{outline:2px solid var(--accent,#1F4583)}
+.crumbs .sep{color:var(--ink-3,#6B7785);padding:0 2px}
+.crumbs .here{font-weight:600;padding:2px 4px}
+.browse-list{max-height:min(460px,55vh);overflow:auto;margin:0 -8px}
+.browse-list .browse-row{display:flex;align-items:center;gap:12px;min-height:48px;padding:10px 14px;border-radius:8px;font-size:15px;box-sizing:border-box}
+.browse-list .browse-row:hover{background:var(--sunken,#F4F6F8)}
+.browse-list .browse-row > svg:first-child{width:20px;height:20px;flex:none}
+.browse-list .browse-row > span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.browse-row.folder{cursor:pointer}
+.browse-row.folder:focus-visible{outline:2px solid var(--accent,#1F4583);outline-offset:-2px}
+.browse-row .b-meta{margin-left:auto;font-size:13px;color:var(--ink-3,#6B7785);white-space:nowrap}
+.browse-row.folder .chev{width:16px;height:16px;color:var(--ink-3,#6B7785)}
+.browse-row.file{cursor:default;color:var(--ink-2,#5A6675)}
+.browse-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line,#DCE1E7);flex-wrap:wrap}
+.browse-note{font-size:13px;color:var(--ink-3,#6B7785)}
+</style>
 </head>
 <body>
 <!-- ============ App bar ============ -->
@@ -98,7 +186,7 @@
         </div>
         <div class="found-actions">
           <button class="linkbtn" type="button" id="connect-back-btn">Choose a different folder</button>
-          <button class="btn btn-cta" type="button" id="connect-continue-btn">Looks good, continue</button>
+          <button class="btn btn-cta" type="button" id="connect-continue-btn">Continue</button>
         </div>
       </div>
       <div class="found-stats" id="found-summary"></div>
@@ -127,22 +215,18 @@
         <section aria-label="Documents" class="slots" id="slots"></section>
 
     <section class="panel" id="extract-panel" aria-label="Extracted campaign details">
-      <div class="extract-head">
-        <h2>Extracted campaign details</h2>
-        <span>Grouped by the document each row was pulled from. Review before continuing.</span>
+      <button type="button" class="extract-toggle" id="extract-toggle" aria-expanded="false" aria-controls="extract-content">
+        <span class="et-main"><span class="et-title">Extracted campaign details</span><span class="et-sum" id="extract-summary"></span></span>
+        <span class="et-hint" id="extract-hint">Show</span>
+        <svg class="et-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div id="extract-content" hidden>
+        <p class="et-note">Grouped by the document each row was pulled from. Review before continuing.</p>
+        <div class="extract-tbl tbl-wrap"><table>
+          <thead><tr><th>Campaign name</th><th>Insertion order</th><th>Line item</th><th></th></tr></thead>
+          <tbody id="extract-body"></tbody>
+        </table></div>
       </div>
-      <div class="extract-tbl tbl-wrap"><table>
-        <thead><tr><th>Line item</th><th>Insertion order</th><th>Campaign name</th><th></th></tr></thead>
-        <tbody id="extract-body"></tbody>
-      </table></div>
-    </section>
-
-    <section class="panel" id="extra-panel" hidden aria-label="Additional documents">
-      <div class="extra-head">
-        <h2>Additional documents</h2>
-        <span>Anything that isn't one of the documents above</span>
-      </div>
-      <div class="xlist" id="extra-list"></div>
     </section>
 
     <section class="panel intake" id="intake" aria-label="Add documents">
@@ -164,7 +248,7 @@
           <div class="drop" id="drop">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg>
             <strong>Drag and drop files here</strong>
-            <span>You can drop several at once, of any file type. Each one goes to the matching document, or to Additional documents.</span>
+            <span>You can drop several at once, of any file type. Each one goes to the matching box, or to Supporting documents.</span>
             <button class="btn btn-primary" type="button" id="browse-btn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>Browse files…</button>
             <small id="browse-types" style="color:var(--ink-3);font-size:13px"></small>
@@ -264,10 +348,14 @@
         </div>
       </div>
       <div id="sp-step-browse" hidden>
-        <div class="crumbs" id="sp-crumbs"></div>
-        <div id="sp-browse-list"></div>
-        <div class="row" style="justify-content:flex-end">
-          <button class="btn btn-cta" type="button" id="sp-use-folder" hidden>Use this folder</button>
+        <div class="browse-bar">
+          <button class="iconbtn" type="button" id="sp-up" aria-label="Back to the parent folder" title="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <nav class="crumbs" id="sp-crumbs" aria-label="Folder path"></nav>
+        </div>
+        <div id="sp-browse-list" class="browse-list" role="list"></div>
+        <div class="browse-foot">
+          <span class="browse-note" id="sp-folder-note" role="status"></span>
+          <button class="btn btn-cta" type="button" id="sp-use-folder">Use this folder</button>
         </div>
       </div>
     </div>
@@ -299,23 +387,24 @@ const CONFIG = {
 const USER = {name:"Alex Morgan", email:"alex.morgan@company.com", role:"Campaign Manager"};
 /* The campaign these documents belong to. Set it from your app (URL, session or campaign API). */
 const CAMPAIGN = {id:"CMP-4821", name:"Q4 Regional Auto"};
-/* One card per document. `match` routes files by name when several documents take the same type. */
+/* Single-file boxes: one document each. `match` routes files to a box by their name. */
 const SLOTS = [
-  {key:"mediaplan", title:"Media Plan",   required:true,  accept:["pdf","doc","docx","ppt","pptx","xlsx","xlsm","xlsb","xls"], match:/media[\s_-]*plan|\bbrief\b/i},
-  {key:"budget",    title:"Budget tracker", required:false, accept:["xlsx","xlsm","xlsb","xls","csv"],                          match:/budget|spend|cost|tracker/i},
-  {key:"geo",       title:"Geo mapping doc", required:false, accept:["csv","xlsx","xlsm","xlsb","xls"],                         match:/geo|zip|dma|postal|map|region/i},
-  {key:"maf",       title:"MAF",           required:false, accept:["pdf","doc","docx"],                          match:/maf|authori[sz]ation/i, full:"Media Authorization Form"},
-  {key:"tsheet",    title:"T-Sheet",       required:false, accept:["xlsx","xlsm","xlsb","xls","csv","pdf"],                    match:/\bt[\s_-]?sheets?\b|tsheet|traffic/i, full:"Traffic Sheet"},
-  {key:"tag",       title:"Tag Sheet",     required:false, accept:["xlsx","xlsm","xlsb","xls","csv","pdf","doc","docx"],       match:/tag[\s_-]?sheet/i},
+  {key:"qasdf", title:"DV360 QA SDF",    required:false,  accept:["csv","xlsx","xlsm","xlsb","xls"], match:/sdf|dv360|structured[\s_-]*data/i, full:"DV360 Structured Data File (QA export)"},
+  {key:"geo",   title:"Geo mapping doc", required:false, accept:["csv","xlsx","xlsm","xlsb","xls"], match:/geo|zip|dma|postal|mapping|region/i},
 ];
-/* Mock line items per document, used only to simulate the extraction preview below. */
+/* Multi-file boxes. max: how many files the box holds (Infinity = no limit). accept: [] = any file type. */
+const GROUPS = [
+  {key:"briefs", title:"Campaign Briefs", required:true, max:Infinity, accept:["pdf","doc","docx","ppt","pptx","xlsx","xlsm","xlsb","xls"], match:/brief|media[\s_-]*plan/i},
+  {key:"extra",  title:"Supporting documents", full:"Additional supporting documents", required:false, max:7, accept:[]},
+];
+/* The order the four boxes appear on the page. */
+const BOX_ORDER = ["briefs","qasdf","geo","extra"];
+/* Mock line items per box, used only to simulate the extraction preview below. */
 const LINE_ITEM_POOL = {
-  mediaplan: ["Display – Prospecting","Video – Retargeting"],
-  budget:    ["Paid Social – Awareness"],
-  geo:       ["Local Search – Tier 1 DMAs"],
-  maf:       ["Connected TV – Launch"],
-  tsheet:    ["Traffic Instructions – All Placements"],
-  tag:       ["Ad Tags – Trafficking"],
+  briefs: ["Display – Prospecting","Video – Retargeting"],
+  qasdf:  ["Display – Prospecting","Video – Retargeting"],
+  geo:    ["Local Search – Tier 1 DMAs"],
+  extra:  [],
 };
 const STEPS = ["Upload","Review","Adjudicate","Summary"];
 
@@ -327,7 +416,11 @@ const fmt = b => b==null?"-":b<1024?b+" B":b<1048576?Math.max(1,Math.round(b/102
 const allSlots = () => SLOTS.concat(extraSlots);
 const slotOf = k => allSlots().find(s=>s.key===k);
 const typeList = s => s.accept.map(a=>a.toUpperCase()).join(", ");
-const ALL_EXT = [...new Set(SLOTS.flatMap(s=>s.accept))];
+const ALL_EXT = [...new Set(SLOTS.concat(GROUPS).flatMap(s=>s.accept))];
+const groupOf = k => GROUPS.find(g=>g.key===k);
+const groupItems = g => extraSlots.filter(s=>s.group===g);
+const groupFull = g => groupItems(g).length >= groupOf(g).max;
+const boxTitle = k => (groupOf(k)||slotOf(k))?.title || "";
 const SRC = {sharepoint:"SharePoint", upload:"Uploaded", attach:"Attached"};
 const LINK_KIND = {w:["docx","Word document"], x:["xlsx","Excel workbook"], p:["pptx","PowerPoint deck"], b:["pdf","PDF"], t:["txt","text file"], f:[null,"folder"], v:[null,"video"], i:[null,"image"], u:[null,"web page"]};
 const ACTIVE = ["checking","uploading","scanning","paused"];
@@ -342,7 +435,7 @@ let decisions = {};   // slot key → {serverId, decision, comment}
 let result = null;
 const campaign = CAMPAIGN;
 const handles = {};
-let extraSlots = [], extraSeq = 0;      // documents added beyond the named cards
+let extraSlots = [], extraSeq = 0;      // files in the multi-file boxes; each has .group ("briefs" or "extra")
 let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaign name preview rows
 
 /* ============================ auth gate ============================ */
@@ -358,9 +451,9 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
   $("#avatar").textContent = USER.name.split(/\s+/).map(p=>p[0]).slice(0,2).join("").toUpperCase();
   $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(USER.role)}</small>`;
   $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}`;
-  $("#limits-text").innerHTML = `<b>No file size limit.</b> PDF, Word, PowerPoint, Excel and CSV are matched to a document automatically. Any other file type is welcome too, as an additional document.`;
+  $("#limits-text").innerHTML = `<b>No file size limit.</b> Campaign Briefs takes as many files as you need. Supporting documents takes up to ${groupOf("extra").max} files of any type.`;
   $("#cs-name").textContent = campaign.name; $("#cs-id").textContent = campaign.id;
-  $("#browse-types").textContent = `${ALL_EXT.map(a=>a.toUpperCase()).join(", ")} match automatically · any other file type is added as an additional document`;
+  $("#browse-types").textContent = `Files are matched to a box by name · anything else goes to Supporting documents`;
   const btn=$("#user-btn"), menu=$("#user-menu");
   const close=()=>{ menu.hidden=true; btn.setAttribute("aria-expanded","false"); };
   btn.addEventListener("click",e=>{ e.stopPropagation(); const open=menu.hidden; menu.hidden=!open; btn.setAttribute("aria-expanded",open); });
@@ -370,7 +463,7 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
     if(Object.values(docs).some(d=>ACTIVE.includes(d.status))){ toast("Finish or cancel uploads in progress before signing out."); return; }
     sessionStorage.removeItem("iqa_auth");
     location.href = CONFIG.signInUrl; });
-  $("#help-btn").addEventListener("click",()=>toast("Add files of any type or size. Matching types go straight to a document; anything else is added as an additional document."));
+  $("#help-btn").addEventListener("click",()=>toast("Files are matched to a box by their name. Anything that doesn't match goes to Supporting documents (up to 7 files)."));
 })();
 
 /* Review happens in a separate system; this page only handles upload. */
@@ -404,7 +497,13 @@ function cardParts(d, s){
   }
 }
 function renderSlots(){
-  $("#slots").innerHTML = SLOTS.map(s=>{
+  $("#slots").innerHTML = BOX_ORDER.map(k=>groupOf(k)?groupCard(groupOf(k)):singleCard(slotOf(k))).join("");
+  renderCount();
+  renderTodo();
+  syncExtraction();
+}
+function singleCard(s){
+  {
     const d=docs[s.key], c=cardParts(d,s), inflight=d&&ACTIVE.includes(d.status);
     const xLabel = inflight?`Cancel ${s.title} upload`:`Remove ${s.title} file`;
     const empty=!d;
@@ -419,32 +518,55 @@ function renderSlots(){
       <div>${d&&d.status==="error"?`<div class="slot-err">${esc(d.error)}</div>`:""}</div>
       <div class="slot-foot">${c.bar}<div class="slot-meta">${c.st}</div></div>
     </div>`;
-  }).join("");
-  renderExtraList();
-  renderCount();
-  renderTodo();
-  syncExtraction();
+  }
 }
 function renderCount(){
   const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length, el=$("#doc-count");
   el.hidden = n===0; el.textContent = `${n} document${n===1?"":"s"} uploaded`;
   $("#cs-doc-count").textContent = n;
 }
-function renderExtraList(){
-  $("#extra-panel").hidden = extraSlots.length===0;
-  $("#extra-list").innerHTML = extraSlots.map(s=>{
-    const d=docs[s.key]; if(!d) return "";
-    const c=cardParts(d,s), inflight=ACTIVE.includes(d.status);
-    return `<div class="xrow${d.status==="error"?" is-error":""}" data-slot="${s.key}">
-      <div class="xrow-main">
-        <span class="fname" title="${esc(d.name)}">${esc(d.name)}</span>
-        <span class="xrow-acts">${d.status==="ready"?moveSelect(s.key,d):""}
-        <button type="button" class="xbtn" data-act="${inflight?"cancel":"remove"}" aria-label="${inflight?"Cancel":"Remove"} ${esc(d.name)}" title="${inflight?"Cancel upload":"Remove"}">${X}</button></span>
-      </div>
-      ${d.status==="error"?`<div class="slot-err">${esc(d.error)}</div>`:""}
-      <div class="slot-foot">${c.bar}<div class="slot-meta">${c.st}</div></div>
+let openGroup=null;   // which multi-file box has its file list open
+const chevron=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>`;
+function groupCard(g){
+  const items=groupItems(g.key).filter(s=>docs[s.key]), full=groupFull(g.key), n=items.length;
+  const ds=items.map(s=>docs[s.key]);
+  const busy=ds.filter(d=>ACTIVE.includes(d.status)).length, bad=ds.filter(d=>d.status==="error").length;
+  const size=ds.reduce((t,d)=>t+(d.size||0),0);
+  const open=openGroup===g.key && n>0;
+  const limit = g.max===Infinity ? "" : ` of ${g.max}`;
+  const addBtn = full ? `<span class="st">Limit reached</span>` : `<button type="button" class="act" data-add-group="${g.key}">Add files</button>`;
+  let bar, st;
+  if(!n){ bar=`<div class="track"><i></i></div>`; st=`<span class="add">+ Add files</span>`; }
+  else if(bad){ bar=`<div class="track"><i class="bad"></i></div>`; st=`<span class="st warn">${bad} need${bad===1?"s":""} attention</span>${addBtn}`; }
+  else if(busy){ bar=`<div class="track indet"><i></i></div>`; st=`<span class="st">Uploading ${busy}…</span>${addBtn}`; }
+  else { bar=`<div class="track"><i class="done" style="width:100%"></i></div>`; st=`<span class="st ok">${size?fmt(size):"Links"}</span>${addBtn}`; }
+  const hint = g.accept.length ? g.accept.slice(0,3).map(a=>a.toUpperCase()).join(" · ") : "Any file type";
+  const line = n
+    ? `<button type="button" class="grp-toggle" data-toggle-group="${g.key}" aria-expanded="${open}" aria-controls="pop-${g.key}"><span class="grp-toggle-txt">${n}${limit} file${n===1&&!limit?"":"s"}</span>${chevron}</button>`
+    : esc(hint)+(g.max===Infinity?" · multiple files":` · up to ${g.max} files`);
+  const rows = open ? items.map(s=>{
+    const d=docs[s.key], inflight=ACTIVE.includes(d.status);
+    const state = d.status==="ready" ? `<span class="ok">${d.size?fmt(d.size):"Link"}</span>`
+      : d.status==="error" ? `<span class="bad">Problem</span>`
+      : d.status==="paused" ? `<span>Paused</span>`
+      : d.status==="uploading" ? `<span class="st">${Math.floor(d.progress)}%</span>` : `<span class="st">${d.status==="scanning"?"Scanning…":"Checking…"}</span>`;
+    return `<div class="gi" data-slot="${s.key}">
+      <span class="gi-name" title="${esc(d.name)}">${esc(d.name)}</span>
+      <span class="gi-acts">${d.status==="ready"?moveSelect(s.key,d):""}${d.status==="error"&&d.retryable?`<button type="button" class="act" data-act="retry">Retry</button>`:""}<button type="button" class="xbtn" data-act="${inflight?"cancel":"remove"}" aria-label="${inflight?"Cancel":"Remove"} ${esc(d.name)}" title="${inflight?"Cancel upload":"Remove"}">${X}</button></span>
+      <span class="gi-meta slot-meta">${state}</span>
+      ${d.status==="uploading"?`<div class="track"><i style="width:${Math.floor(d.progress)}%"></i></div>`:""}
+      ${d.status==="error"?`<span class="gi-err">${esc(d.error)}</span>`:""}
     </div>`;
-  }).join("");
+  }).join("") : "";
+  return `<div class="slot group${n?"":" empty"}${bad?" is-error":""}${open?" popup-open":""}" data-group="${g.key}"
+      ${n?`role="group" aria-label="${esc(g.title)}"`:`role="button" tabindex="0" data-add-group="${g.key}" aria-label="${esc(g.title)}, ${g.required?"mandatory":"optional"}, no files. Add files"`}>
+    <div class="slot-top"><span class="slot-title" title="${esc(g.full||g.title)}: ${esc(g.accept.length?typeList(g):"any file type")}">${esc(g.title)}</span></div>
+    <span class="badge sm ${g.required?"man":"opt"}">${g.required?"Mandatory":"Optional"}</span>
+    <div class="fname ${n?"":"none"}">${line}</div>
+    <div></div>
+    <div class="slot-foot">${bar}<div class="slot-meta">${st}</div></div>
+    ${open?`<div class="grp-pop" id="pop-${g.key}" role="region" aria-label="${esc(g.title)} files">${rows}</div>`:""}
+  </div>`;
 }
 function paintProgress(key){
   const d=docs[key], card=document.querySelector(`[data-slot="${key}"]`); if(!d||!card) return;
@@ -452,12 +574,15 @@ function paintProgress(key){
   if(d.status==="uploading" && bar && !card.querySelector(".indet")){ const p=Math.floor(d.progress); bar.style.width=p+"%"; st.textContent=`${p}%`; }
   else renderSlots();
 }
-function flash(key){ const c=document.querySelector(`[data-slot="${key}"]`); if(!c) return; c.scrollIntoView({block:"nearest"}); c.classList.add("flash"); setTimeout(()=>c.classList.remove("flash"),1400); }
+function flash(key){
+  const grp=slotOf(key)?.group; if(grp && openGroup!==grp){ openGroup=grp; renderSlots(); }
+  const c=document.querySelector(`[data-slot="${key}"]`); if(!c) return; c.scrollIntoView({block:"nearest"}); c.classList.add("flash"); setTimeout(()=>c.classList.remove("flash"),1400); }
 
 /* The to-do line next to Review: every item is actionable. */
 function blockers(){
   const r=[], list=Object.entries(docs);
-  SLOTS.filter(s=>s.required && docs[s.key]?.status!=="ready" && !ACTIVE.includes(docs[s.key]?.status)).forEach(s=>r.push({text:`Add the ${s.title.toLowerCase()}`, act:()=>{ pickFor(s.key); }}));
+  GROUPS.filter(g=>g.required && !groupItems(g.key).some(s=>["ready",...ACTIVE].includes(docs[s.key]?.status))).forEach(g=>r.push({text:`Add at least one file to ${g.title}`, act:()=>{ pickFor("grp:"+g.key); }}));
+  SLOTS.filter(s=>s.required && docs[s.key]?.status!=="ready" && !ACTIVE.includes(docs[s.key]?.status)).forEach(s=>r.push({text:`Add the ${s.title}`, act:()=>{ pickFor(s.key); }}));
   const busy=list.filter(([,d])=>ACTIVE.includes(d.status));
   if(busy.length) r.push({text:`${busy.length} upload${busy.length>1?"s":""} in progress`});
   const errs=list.filter(([,d])=>d.status==="error");
@@ -474,9 +599,10 @@ function renderTodo(){
     el.innerHTML = warnIc + `<span>To continue:</span>` + r.map((x,i)=>(i?`<span class="sep">·</span>`:"")+(x.act?`<button type="button" class="linkbtn" data-todo="${i}">${esc(x.text)}</button>`:`<span>${esc(x.text)}</span>`)).join("");
     el.querySelectorAll("[data-todo]").forEach(b=>b.addEventListener("click",()=>r[+b.dataset.todo].act()));
   } else {
-    const n=SLOTS.filter(s=>docs[s.key]?.status==="ready").length;
-    const xn=extraSlots.filter(s=>docs[s.key]?.status==="ready").length;
-    el.className="todo ok"; el.innerHTML = okIc + `<span>${n} of ${SLOTS.length} documents ready${n<SLOTS.length?". Optional documents can be left out.":"."}${xn?` · ${xn} additional document${xn>1?"s":""} added`:""}</span>`;
+    const readyIn = g => groupItems(g).filter(s=>docs[s.key]?.status==="ready").length;
+    const bn=readyIn("briefs"), xn=readyIn("extra");
+    const missing=SLOTS.filter(s=>docs[s.key]?.status!=="ready").map(s=>s.title);
+    el.className="todo ok"; el.innerHTML = okIc + `<span>Ready to check: ${bn} campaign brief${bn===1?"":"s"}${SLOTS.filter(s=>docs[s.key]?.status==="ready").map(s=>", "+esc(s.title)).join("")}${xn?`, ${xn} supporting document${xn>1?"s":""}`:""}.${missing.length?` ${esc(missing.join(" and "))} can be left out.`:""}</span>`;
   }
   $("#to-review").disabled = r.length>0;
 }
@@ -519,22 +645,33 @@ function precheck(file, slot){
   if(file.size===0) return "The file is empty (0 bytes).";
   return null;
 }
-/* Pick the document a file belongs to: name keywords first, then first empty slot of that type.
-   Returns null when nothing matches. The caller then adds it as an additional document. */
+/* Pick the box a file belongs to, by its name. Returns a single-box key ("qasdf", "geo")
+   or a multi-file box as "grp:briefs" / "grp:extra". Order matters: QA SDF, then briefs, then geo,
+   so "Media_Plan_Regional.xlsx" goes to briefs and not to geo. */
 function route(name, ext){
-  const open=SLOTS.filter(s=>!docs[s.key] && s.accept.includes(ext));
-  return (open.find(s=>s.match && s.match.test(name)) || open[0])?.key || null;
+  const fits = s => !s.accept.length || s.accept.includes(ext);
+  const sdf=slotOf("qasdf"), briefs=groupOf("briefs"), geo=slotOf("geo");
+  if(!docs.qasdf && fits(sdf) && sdf.match.test(name)) return "qasdf";
+  if(fits(briefs) && briefs.match.test(name)) return "grp:briefs";
+  if(!docs.geo && fits(geo) && geo.match.test(name)) return "geo";
+  if(["pdf","doc","docx","ppt","pptx"].includes(ext)) return "grp:briefs";   // unnamed documents are most likely briefs
+  return "grp:extra";
 }
 function findDuplicateFile(file){
   return allSlots().find(s=>{ const f=docs[s.key]?.file; return f && f.name===file.name && f.size===file.size && f.lastModified===file.lastModified; });
 }
 function findDuplicateLink(href){ return allSlots().find(s=>docs[s.key]?.url===href); }
-/* A file or link that doesn't match a named document is added here instead of being rejected. */
-function addExtra(doc){
-  const key="extra_"+(++extraSeq);
-  extraSlots.push({key, title:doc.name, required:false, accept:[], extra:true});
+/* Add a file or link to a multi-file box. Returns false if the box is full. */
+function addToGroup(g, doc){
+  if(groupFull(g)) return false;
+  const key=g+"_"+(++extraSeq);
+  extraSlots.push({key, title:doc.name, required:false, accept:[], extra:true, group:g});
   commit(key, doc, {skipConfirm:true});
   return key;
+}
+/* Place a file in any box: "grp:<group>" or a single-box key. */
+function place(target, doc, opts){
+  return target.startsWith("grp:") ? !!addToGroup(target.slice(4), doc) : commit(target, doc, opts);
 }
 
 /* ============================ transport ============================ */
@@ -652,26 +789,29 @@ function commit(key, doc, {skipConfirm=false}={}){
   return true;
 }
 /* target: a specific slot (card click, drop on card, Replace) or null to route automatically.
-   A file that doesn't match a named document is added to "Additional documents" instead of being rejected. */
+   A file that doesn't match a box by name goes to "Supporting documents" (up to its limit). */
 function addFiles(list, source, msgEl, target=null, explicit=false){
   if(finished) return;
   if(!sessionValid){ setMsg(msgEl,[],["Sign in again before adding files."]); return; }
   const ok=[], errs=[];
+  const toGroup = target && target.startsWith("grp:");
   [...list].forEach((f,i)=>{
     const ext=extOf(f.name);
     if(f.size===0){ errs.push(`${f.name}: The file is empty (0 bytes).`); return; }
     const dup=findDuplicateFile(f);
-    if(dup){ errs.push(`${f.name}: It's already added as ${dup.title}.`); return; }
-    const isTarget = i===0 && target;
+    if(dup){ errs.push(`${f.name}: It's already added${dup.extra?"":" as "+dup.title}.`); return; }
+    const isTarget = toGroup || (i===0 && target);          // every file goes to a multi-file box you picked
     const key = isTarget ? target : route(f.name, ext);
-    if(key){
+    if(key.startsWith("grp:")){
+      const g=groupOf(key.slice(4));
+      if(isTarget){ const problem=precheck(f,g); if(problem){ errs.push(`${f.name}: ${problem}`); return; } }
+      if(!addToGroup(g.key,{name:f.name,size:f.size,source,file:f})){ errs.push(`${f.name}: ${g.title} already has ${g.max} files. Remove one to add another.`); return; }
+      ok.push(`${f.name} → ${g.title}`);
+    } else {
       const s=slotOf(key);
       if(isTarget){ const problem=precheck(f,s); if(problem){ errs.push(`${f.name}: ${problem}`); return; } }
       const placed=commit(key,{name:f.name,size:f.size,source,file:f},{skipConfirm:explicit&&i===0});
       ok.push(placed?`${f.name} → ${s.title}`:`${f.name} is waiting for you to confirm the replacement`);
-    } else {
-      addExtra({name:f.name,size:f.size,source,file:f});
-      ok.push(`${f.name} → Additional documents`);
     }
   });
   setMsg(msgEl, ok.length?[`Added: ${ok.join(", ")}.`]:[], errs);
@@ -682,12 +822,20 @@ function addFiles(list, source, msgEl, target=null, explicit=false){
 /* ============================ card interactions ============================ */
 function pickFor(key, replace=false){ pickTarget={key,replace}; $("#file-input").click(); }
 $("#slots").addEventListener("click",e=>{
+  const tg=e.target.closest("[data-toggle-group]");
+  if(tg){ openGroup = openGroup===tg.dataset.toggleGroup ? null : tg.dataset.toggleGroup; renderSlots(); return; }
+  const add=e.target.closest("[data-add-group]");
+  if(add){ if(!add.disabled) pickFor("grp:"+add.dataset.addGroup); return; }
+  if(e.target.closest("select")) return;
   const card=e.target.closest("[data-slot]"); if(!card) return;
   const key=card.dataset.slot, act=e.target.closest("[data-act]")?.dataset.act;
   if(act) return slotAction(key,act);
-  if(!docs[key]) pickFor(key);
+  if(!docs[key] && !slotOf(key)?.extra) pickFor(key);
 });
-$("#slots").addEventListener("keydown",e=>{ if(e.target.matches(".slot.empty")&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); pickFor(e.target.dataset.slot); } });
+$("#slots").addEventListener("keydown",e=>{ if(e.target.matches(".slot.empty")&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); if(e.target.dataset.addGroup) pickFor("grp:"+e.target.dataset.addGroup); else pickFor(e.target.dataset.slot); } });
+/* Close an open file list when clicking elsewhere or pressing Escape. */
+document.addEventListener("click",e=>{ if(openGroup && !e.target.closest(`[data-group="${openGroup}"]`) && !e.target.closest(".toast")){ openGroup=null; renderSlots(); } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && openGroup){ const g=openGroup; openGroup=null; renderSlots(); document.querySelector(`[data-toggle-group="${g}"]`)?.focus(); } });
 function slotAction(key, act){
   const d=docs[key], s=slotOf(key), isExtra=!!s?.extra;
   if(act==="cancel"){ handles[key]?.abort(); delete handles[key];
@@ -705,56 +853,60 @@ function slotAction(key, act){
     if(d.prev){ docs[key]=d.prev; renderSlots(); toast(`Failed file removed. ${s.title} still has ${d.prev.name}.`); return; }
     delete docs[key]; if(isExtra) extraSlots=extraSlots.filter(x=>x.key!==key);
     renderSlots();
-    if(d.status==="ready") toast(`${d.name} removed.`,{label:"Undo",run:()=>{ if(!docs[key]){ if(isExtra && !extraSlots.find(x=>x.key===key)) extraSlots.push(s); docs[key]=d; renderSlots(); } }});
+    if(d.status==="ready") toast(`${d.name} removed.`,{label:"Undo",run:()=>{ if(!docs[key]){
+      if(isExtra && !extraSlots.find(x=>x.key===key)){ if(groupFull(s.group)){ toast(`${boxTitle(s.group)} is full, so ${d.name} couldn't be put back.`); return; } extraSlots.push(s); }
+      docs[key]=d; renderSlots(); } }});
   }
 }
-/* "Move to" lets the user put a file that landed in Additional documents into the right card. */
+/* "Move to" lets the user put a file in a multi-file box into the right box. */
 let movingKey=null;
 function moveSelect(from,d){
-  const ext=extOf(d.name), fromExtra=slotOf(from)?.extra;
-  const opts=SLOTS.filter(t=>t.key!==from && (!ext||t.accept.includes(ext)))
-    .map(t=>`<option value="${t.key}">${esc(t.title)}${docs[t.key]?" (has a file)":""}</option>`).join("");
-  const toExtra=fromExtra?"":`<option value="__extra">Additional documents</option>`;
-  return `<select class="move" data-move="${from}" aria-label="Move ${esc(d.name)} to another document"><option value="">Move to…</option>${opts}${toExtra}</select>`;
+  const ext=extOf(d.name), fromGroup=slotOf(from)?.group;
+  const opts=BOX_ORDER.filter(k=>k!==fromGroup).map(k=>{
+    const g=groupOf(k), t=g||slotOf(k);
+    if(t.accept.length && ext && !t.accept.includes(ext)) return "";
+    if(g && groupFull(k)) return "";
+    return `<option value="${g?"grp:"+k:k}">${esc(t.title)}${!g&&docs[k]?" (has a file)":""}</option>`;
+  }).join("");
+  return `<select class="move" data-move="${from}" aria-label="Move ${esc(d.name)} to another box"><option value="">Move to…</option>${opts}</select>`;
 }
-/* Move a finished file between cards / Additional documents. A file already in the target
-   card is never lost: it moves to Additional documents. */
+/* Move a finished file between boxes. A file already in a single-file box is never lost:
+   it moves to Supporting documents if there's room, otherwise the move is cancelled. */
 function moveDoc(from, to){
   const d=docs[from]; movingKey=null;
   if(!d || !to || from===to){ renderSlots(); return; }
+  const toGroup = to.startsWith("grp:") ? to.slice(4) : null;
+  const cur = toGroup ? null : docs[to];
+  if(toGroup && groupFull(toGroup)){ toast(`${boxTitle(toGroup)} is full.`); renderSlots(); return; }
+  if(cur && groupFull("extra") && slotOf(from)?.group!=="extra"){ toast(`${slotOf(to).title} already has a file and Supporting documents is full. Remove a file first.`); renderSlots(); return; }
   invalidate();
   const fromExtra=!!slotOf(from)?.extra;
   delete docs[from]; delete decisions[from];
   if(fromExtra) extraSlots=extraSlots.filter(x=>x.key!==from);
+  const addTo=(g,doc)=>{ const k=g+"_"+(++extraSeq); extraSlots.push({key:k,title:doc.name,required:false,accept:[],extra:true,group:g}); docs[k]={...doc,prev:null}; return k; };
   let msg;
-  if(to==="__extra"){
-    const k="extra_"+(++extraSeq); extraSlots.push({key:k,title:d.name,required:false,accept:[],extra:true}); docs[k]={...d,prev:null};
-    msg=`${d.name} moved to Additional documents.`;
+  if(toGroup){
+    const k=addTo(toGroup,d); msg=`${d.name} moved to ${boxTitle(toGroup)}.`; setTimeout(()=>flash(k),0);
   } else {
-    const cur=docs[to], s=slotOf(to); delete decisions[to];
-    if(cur){ const k="extra_"+(++extraSeq); extraSlots.push({key:k,title:cur.name,required:false,accept:[],extra:true}); docs[k]={...cur,prev:null}; }
+    delete decisions[to];
+    if(cur) addTo("extra",cur);
     docs[to]={...d,prev:null};
-    msg = cur ? `${d.name} moved to ${s.title}. ${cur.name} moved to Additional documents.` : `${d.name} moved to ${s.title}.`;
+    msg = cur ? `${d.name} moved to ${slotOf(to).title}. ${cur.name} moved to Supporting documents.` : `${d.name} moved to ${slotOf(to).title}.`;
     setTimeout(()=>flash(to),0);
   }
   renderSlots(); toast(msg);
 }
-$("#extra-list").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel && sel.value) moveDoc(sel.dataset.move, sel.value); });
-$("#slots").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel) moveDoc(sel.dataset.move, sel.value); });
-$("#extra-list").addEventListener("click",e=>{
-  const row=e.target.closest("[data-slot]"); if(!row) return;
-  const act=e.target.closest("[data-act]")?.dataset.act; if(act) slotAction(row.dataset.slot,act);
-});
+$("#slots").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel && sel.value) moveDoc(sel.dataset.move, sel.value); });
 $("#confirm-yes").addEventListener("click",()=>{ const p=pending; hideConfirm(); commit(p.key,p.doc,{skipConfirm:true}); });
 $("#confirm-no").addEventListener("click",()=>{ hideConfirm(); toast("Kept the current file."); });
 function hideConfirm(){ pending=null; $("#confirm").hidden=true; }
 
 /* Drop straight onto a card */
-$("#slots").addEventListener("dragover",e=>{ const c=e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); document.querySelectorAll(".slot.dragover").forEach(x=>x!==c&&x.classList.remove("dragover")); c.classList.add("dragover"); });
-$("#slots").addEventListener("dragleave",e=>{ const c=e.target.closest("[data-slot]"); if(c && !c.contains(e.relatedTarget)) c.classList.remove("dragover"); });
-$("#slots").addEventListener("drop",e=>{ const c=e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); e.stopPropagation(); c.classList.remove("dragover");
+$("#slots").addEventListener("dragover",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); document.querySelectorAll(".slot.dragover").forEach(x=>x!==c&&x.classList.remove("dragover")); c.classList.add("dragover"); });
+$("#slots").addEventListener("dragleave",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(c && !c.contains(e.relatedTarget)) c.classList.remove("dragover"); });
+$("#slots").addEventListener("drop",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); e.stopPropagation(); c.classList.remove("dragover");
   if(!e.dataTransfer.files.length){ toast("Only files can be dropped here. For a SharePoint file, paste its link instead."); return; }
-  selectTab($("#tab-pc"),false); addFiles(e.dataTransfer.files,"upload",$("#pc-msg"),c.dataset.slot,false); });
+  selectTab($("#tab-pc"),false); addFiles(e.dataTransfer.files,"upload",$("#pc-msg"),c.dataset.group?"grp:"+c.dataset.group:c.dataset.slot,false); });
 
 /* ============================ intake tabs ============================ */
 const tabs=[...document.querySelectorAll(".tab")];
@@ -785,14 +937,15 @@ $("#pane-sp").addEventListener("submit",e=>{
   const name = extOf(last) ? last : (kind ? `${kind[1]} from SharePoint` : `SharePoint file (${u.hostname.split(".")[0]})`);
   const targetKey = pickTarget?.key, explicit = !!pickTarget?.link; pickTarget=null;
   let key = targetKey || route(name, ext);
-  if(targetKey){
+  if(targetKey && !targetKey.startsWith("grp:")){
     const s=slotOf(targetKey);
     if(ext && s.accept.length && !s.accept.includes(ext)) return bad(`This link is ${kind?"a "+kind[1]:ext?"a ."+ext+" file":"a different file type"}. ${s.title} needs ${typeList(s)}.`);
   }
   inp.removeAttribute("aria-invalid");
   let placed, label;
-  if(key){ label=slotOf(key).title; placed=commit(key,{name,size:null,source:"sharepoint",url:u.href},{skipConfirm:explicit}); }
-  else { addExtra({name,size:null,source:"sharepoint",url:u.href}); placed=true; label="Additional documents"; }
+  label=boxTitle(key.replace(/^grp:/,""));
+  if(key.startsWith("grp:")){ if(!addToGroup(key.slice(4),{name,size:null,source:"sharepoint",url:u.href})) return bad(`${label} already has ${groupOf(key.slice(4)).max} files. Remove one to add another.`); placed=true; }
+  else placed=commit(key,{name,size:null,source:"sharepoint",url:u.href},{skipConfirm:explicit});
   inp.value="";
   setMsg(msg,[placed?`Checking access to the link for ${label}…`:"Confirm the replacement above."]);
 });
@@ -841,7 +994,7 @@ $("#to-review").addEventListener("click",async()=>{
   if(!online){ toast("You're offline. Reconnect and try again."); return; }
   const payload={
     campaign:{id:campaign.id,name:campaign.name},
-    documents:provided().map(s=>({slot:s.extra?null:s.key, title:s.extra?"Additional document":s.title, name:docs[s.key].name, source:docs[s.key].source, id:docs[s.key].serverId})),
+    documents:provided().map(s=>({slot:s.group||s.key, title:boxTitle(s.group||s.key), name:docs[s.key].name, source:docs[s.key].source, id:docs[s.key].serverId})),
     extracted:extraction.map(r=>({lineItem:r.li, insertionOrder:r.io, campaignName:r.cn, sourceDocument:r.source?docs[r.source]?.name||null:null})),
   };
   btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Sending…`;
@@ -865,7 +1018,7 @@ $("#to-review").addEventListener("click",async()=>{
 /* Simulates parsing Line item / Insertion order / Campaign name out of the uploaded
    documents. Wire this to a real extraction service by replacing extractedFor(). */
 function extractedFor(slot){
-  const pool = LINE_ITEM_POOL[slot.key] || ["Line item"];
+  const pool = LINE_ITEM_POOL[slot.group||slot.key] || [];
   return pool.map(li=>{
     extractSeq++;
     return {id:extractSeq, source:slot.key, li, io:`IO-${(campaign.id||"0000").replace(/\D/g,"")}-${String(extractSeq).padStart(2,"0")}`, cn:campaign.name};
@@ -881,19 +1034,31 @@ function syncExtraction(){
   const sig=extraction.map(r=>r.id+":"+(r.source?docs[r.source]?.name:"")).join("|");
   if(sig!==extractSig){ extractSig=sig; renderExtraction(); }
 }
+let extractOpen=false;
+function renderExtractSummary(){
+  const docsN=new Set(extraction.map(r=>r.source).filter(Boolean)).size, n=extraction.length;
+  $("#extract-summary").textContent = n ? `${n} row${n===1?"":"s"} from ${docsN} document${docsN===1?"":"s"}` : "Nothing extracted yet";
+}
+$("#extract-toggle").addEventListener("click",()=>{
+  extractOpen=!extractOpen;
+  $("#extract-toggle").setAttribute("aria-expanded",String(extractOpen));
+  $("#extract-content").hidden=!extractOpen;
+  $("#extract-hint").textContent=extractOpen?"Hide":"Show";
+});
 function renderExtraction(){
-  if(!extraction.length){ $("#extract-body").innerHTML=`<tr><td colspan="4" class="ex-empty">Line items, insertion orders and campaign names appear here as soon as documents are uploaded.</td></tr>`; return; }
+  renderExtractSummary();
+  if(!extraction.length){ $("#extract-body").innerHTML=`<tr><td colspan="4" class="ex-empty">Campaign names, insertion orders and line items appear here as soon as documents are uploaded.</td></tr>`; return; }
   /* group rows under the document they were extracted from */
   const order=[...allSlots().map(s=>s.key), null], html=[];
   order.forEach(src=>{
     const rows=extraction.filter(r=>(r.source||null)===src); if(!rows.length) return;
     const sl=src?slotOf(src):null, d=src?docs[src]:null;
-    const label = !src ? "Added manually" : sl.extra ? "Additional document" : sl.title;
+    const label = !src ? "Added manually" : boxTitle(sl.group||sl.key);
     html.push(`<tr class="ex-group"><td colspan="4"><span class="ex-src">${esc(label)}</span>${d?`<span class="ex-file" title="${esc(d.name)}">${esc(d.name)}</span>`:""}<span class="ex-n">${rows.length} row${rows.length>1?"s":""}</span></td></tr>`);
     rows.forEach(r=>html.push(`<tr data-row="${r.id}">
-      <td class="ex-ro">${esc(r.li)}</td>
-      <td class="ex-ro">${esc(r.io)}</td>
       <td class="ex-ro">${esc(r.cn)}</td>
+      <td class="ex-ro">${esc(r.io)}</td>
+      <td class="ex-ro">${esc(r.li)}</td>
       <td><button type="button" class="xbtn" data-rm-row="${r.id}" aria-label="Remove row">${X}</button></td>
     </tr>`));
   });
@@ -922,30 +1087,65 @@ if(location.hash==="#scenarios"){
 
 /* ============================ connect / ingestion experience ============================ */
 const DEMO_LINK = "https://dentsu.sharepoint.com/sites/DrivenBrands/CampaignDocuments";
-const DEMO_FOLDERS = {
-  "Q3 2026 Display": [
-    {name:"Q3_2026_Display_MediaPlan.pdf", size:862*1024, slot:"mediaplan"},
-    {name:"Budget_Tracker_Q3.xlsx", size:58*1024, slot:"budget"},
-    {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
-    {name:"MAF_Signed.pdf", size:301*1024, slot:"maf"},
-    {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"tsheet"},
-    {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"tag"},
-    {name:"MediaPlan_OLD_v1.pdf", size:790*1024, skip:"An older version, already replaced"},
-    {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
+/* Demo SharePoint site, as a folder tree. Each folder has `folders` (subfolders) and `files`.
+   slot = the box a file goes to ("grp:briefs", "qasdf", "geo", "grp:extra"); skip = why it isn't used. */
+const DEMO_SITE = "Driven Brands";
+const DEMO_TREE = {
+  files: [
+    {name:"Driven_Brands_Master_Brief_2026.pdf", size:1480*1024, slot:"grp:briefs"},
+    {name:"Brand_Guidelines_2026.pdf", size:4200*1024, slot:"grp:extra"},
   ],
-  "Q4 Regional Auto": [
-    {name:"Q4_Regional_Auto_Media_Plan.xlsx", size:214*1024, slot:"mediaplan"},
-    {name:"Budget_Tracker_Q4.xlsx", size:58*1024, slot:"budget"},
-    {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
-    {name:"MAF_Signed.pdf", size:301*1024, slot:"maf"},
-    {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"tsheet"},
-    {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"tag"},
-    {name:"MediaPlan_OLD_v1.xlsx", size:190*1024, skip:"An older version, already replaced"},
-    {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
-  ],
-  "Archive": [],
-  "Templates": [],
+  folders: {
+    "2026 Campaigns": { files: [], folders: {
+      "Q3 2026 Display": { folders:{}, files: [
+        {name:"Q3_2026_Display_MediaPlan.pdf", size:862*1024, slot:"grp:briefs"},
+        {name:"Budget_Tracker_Q3.xlsx", size:58*1024, slot:"grp:extra"},
+        {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
+        {name:"MAF_Signed.pdf", size:301*1024, slot:"grp:extra"},
+        {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"grp:extra"},
+        {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"grp:extra"},
+        {name:"MediaPlan_OLD_v1.pdf", size:790*1024, skip:"An older version, already replaced"},
+        {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
+      ]},
+      "Q4 Regional Auto": { folders:{}, files: [
+        {name:"Q4_Regional_Auto_Media_Plan.xlsx", size:214*1024, slot:"grp:briefs"},
+        {name:"Q4_Regional_Auto_Creative_Brief.pdf", size:1240*1024, slot:"grp:briefs"},
+        {name:"DV360_QA_SDF_LineItems.csv", size:36*1024, slot:"qasdf"},
+        {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
+        {name:"Budget_Tracker_Q4.xlsx", size:58*1024, slot:"grp:extra"},
+        {name:"MAF_Signed.pdf", size:301*1024, slot:"grp:extra"},
+        {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"grp:extra"},
+        {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"grp:extra"},
+        {name:"MediaPlan_OLD_v1.xlsx", size:190*1024, skip:"An older version, already replaced"},
+        {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
+      ]},
+    }},
+    "Archive": { files: [], folders: {
+      "Spring_Auto_2025": { folders:{}, files: [
+        {name:"Spring_Auto_2025_Media_Plan.xlsx", size:198*1024, slot:"grp:briefs"},
+        {name:"DV360_QA_SDF_Spring_2025.csv", size:31*1024, slot:"qasdf"},
+        {name:"Geo_Mapping_Spring.csv", size:10*1024, slot:"geo"},
+      ]},
+    }},
+    "Templates": { folders:{}, files: [
+      {name:"Media_Plan_Template.xlsx", size:88*1024, skip:"A template, not campaign data"},
+      {name:"QA_SDF_Template.csv", size:4*1024, skip:"A template, not campaign data"},
+    ]},
+  },
 };
+/* The folder the demo "Returning view" opens. Paths are folder names joined with "/". */
+const DEMO_DEFAULT_FOLDER = "2026 Campaigns/Q4 Regional Auto";
+const pathParts = p => (p||"").split("/").filter(Boolean);
+function nodeAt(path){ let n=DEMO_TREE; for(const part of pathParts(path)){ n=n.folders?.[part]; if(!n) return null; } return n; }
+/* Older saved connections stored only the folder name; find it anywhere in the tree. */
+function resolvePath(path){
+  if(nodeAt(path)) return path;
+  const want=pathParts(path).pop(); let hit=null;
+  (function walk(n,base){ for(const [k,c] of Object.entries(n.folders||{})){ const p=base?base+"/"+k:k; if(!hit && k===want) hit=p; walk(c,p); } })(DEMO_TREE,"");
+  return hit ?? "";
+}
+const pathLabel = p => [DEMO_SITE, ...pathParts(p)].join(" / ");
+const folderName = p => pathParts(p).pop() || DEMO_SITE;
 const CONN_KEY = "iqa_sp_connection";
 /* The user's saved SharePoint connection. Stored per user in this browser for now.
    For production, replace the body of get/set/clear with calls to your backend (see api.js). */
@@ -989,39 +1189,53 @@ $("#sp-modal-connect").addEventListener("click", ()=>{
   }, 800);
 });
 
-let currentFolder=null;
-function openFolderBrowser(){ $("#sp-step-link").hidden=true; $("#sp-step-browse").hidden=false; renderCrumbs(null); renderFolderList(); }
-function renderCrumbs(folder){
-  $("#sp-crumbs").innerHTML = folder
-    ? `<button type="button" data-crumb="root">Driven Brands</button><span>/</span><span>${esc(folder)}</span>`
-    : `<span>Driven Brands</span>`;
+let currentFolder="";   // path of the folder being browsed ("" = site root)
+function openFolderBrowser(path=""){ $("#sp-step-link").hidden=true; $("#sp-step-browse").hidden=false; browseTo(resolvePath(path)); }
+function browseTo(path){
+  const node=nodeAt(path) || DEMO_TREE; currentFolder=nodeAt(path)?path:"";
+  const parts=pathParts(currentFolder);
+  /* breadcrumbs: every level is clickable except the one you're in */
+  const crumbs=[{label:DEMO_SITE,path:""}, ...parts.map((p,i)=>({label:p,path:parts.slice(0,i+1).join("/")}))];
+  $("#sp-crumbs").innerHTML = crumbs.map((c,i)=> i===crumbs.length-1
+    ? `<span class="here" aria-current="location">${esc(c.label)}</span>`
+    : `<button type="button" data-path="${esc(c.path)}">${esc(c.label)}</button><span class="sep" aria-hidden="true">/</span>`).join("");
+  $("#sp-up").disabled = !parts.length;
+  const subs=Object.entries(node.folders||{}), files=node.files||[];
+  const chev=`<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>`;
+  const countIn = n => { const f=Object.keys(n.folders||{}).length, d=(n.files||[]).length; return [f?`${f} folder${f===1?"":"s"}`:"", d?`${d} file${d===1?"":"s"}`:""].filter(Boolean).join(", ") || "Empty"; };
+  $("#sp-browse-list").innerHTML =
+    subs.map(([name,n])=>{ const p=currentFolder?currentFolder+"/"+name:name;
+      return `<div class="browse-row folder" role="listitem button" tabindex="0" data-path="${esc(p)}" aria-label="Open folder ${esc(name)}">${folderSvg}<span>${esc(name)}</span><span class="b-meta">${countIn(n)}</span>${chev}</div>`; }).join("") +
+    files.map(f=>`<div class="browse-row file" role="listitem">${fileSvg}<span>${esc(f.name)}</span><span class="b-meta">${fmt(f.size)}</span></div>`).join("") +
+    (!subs.length && !files.length ? `<div class="browse-empty">This folder is empty.</div>` : "");
+  const usable=files.filter(f=>f.slot).length, btn=$("#sp-use-folder");
+  btn.disabled = !usable;
+  btn.textContent = parts.length ? `Use “${folderName(currentFolder)}”` : "Use this folder";
+  $("#sp-folder-note").textContent = usable
+    ? `${usable} campaign file${usable===1?"":"s"} in this folder`
+    : subs.length ? "No campaign files here. Open a folder to look inside." : "No campaign files in this folder.";
 }
-$("#sp-crumbs").addEventListener("click", e=>{ if(e.target.closest("[data-crumb]")){ renderCrumbs(null); renderFolderList(); } });
-function renderFolderList(){
-  currentFolder=null; $("#sp-use-folder").hidden=true;
-  $("#sp-browse-list").innerHTML = Object.keys(DEMO_FOLDERS).map(name=>
-    `<div class="browse-row" data-folder="${esc(name)}">${folderSvg}<span>${esc(name)}</span></div>`
-  ).join("");
-}
-$("#sp-browse-list").addEventListener("click", e=>{
-  const row=e.target.closest("[data-folder]"); if(!row) return;
-  currentFolder = row.dataset.folder;
-  renderCrumbs(currentFolder);
-  const files = DEMO_FOLDERS[currentFolder] || [];
-  if(!files.length){ $("#sp-browse-list").innerHTML = `<div class="browse-empty">No campaign files found in this folder.</div>`; $("#sp-use-folder").hidden=true; return; }
-  $("#sp-browse-list").innerHTML = files.map(f=>`<div class="browse-row file">${fileSvg}<span>${esc(f.name)}</span></div>`).join("");
-  $("#sp-use-folder").hidden=false;
+function openRow(el){ const p=el.dataset.path; if(p!=null) browseTo(p); }
+$("#sp-crumbs").addEventListener("click", e=>{ const b=e.target.closest("[data-path]"); if(b) browseTo(b.dataset.path); });
+$("#sp-up").addEventListener("click", ()=>{ browseTo(pathParts(currentFolder).slice(0,-1).join("/")); $("#sp-browse-list .browse-row")?.focus(); });
+$("#sp-browse-list").addEventListener("click", e=>{ const r=e.target.closest(".browse-row.folder"); if(r) openRow(r); });
+$("#sp-browse-list").addEventListener("keydown", e=>{
+  const r=e.target.closest(".browse-row.folder");
+  if(r && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); openRow(r); $("#sp-browse-list .browse-row")?.focus(); }
+  if(e.key==="Backspace" && pathParts(currentFolder).length){ e.preventDefault(); $("#sp-up").click(); }
 });
 $("#sp-use-folder").addEventListener("click", ()=>{
+  if($("#sp-use-folder").disabled) return;
   closeSpModal();
-  connStore.set({site:"Driven Brands", folder:currentFolder, url:DEMO_LINK});
+  connStore.set({site:DEMO_SITE, folder:currentFolder, url:DEMO_LINK});
   runIngestion(currentFolder);
 });
 
 function runIngestion(folder){
   showConnectState("connect-reading");
-  const files = DEMO_FOLDERS[folder] || [];
-  setTimeout(()=>{ $("#found-where").innerHTML=`From <b>Driven Brands / ${esc(folder)}</b> on SharePoint`; renderFound(files); showConnectState("connect-found"); }, 1200);
+  folder = resolvePath(folder);
+  const files = (nodeAt(folder)?.files) || [];
+  setTimeout(()=>{ $("#found-where").innerHTML=`From <b>${esc(pathLabel(folder))}</b> on SharePoint`; renderFound(files); showConnectState("connect-found"); }, 1200);
 }
 let foundFiles=[];
 function renderFound(files){
@@ -1036,16 +1250,16 @@ function renderFound(files){
     <div class="fact skip"><span class="ic">${ic.skip}</span><div><span>Skipped</span><b>${skipped.length}</b></div></div>`;
   $("#found-list").innerHTML = files.map(f=>`<tr class="${f.slot?"":"is-skip"}">
       <td><div class="fcell">${fileSvg}<span title="${esc(f.name)}">${esc(f.name)}</span></div></td>
-      <td>${f.slot?esc(slotOf(f.slot)?.title||"—"):"—"}</td>
+      <td>${f.slot?esc(boxTitle(f.slot.replace(/^grp:/,""))||"—"):"—"}</td>
       <td class="num">${fmt(f.size)}</td>
       <td><span class="pill ${f.slot?"ok":"miss"}">${f.slot?"Ready":"Skipped"}</span>${f.skip?`<span class="why">${esc(f.skip)}</span>`:""}</td>
     </tr>`).join("");
   $("#connect-continue-btn").disabled = ready.length===0;
 }
-$("#connect-back-btn").addEventListener("click", ()=>{ openSpModal(); openFolderBrowser(); });
+$("#connect-back-btn").addEventListener("click", ()=>{ const c=connStore.get(); openSpModal(); openFolderBrowser(c ? pathParts(resolvePath(c.folder)).slice(0,-1).join("/") : ""); });
 $("#connect-continue-btn").addEventListener("click", ()=>{
   const ready=foundFiles.filter(f=>f.slot);
-  ready.forEach(f=>commit(f.slot, {name:f.name, size:f.size, source:"sharepoint"}, {skipConfirm:true}));
+  ready.forEach(f=>place(f.slot, {name:f.name, size:f.size, source:"sharepoint"}, {skipConfirm:true}));
   revealDocsArea();
   toast(`${ready.length} document${ready.length===1?"":"s"} added from SharePoint.`);
 });
@@ -1053,7 +1267,7 @@ $("#connect-view-btn").addEventListener("click", ()=>{ const c=connStore.get(); 
 
 function initConnect(){
   const c=connStore.get();
-  if(c){ $("#connected-name").textContent = `${c.site} / ${c.folder}`; showConnectState("connect-returning"); }
+  if(c){ $("#connected-name").textContent = pathLabel(resolvePath(c.folder)); showConnectState("connect-returning"); }
   else showConnectState("connect-welcome");
 }
 initConnect();
@@ -1077,7 +1291,7 @@ initConnect();
   box.addEventListener("click", e=>{
     const b = e.target.closest("button[data-mode]"); if(!b) return;
     if(b.dataset.mode==="new") connStore.clear();
-    else connStore.set({site:"Driven Brands", folder:Object.keys(DEMO_FOLDERS)[0], url:DEMO_LINK});
+    else connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK});
     sessionStorage.removeItem("iqa_intake_state");
     if(window.IQA_TRIAGE) IQA_TRIAGE.clearAll();
     location.href = location.pathname;          // reload so the whole screen starts clean
@@ -1098,7 +1312,7 @@ const issueIds = () => ISSUES.map((_,i)=>"iss-"+i);
 const issueTally = () => IQA_TRIAGE.counts(issueIds());
 
 function stepSub(i){
-  if(i===1){ const c=connStore.get(); return c ? c.folder : (flow.reached>=2 ? "From your computer" : "Link your files"); }
+  if(i===1){ const c=connStore.get(); return c ? folderName(resolvePath(c.folder)) : (flow.reached>=2 ? "From your computer" : "Link your files"); }
   if(i===2){ const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length; return n ? `${n} document${n===1?"":"s"}` : "Add documents"; }
   if(i===3){ if(!flow.checked) return "Run the checks"; const t=issueTally(); return t.open ? `${t.open} open` : "All resolved"; }
   const s = window.IQA_COMPARE && IQA_COMPARE.summary();
