@@ -1,9 +1,13 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
   "campaign": {
     "id": "CMP-48213",
     "name": "Q4 Regional Auto"
   },
+<<<<<<< HEAD
   "sources": {
     "left": {
       "label": "Media Plan",
@@ -19,6 +23,17 @@
     "left":  { "label": "Media Plan", "file": "Q4_Regional_Auto_Media_Plan.xlsx" },
     "right": { "label": "QA SDF",     "file": "Q4_Regional_Auto_QA_SDF.xlsx" }
 >>>>>>> 13f2146 (Add stepper, merged Results page, compare drawer and issue triage)
+=======
+  "sources": {
+    "left": {
+      "label": "Media Plan",
+      "file": "Q4_Regional_Auto_Media_Plan.xlsx"
+    },
+    "right": {
+      "label": "QA SDF",
+      "file": "Q4_Regional_Auto_QA_SDF.xlsx"
+    }
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
   },
   "generatedAt": "2026-09-29T10:15:00Z",
   "sheets": [
@@ -27,6 +42,9 @@
       "name": "Line Items",
       "columns": [
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
         {
           "key": "lineItem",
           "label": "Line item"
@@ -55,6 +73,7 @@
           "key": "creativeSize",
           "label": "Creative size"
         }
+<<<<<<< HEAD
       ],
       "rows": [
         {
@@ -363,82 +382,275 @@
         { "key": "budget",         "label": "Budget (USD)" },
         { "key": "geo",            "label": "Geo target" },
         { "key": "creativeSize",   "label": "Creative size" }
+=======
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
       ],
       "rows": [
         {
-          "id": "LI-1001", "rowStatus": "match", "severity": null, "note": null,
+          "id": "LI-1001",
+          "rowStatus": "match",
+          "severity": null,
+          "note": null,
           "cells": {
-            "lineItem":       { "left": "Auto_Prospecting_300x250", "right": "Auto_Prospecting_300x250", "status": "match" },
-            "insertionOrder": { "left": "IO-48213-A", "right": "IO-48213-A", "status": "match" },
-            "flightStart":    { "left": "2026-10-01", "right": "2026-10-01", "status": "match" },
-            "budget":         { "left": "25,000", "right": "25,000", "status": "match" },
-            "geo":            { "left": "DMA: Detroit", "right": "DMA: Detroit", "status": "match" },
-            "creativeSize":   { "left": "300x250", "right": "300x250", "status": "match" }
+            "lineItem": {
+              "left": "Auto_Prospecting_300x250",
+              "right": "Auto_Prospecting_300x250",
+              "status": "match"
+            },
+            "campaignName": {
+              "left": "Q4 Regional Auto",
+              "right": "Q4 Regional Auto",
+              "status": "match"
+            },
+            "insertionOrder": {
+              "left": "IO-48213-A",
+              "right": "IO-48213-A",
+              "status": "match"
+            },
+            "flightStart": {
+              "left": "2026-10-01",
+              "right": "2026-10-01",
+              "status": "match"
+            },
+            "budget": {
+              "left": "25,000",
+              "right": "25,000",
+              "status": "match"
+            },
+            "geo": {
+              "left": "DMA: Detroit",
+              "right": "DMA: Detroit",
+              "status": "match"
+            },
+            "creativeSize": {
+              "left": "300x250",
+              "right": "300x250",
+              "status": "match"
+            }
           }
         },
         {
-          "id": "LI-1002", "rowStatus": "changed", "severity": "high",
+          "id": "LI-1002",
+          "rowStatus": "changed",
+          "severity": "high",
           "note": "Budget in the SDF is 3,000 lower than the Media Plan. Confirm which figure is approved.",
           "cells": {
-            "lineItem":       { "left": "Auto_Retargeting_728x90", "right": "Auto_Retargeting_728x90", "status": "match" },
-            "insertionOrder": { "left": "IO-48213-A", "right": "IO-48213-A", "status": "match" },
-            "flightStart":    { "left": "2026-10-01", "right": "2026-10-01", "status": "match" },
-            "budget":         { "left": "18,000", "right": "15,000", "status": "changed" },
-            "geo":            { "left": "DMA: Detroit", "right": "DMA: Detroit", "status": "match" },
-            "creativeSize":   { "left": "728x90", "right": "728x90", "status": "match" }
+            "lineItem": {
+              "left": "Auto_Retargeting_728x90",
+              "right": "Auto_Retargeting_728x90",
+              "status": "match"
+            },
+            "campaignName": {
+              "left": "Q4 Regional Auto",
+              "right": "Q4 Regional Auto",
+              "status": "match"
+            },
+            "insertionOrder": {
+              "left": "IO-48213-A",
+              "right": "IO-48213-A",
+              "status": "match"
+            },
+            "flightStart": {
+              "left": "2026-10-01",
+              "right": "2026-10-01",
+              "status": "match"
+            },
+            "budget": {
+              "left": "18,000",
+              "right": "15,000",
+              "status": "changed"
+            },
+            "geo": {
+              "left": "DMA: Detroit",
+              "right": "DMA: Detroit",
+              "status": "match"
+            },
+            "creativeSize": {
+              "left": "728x90",
+              "right": "728x90",
+              "status": "match"
+            }
           }
         },
         {
-          "id": "LI-1003", "rowStatus": "changed", "severity": "medium",
+          "id": "LI-1003",
+          "rowStatus": "changed",
+          "severity": "medium",
           "note": "SDF targets an extra DMA (Flint) that is not in the Media Plan.",
           "cells": {
-            "lineItem":       { "left": "Auto_Prospecting_160x600", "right": "Auto_Prospecting_160x600", "status": "match" },
-            "insertionOrder": { "left": "IO-48213-A", "right": "IO-48213-A", "status": "match" },
-            "flightStart":    { "left": "2026-10-01", "right": "2026-10-01", "status": "match" },
-            "budget":         { "left": "12,000", "right": "12,000", "status": "match" },
-            "geo":            { "left": "DMA: Detroit", "right": "DMA: Detroit, Flint", "status": "changed" },
-            "creativeSize":   { "left": "160x600", "right": "160x600", "status": "match" }
+            "lineItem": {
+              "left": "Auto_Prospecting_160x600",
+              "right": "Auto_Prospecting_160x600",
+              "status": "match"
+            },
+            "campaignName": {
+              "left": "Q4 Regional Auto",
+              "right": "Q4 Regional Auto",
+              "status": "match"
+            },
+            "insertionOrder": {
+              "left": "IO-48213-A",
+              "right": "IO-48213-A",
+              "status": "match"
+            },
+            "flightStart": {
+              "left": "2026-10-01",
+              "right": "2026-10-01",
+              "status": "match"
+            },
+            "budget": {
+              "left": "12,000",
+              "right": "12,000",
+              "status": "match"
+            },
+            "geo": {
+              "left": "DMA: Detroit",
+              "right": "DMA: Detroit, Flint",
+              "status": "changed"
+            },
+            "creativeSize": {
+              "left": "160x600",
+              "right": "160x600",
+              "status": "match"
+            }
           }
         },
         {
-          "id": "LI-1004", "rowStatus": "changed", "severity": "high",
+          "id": "LI-1004",
+          "rowStatus": "changed",
+          "severity": "high",
           "note": "SDF flight starts a week after the Media Plan. Delivery would miss the first 7 days.",
           "cells": {
-            "lineItem":       { "left": "Auto_Video_Pre-roll_15s", "right": "Auto_Video_Pre-roll_15s", "status": "match" },
-            "insertionOrder": { "left": "IO-48213-B", "right": "IO-48213-B", "status": "match" },
-            "flightStart":    { "left": "2026-10-01", "right": "2026-10-08", "status": "changed" },
-            "budget":         { "left": "40,000", "right": "40,000", "status": "match" },
-            "geo":            { "left": "DMA: Detroit", "right": "DMA: Detroit", "status": "match" },
-            "creativeSize":   { "left": "1920x1080", "right": "1920x1080", "status": "match" }
+            "lineItem": {
+              "left": "Auto_Video_Pre-roll_15s",
+              "right": "Auto_Video_Pre-roll_15s",
+              "status": "match"
+            },
+            "campaignName": {
+              "left": "Q4 Regional Auto",
+              "right": "Q4 Regional Auto",
+              "status": "match"
+            },
+            "insertionOrder": {
+              "left": "IO-48213-B",
+              "right": "IO-48213-B",
+              "status": "match"
+            },
+            "flightStart": {
+              "left": "2026-10-01",
+              "right": "2026-10-08",
+              "status": "changed"
+            },
+            "budget": {
+              "left": "40,000",
+              "right": "40,000",
+              "status": "match"
+            },
+            "geo": {
+              "left": "DMA: Detroit",
+              "right": "DMA: Detroit",
+              "status": "match"
+            },
+            "creativeSize": {
+              "left": "1920x1080",
+              "right": "1920x1080",
+              "status": "match"
+            }
           }
         },
         {
-          "id": "LI-1005", "rowStatus": "missing_in_right", "severity": "high",
+          "id": "LI-1005",
+          "rowStatus": "missing_in_right",
+          "severity": "high",
           "note": "In the Media Plan but not found in the SDF. It will not be set up.",
           "cells": {
-            "lineItem":       { "left": "Auto_Native_Feed", "right": null, "status": "missing" },
-            "insertionOrder": { "left": "IO-48213-B", "right": null, "status": "missing" },
-            "flightStart":    { "left": "2026-10-01", "right": null, "status": "missing" },
-            "budget":         { "left": "9,500", "right": null, "status": "missing" },
-            "geo":            { "left": "DMA: Detroit", "right": null, "status": "missing" },
-            "creativeSize":   { "left": "1200x628", "right": null, "status": "missing" }
+            "lineItem": {
+              "left": "Auto_Native_Feed",
+              "right": null,
+              "status": "missing"
+            },
+            "campaignName": {
+              "left": "Q4 Regional Auto",
+              "right": null,
+              "status": "missing"
+            },
+            "insertionOrder": {
+              "left": "IO-48213-B",
+              "right": null,
+              "status": "missing"
+            },
+            "flightStart": {
+              "left": "2026-10-01",
+              "right": null,
+              "status": "missing"
+            },
+            "budget": {
+              "left": "9,500",
+              "right": null,
+              "status": "missing"
+            },
+            "geo": {
+              "left": "DMA: Detroit",
+              "right": null,
+              "status": "missing"
+            },
+            "creativeSize": {
+              "left": "1200x628",
+              "right": null,
+              "status": "missing"
+            }
           }
         },
         {
-          "id": "LI-1006", "rowStatus": "extra_in_right", "severity": "medium",
+          "id": "LI-1006",
+          "rowStatus": "extra_in_right",
+          "severity": "medium",
           "note": "In the SDF but not in the Media Plan. Check whether it was added by mistake.",
           "cells": {
-            "lineItem":       { "left": null, "right": "Auto_Prospecting_320x50_Mobile", "status": "extra" },
-            "insertionOrder": { "left": null, "right": "IO-48213-A", "status": "extra" },
-            "flightStart":    { "left": null, "right": "2026-10-01", "status": "extra" },
-            "budget":         { "left": null, "right": "6,000", "status": "extra" },
-            "geo":            { "left": null, "right": "DMA: Detroit", "status": "extra" },
-            "creativeSize":   { "left": null, "right": "320x50", "status": "extra" }
+            "lineItem": {
+              "left": null,
+              "right": "Auto_Prospecting_320x50_Mobile",
+              "status": "extra"
+            },
+            "campaignName": {
+              "left": null,
+              "right": "Q4 Regional Auto",
+              "status": "extra"
+            },
+            "insertionOrder": {
+              "left": null,
+              "right": "IO-48213-A",
+              "status": "extra"
+            },
+            "flightStart": {
+              "left": null,
+              "right": "2026-10-01",
+              "status": "extra"
+            },
+            "budget": {
+              "left": null,
+              "right": "6,000",
+              "status": "extra"
+            },
+            "geo": {
+              "left": null,
+              "right": "DMA: Detroit",
+              "status": "extra"
+            },
+            "creativeSize": {
+              "left": null,
+              "right": "320x50",
+              "status": "extra"
+            }
           }
         },
         {
-          "id": "LI-1007", "rowStatus": "match", "severity": null, "note": null,
+          "id": "LI-1007",
+          "rowStatus": "changed",
+          "severity": "low",
+          "note": "Campaign name in the SDF has an extra suffix (\"- Audio\"). Likely a naming slip; confirm the approved campaign name.",
           "cells": {
+<<<<<<< HEAD
             "lineItem":       { "left": "Auto_Audio_30s", "right": "Auto_Audio_30s", "status": "match" },
             "insertionOrder": { "left": "IO-48213-B", "right": "IO-48213-B", "status": "match" },
             "flightStart":    { "left": "2026-10-01", "right": "2026-10-01", "status": "match" },
@@ -446,6 +658,43 @@
             "geo":            { "left": "DMA: Detroit", "right": "DMA: Detroit", "status": "match" },
             "creativeSize":   { "left": "Audio", "right": "Audio", "status": "match" }
 >>>>>>> 13f2146 (Add stepper, merged Results page, compare drawer and issue triage)
+=======
+            "lineItem": {
+              "left": "Auto_Audio_30s",
+              "right": "Auto_Audio_30s",
+              "status": "match"
+            },
+            "campaignName": {
+              "left": "Q4 Regional Auto",
+              "right": "Q4 Regional Auto - Audio",
+              "status": "changed"
+            },
+            "insertionOrder": {
+              "left": "IO-48213-B",
+              "right": "IO-48213-B",
+              "status": "match"
+            },
+            "flightStart": {
+              "left": "2026-10-01",
+              "right": "2026-10-01",
+              "status": "match"
+            },
+            "budget": {
+              "left": "7,500",
+              "right": "7,500",
+              "status": "match"
+            },
+            "geo": {
+              "left": "DMA: Detroit",
+              "right": "DMA: Detroit",
+              "status": "match"
+            },
+            "creativeSize": {
+              "left": "Audio",
+              "right": "Audio",
+              "status": "match"
+            }
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
           }
         }
       ]
@@ -455,6 +704,9 @@
       "name": "Insertion Orders",
       "columns": [
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
         {
           "key": "insertionOrder",
           "label": "Insertion order"
@@ -471,6 +723,7 @@
           "key": "flightEnd",
           "label": "Flight end"
         }
+<<<<<<< HEAD
       ],
       "rows": [
         {
@@ -532,33 +785,83 @@
         { "key": "campaignName",   "label": "Campaign name" },
         { "key": "budget",         "label": "Budget (USD)" },
         { "key": "flightEnd",      "label": "Flight end" }
+=======
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
       ],
       "rows": [
         {
-          "id": "IO-48213-A", "rowStatus": "match", "severity": null, "note": null,
+          "id": "IO-48213-A",
+          "rowStatus": "match",
+          "severity": null,
+          "note": null,
           "cells": {
-            "insertionOrder": { "left": "IO-48213-A", "right": "IO-48213-A", "status": "match" },
-            "campaignName":   { "left": "Q4 Regional Auto", "right": "Q4 Regional Auto", "status": "match" },
-            "budget":         { "left": "61,000", "right": "61,000", "status": "match" },
-            "flightEnd":      { "left": "2026-12-31", "right": "2026-12-31", "status": "match" }
+            "insertionOrder": {
+              "left": "IO-48213-A",
+              "right": "IO-48213-A",
+              "status": "match"
+            },
+            "campaignName": {
+              "left": "Q4 Regional Auto",
+              "right": "Q4 Regional Auto",
+              "status": "match"
+            },
+            "budget": {
+              "left": "61,000",
+              "right": "61,000",
+              "status": "match"
+            },
+            "flightEnd": {
+              "left": "2026-12-31",
+              "right": "2026-12-31",
+              "status": "match"
+            }
           }
         },
         {
-          "id": "IO-48213-B", "rowStatus": "changed", "severity": "low",
+          "id": "IO-48213-B",
+          "rowStatus": "changed",
+          "severity": "low",
           "note": "Campaign name differs by spelling. Likely a typo in the SDF.",
           "cells": {
+<<<<<<< HEAD
             "insertionOrder": { "left": "IO-48213-B", "right": "IO-48213-B", "status": "match" },
             "campaignName":   { "left": "Q4 Regional Auto", "right": "Q4 Regional Auto Video", "status": "changed" },
             "budget":         { "left": "57,000", "right": "57,000", "status": "match" },
             "flightEnd":      { "left": "2026-12-31", "right": "2026-12-31", "status": "match" }
 >>>>>>> 13f2146 (Add stepper, merged Results page, compare drawer and issue triage)
+=======
+            "insertionOrder": {
+              "left": "IO-48213-B",
+              "right": "IO-48213-B",
+              "status": "match"
+            },
+            "campaignName": {
+              "left": "Q4 Regional Auto",
+              "right": "Q4 Regional Auto Video",
+              "status": "changed"
+            },
+            "budget": {
+              "left": "57,000",
+              "right": "57,000",
+              "status": "match"
+            },
+            "flightEnd": {
+              "left": "2026-12-31",
+              "right": "2026-12-31",
+              "status": "match"
+            }
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
           }
         }
       ]
     }
   ]
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 }
 >>>>>>> 13f2146 (Add stepper, merged Results page, compare drawer and issue triage)
+=======
+}
+>>>>>>> 0d2c1d5 (Rework upload boxes, add SharePoint folder browser, campaign name in compare)
