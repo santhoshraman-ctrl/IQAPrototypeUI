@@ -7,16 +7,299 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/compare.css">
+<style>
+html,body{margin:0}
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --sunken:#ECEFF3; --ink:#18212B; --ink-2:#4A5563; --ink-3:#737E8C;
+  --line:#DCE1E7; --track:#E1E5EA;
+  --accent:#1F4583; --accent-soft:#E3EAF5; --on-accent:#FFFFFF; --cta:#1F2657; --on-cta:#FFFFFF;
+  --done:#6FC39C; --ok:#2E7D4F; --ok-soft:#E1F4EA; --man:#8A5A12; --man-soft:#FBEBD2;
+  --warn:#9A5B00; --warn-soft:#FDF0DA; --warn-bar:#E0A33A;
+  --bad:#B3261E; --bad-soft:#FBE4E2;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1419; --surface:#171E27; --sunken:#1F2833; --ink:#E6EBF0; --ink-2:#AAB4C0; --ink-3:#808B99;
+    --line:#2C3744; --track:#2A3440;
+    --accent:#86A9E6; --accent-soft:#1B2A45; --on-accent:#0D1830; --cta:#86A9E6; --on-cta:#0D1830;
+    --done:#5DBB8E; --ok:#6CCB93; --ok-soft:#153325; --man:#E9B25F; --man-soft:#3A2A12;
+    --warn:#E9B25F; --warn-soft:#352812; --warn-bar:#C98F2E;
+    --bad:#F2887F; --bad-soft:#3D1B19;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1419; --surface:#171E27; --sunken:#1F2833; --ink:#E6EBF0; --ink-2:#AAB4C0; --ink-3:#808B99;
+  --line:#2C3744; --track:#2A3440;
+  --accent:#86A9E6; --accent-soft:#1B2A45; --on-accent:#0D1830; --cta:#86A9E6; --on-cta:#0D1830;
+  --done:#5DBB8E; --ok:#6CCB93; --ok-soft:#153325; --man:#E9B25F; --man-soft:#3A2A12;
+  --warn:#E9B25F; --warn-soft:#352812; --warn-bar:#C98F2E;
+  --bad:#F2887F; --bad-soft:#3D1B19;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- App bar ---------- */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.appbar-in{max-width:1140px;margin:0 auto;padding-inline:16px;height:58px;display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;white-space:nowrap}
+.brand svg{width:26px;height:26px;flex:none}
+.spacer{flex:1}
+.iconbtn{appearance:none;border:0;background:transparent;color:var(--ink-2);width:36px;height:36px;border-radius:8px;display:grid;place-items:center;cursor:pointer}
+.iconbtn:hover{background:var(--sunken);color:var(--ink)}
+.iconbtn svg{width:19px;height:19px}
+.user{position:relative}
+.user-btn{appearance:none;border:0;background:transparent;display:flex;align-items:center;gap:10px;padding:4px 6px 4px 4px;border-radius:999px;cursor:pointer}
+.user-btn:hover{background:var(--sunken)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:13px;font-weight:600;flex:none}
+.user-name{font-size:14px;font-weight:500;text-align:left;line-height:1.2}
+.user-name small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
+@media (max-width:560px){.user-name{display:none}}
+.menu{position:absolute;right:0;top:calc(100% + 6px);min-width:240px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgb(0 0 0 / .12);padding:6px;display:grid}
+.menu .who{padding:10px 10px 12px;border-bottom:1px solid var(--line);margin-bottom:6px;font-size:13px;color:var(--ink-3)}
+.menu .who strong{display:block;color:var(--ink);font-size:14px}
+.menu button{appearance:none;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:6px;cursor:pointer;font-size:14px}
+.menu button:hover{background:var(--sunken)}
+
+/* ---------- Banners ---------- */
+.banner{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-radius:10px;font-size:14px}
+.banner svg{width:18px;height:18px;flex:none}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.bad{background:var(--bad-soft);color:var(--bad)}
+.banner .grow{flex:1 1 240px;color:var(--ink)}
+
+/* ---------- Page ---------- */
+main{max-width:1140px;margin:0 auto;padding-inline:16px;padding-block:26px 56px;display:grid;gap:22px}
+h1{font-size:25px;font-weight:600;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.pagehead{display:grid;gap:10px}
+.limits{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink-2);max-width:760px}
+.limits svg{width:18px;height:18px;flex:none;color:var(--accent);margin-top:2px}
+.limits b{color:var(--ink);font-weight:600}
+
+/* ---------- Stepper tabs ---------- */
+.stepper{display:flex;align-items:center;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.stepper::-webkit-scrollbar{display:none}
+.stepbtn{appearance:none;border:0;background:none;padding:12px 14px 11px;display:flex;gap:9px;align-items:center;border-bottom:2.5px solid transparent;margin-bottom:-1px;color:var(--ink-3);font-weight:500;font-size:15px;cursor:pointer;white-space:nowrap}
+.stepbtn .dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-family:var(--mono);flex:none}
+.stepbtn .dot svg{width:13px;height:13px}
+.stepbtn:hover:not([disabled]){color:var(--ink)}
+.stepbtn[aria-current="step"]{color:var(--ink);border-bottom-color:var(--accent)}
+.stepbtn[aria-current="step"] .dot{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
+.stepbtn.done .dot{border-color:var(--done);background:var(--done);color:#fff}
+.stepbtn[disabled]{cursor:not-allowed;opacity:.55}
+.chev{color:var(--line);flex:none;width:16px;height:16px}
+
+/* ---------- Slots ---------- */
+.slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+@media (max-width:1100px){.slots{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.slots{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:400px){.slots{grid-template-columns:1fr}}
+.slot{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 10px 10px 13px;display:flex;flex-direction:column;gap:5px;min-height:132px;min-width:0;transition:border-color .15s,box-shadow .15s,background .15s}
+.slot.empty{cursor:pointer}
+.slot.empty:hover{border-color:var(--accent)}
+.slot.dragover{border-style:dashed;border-color:var(--accent);background:var(--accent-soft)}
+.slot.is-error{border-color:var(--bad)}
+.slot.flash,.xrow.flash{box-shadow:0 0 0 4px var(--accent-soft);border-radius:8px}
+.slot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.slot-title{font-size:15px;font-weight:700;line-height:1.25;text-wrap:balance;padding-top:3px;min-width:0}
+.badge.sm{font-size:11px;padding:1px 8px;align-self:flex-start}
+.slot .xbtn{width:24px;height:24px;margin:-2px -2px 0 0}
+.top-right{display:flex;align-items:center;gap:4px;flex:none}
+.badge{flex:none;font-size:13px;font-weight:500;padding:3px 11px;border-radius:999px;white-space:nowrap}
+.badge.man{background:var(--man-soft);color:var(--man)}
+.badge.opt{background:var(--ok-soft);color:var(--ok)}
+.xbtn{appearance:none;border:0;background:transparent;color:var(--ink-3);width:28px;height:28px;border-radius:7px;display:grid;place-items:center;cursor:pointer;flex:none}
+.xbtn:hover{background:var(--bad-soft);color:var(--bad)}
+.xbtn svg{width:16px;height:16px}
+.fname{font-size:13px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fname.none{color:var(--ink-3)}
+.slot-err{font-size:13px;color:var(--bad);line-height:1.4;margin-top:4px}
+.slot-foot{display:grid;gap:6px;margin-top:auto;padding-top:6px}
+.slot .track{height:6px}
+.slot .slot-err{font-size:12px}
+.track{height:8px;border-radius:8px;background:var(--track);overflow:hidden;position:relative}
+.track i{display:block;height:100%;width:0;border-radius:8px;background:var(--accent);transition:width .2s linear}
+.track i.done{background:var(--done)}
+.track i.bad{background:var(--bad);width:100%}
+.track i.paused{background:var(--warn-bar)}
+.track.indet i{width:35%;position:absolute;animation:indet 1.1s ease-in-out infinite}
+@keyframes indet{0%{left:-35%}100%{left:100%}}
+.slot-meta{display:flex;justify-content:space-between;align-items:center;gap:4px;font-size:12px;color:var(--ink-3);min-height:26px;font-variant-numeric:tabular-nums}
+.slot-meta .st{font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slot-meta .st.ok{color:var(--ok)} .slot-meta .st.warn{color:var(--warn)}
+.slot-meta .add{font-family:var(--sans);color:var(--accent);font-weight:500}
+.act{appearance:none;border:0;background:transparent;color:var(--accent);font-size:12px;font-weight:500;padding:3px 7px;border-radius:5px;cursor:pointer;flex:none}
+.act:hover{background:var(--accent-soft)}
+.count-badge{background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;white-space:nowrap}
+
+/* ---------- Additional documents (extras) ---------- */
+.extra-head{padding:16px 20px 6px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.extra-head h2{margin:0;font-size:16px;font-weight:600}
+.extra-head span{font-size:13px;color:var(--ink-3)}
+.xlist{padding:0 20px 6px}
+.xrow{padding:12px 2px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.xrow:last-child{border-bottom:0}
+.xrow.is-error{background:var(--bad-soft);border-radius:8px;padding:10px 10px}
+.xrow-main{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.xrow-main .fname{font-size:14px;color:var(--ink);font-weight:500;min-width:0}
+.xrow-acts{display:flex;align-items:center;gap:6px;flex:none}
+.move{font:inherit;font-size:13px;color:var(--accent);background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:5px 8px;cursor:pointer;max-width:200px}
+.move:hover{border-color:var(--accent)}
+.slot .move{max-width:100%;width:100%;font-size:12px;padding:3px 4px}
+
+/* ---------- Extraction preview ---------- */
+.extract-head{padding:16px 20px 6px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.extract-head h2{margin:0;font-size:16px;font-weight:600}
+.extract-head span{font-size:13px;color:var(--ink-3)}
+.extract-tbl{padding:0 20px}
+.extract-tbl table{min-width:520px;table-layout:fixed}
+.extract-tbl th:nth-child(1){width:38%}.extract-tbl th:nth-child(2){width:28%}
+.extract-tbl td{padding:2px 4px}
+.extract-tbl th:last-child,.extract-tbl td:last-child{width:36px}
+.ex-in{width:100%;font:inherit;font-size:13px;padding:8px 9px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--ink)}
+.ex-in:hover{background:var(--sunken)}
+.ex-in:focus{background:var(--surface);border-color:var(--accent);outline:none}
+.extract-foot{padding:10px 20px 14px}
+#extract-panel{border-width:1.5px}
+.ex-group td{padding:14px 8px 6px!important;border-bottom:1px solid var(--line)}
+.ex-group td{display:table-cell}
+.ex-src{font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:2px 9px;border-radius:999px;margin-right:8px}
+.ex-file{font-size:13px;color:var(--ink-2);font-family:var(--mono)}
+.ex-n{font-size:12px;color:var(--ink-3);margin-left:8px}
+.ex-empty{color:var(--ink-3);font-size:13px;padding:14px 8px!important}
+
+/* ---------- Intake ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.intake{overflow:hidden}
+.confirm{display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap;padding:12px 20px;background:var(--warn-soft);border-bottom:1px solid var(--line);font-size:14px}
+.confirm span{flex:1 1 260px;overflow-wrap:anywhere}
+.tabs{display:grid;grid-template-columns:repeat(2,1fr);border-bottom:1px solid var(--line);background:var(--sunken)}
+.tab{appearance:none;border:0;background:transparent;color:var(--ink-2);font-weight:500;padding:13px 10px 11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab svg{width:18px;height:18px;flex:none}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--accent);border-bottom-color:var(--accent)}
+@media (max-width:520px){.tab{flex-direction:column;gap:4px;font-size:13px}}
+.pane{padding:22px 20px 20px;display:grid;gap:14px}
+.hint{margin:0;color:var(--ink-2);font-size:14px}
+label{font-size:13px;font-weight:500;color:var(--ink-2)}
+.field{display:grid;gap:6px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=url],input[type=text],select.inp,textarea{flex:1 1 260px;min-width:0;font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+select.inp{flex:0 1 220px}
+textarea{width:100%;min-height:70px;resize:vertical}
+input::placeholder,textarea::placeholder{color:var(--ink-3)}
+[aria-invalid="true"]{border-color:var(--bad)!important}
+.msg{font-size:13px;margin:0;display:grid;gap:3px}
+.msg:empty{display:none}
+.msg .e{color:var(--bad)} .msg .o{color:var(--ok)}
+.browse{display:grid;place-items:center;gap:10px;text-align:center;padding:28px 16px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.browse small{color:var(--ink-3);font-size:13px}
+.drop{display:grid;place-items:center;gap:6px;text-align:center;padding:34px 16px;border:2px dashed var(--line);border-radius:10px;background:var(--bg);cursor:pointer;transition:border-color .15s,background .15s}
+.drop svg{width:32px;height:32px;color:var(--accent)}
+.drop span{color:var(--ink-2);font-size:14px}
+.drop .btn{margin-top:6px}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop u{color:var(--accent);text-underline-offset:3px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+fieldset[disabled]{opacity:.5}
+
+/* ---------- Buttons ---------- */
+.btn{appearance:none;font-weight:600;font-size:14px;border-radius:9px;padding:10px 18px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;gap:8px;justify-content:center;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn-cta{background:var(--cta);color:var(--on-cta);font-size:17px;padding:14px 30px;border-radius:10px}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-cta:hover,.btn-primary:hover{filter:brightness(1.12)}
+.btn-ghost{background:transparent;color:var(--ink-2);border-color:var(--line)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink-3)}
+.btn-sm{padding:6px 12px;font-size:13px}
+.btn[disabled]{opacity:.4;cursor:not-allowed;filter:none}
+.spin{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.actionbar{display:flex;justify-content:space-between;align-items:center;gap:12px 18px;flex-wrap:wrap}
+.todo{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap;font-size:14px;color:var(--ink-2);flex:1 1 300px}
+.todo .ic{width:18px;height:18px;flex:none}
+.todo.warn .ic{color:var(--man)}
+.todo.ok .ic{color:var(--ok)}
+.linkbtn{appearance:none;border:0;background:none;padding:0;color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:14px}
+.todo .sep{color:var(--line)}
+
+/* ---------- Review / adjudicate / summary ---------- */
+.step-panel{padding:22px 20px;display:grid;gap:18px}
+.step-panel h2{margin:0;font-size:19px}
+.step-panel .lead{margin:-10px 0 0;color:var(--ink-2);font-size:14px;max-width:70ch}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:600px}
+th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.miss{background:var(--sunken);color:var(--ink-3)}
+.pill.man{background:var(--man-soft);color:var(--man)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink);font-weight:400}
+.check input{margin-top:3px;width:16px;height:16px;accent-color:var(--accent);flex:none}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+
+.adj-list{display:grid;gap:12px}
+.adj{border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px;background:var(--bg)}
+.adj.missing{opacity:.7}
+.adj-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.adj-head strong{font-size:16px}
+.adj-head .f{display:block;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface);flex-wrap:wrap}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:8px 14px;font-size:13px;font-weight:500;color:var(--ink-2);cursor:pointer;border-right:1px solid var(--line);display:flex;gap:6px;align-items:center}
+.seg label:last-of-type{border-right:0}
+.seg input:focus-visible+label{outline:2px solid var(--accent);outline-offset:-2px}
+.seg input[value="approve"]:checked+label{background:var(--ok-soft);color:var(--ok)}
+.seg input[value="changes"]:checked+label{background:var(--warn-soft);color:var(--warn)}
+.seg input[value="reject"]:checked+label{background:var(--bad-soft);color:var(--bad)}
+.outcome{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-radius:10px;background:var(--sunken);font-size:14px}
+.outcome strong{font-size:15px}
+
+.sum-head{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.sum-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;flex:none}
+.sum-icon svg{width:26px;height:26px}
+.sum-icon.ok{background:var(--ok-soft);color:var(--ok)}
+.sum-icon.warn{background:var(--warn-soft);color:var(--warn)}
+.sum-icon.bad{background:var(--bad-soft);color:var(--bad)}
+.sum-head p{margin:2px 0 0;color:var(--ink-2);font-size:14px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.fact{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.fact span{display:block;font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.fact b{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fact b.mono{font-family:var(--mono);font-weight:500}
+
+/* ---------- Toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 12px 10px 16px;border-radius:9px;font-size:14px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;max-width:calc(100% - 32px);display:flex;align-items:center;gap:14px;z-index:40}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{appearance:none;border:0;background:transparent;color:var(--bg);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px}
+
+/* ---------- Scenario panel (#scenarios only) ---------- */
+.scen{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--surface);border:1px dashed var(--ink-3);border-radius:10px;padding:12px 14px;display:grid;gap:8px;font-size:12px;width:250px;box-shadow:0 8px 24px rgb(0 0 0 / .1)}
+.scen strong{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.scen label{display:grid;gap:3px;font-size:12px}
+.scen select{font:inherit;font-size:13px;padding:5px 6px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.track.indet i{animation:none;left:0;width:100%;opacity:.5}.spin{animation-duration:2s}}
+</style>
 </head>
 <body>
 <!-- ============ App bar ============ -->
 <header class="appbar">
   <div class="appbar-in">
     <div class="brand">
-      <img class="brand-logo" src="assets/iqa-logo.png" alt="dentsu iQA logo">
-      IQA Programmatic display
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="var(--cta)"/><path d="M7 9.5a1.5 1.5 0 0 1 1.5-1.5h3l1.5 1.5h4.5A1.5 1.5 0 0 1 19 11v5.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 7 16.5z" fill="none" stroke="var(--on-cta)" stroke-width="1.6"/></svg>
+      Upload Documents
     </div>
     <div class="spacer"></div>
     <button class="iconbtn" type="button" aria-label="Help" id="help-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.5.2-.8.6-.8 1.1v.5M12 17h.01"/></svg></button>
@@ -31,15 +314,12 @@
       </div>
     </div>
   </div>
-  <nav class="stepper" aria-label="Progress">
-    <ol class="stepper-in" id="stepper"></ol>
-  </nav>
 </header>
 
 <main>
   <div id="banners" style="display:grid;gap:10px" aria-live="polite"></div>
 
-  <div class="pagehead" id="pagehead" hidden>
+  <div class="pagehead">
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <h1>Upload campaign documents</h1>
       <span class="count-badge" id="doc-count" hidden></span>
@@ -50,91 +330,21 @@
     </div>
   </div>
 
-  <!-- ===== Connect / first ingestion experience ===== -->
-  <section class="panel connect-panel" id="connect-view" aria-label="Connect your documents">
-    <div id="connect-welcome" class="connect-state">
-      <div class="connect-hero">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-1-7.9A5 5 0 0 1 15.9 8H16a4 4 0 0 1 1 7.9"/><path d="M12 12v7M9 16l3-3 3 3"/></svg>
-        <h2>Welcome to the IQA Programmatic Display Experiment</h2>
-        <p class="connect-lead">Connect your campaign artifacts. We'll spot potential issues early and help prevent costly errors before you go live.</p>
-      </div>
-      <div class="connect-info">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
-        <span>We'll read the files in this location to find what's needed for merchandising.</span>
-      </div>
-      <p class="connect-tip">Tip: keep the files you use before working in DV360 in one SharePoint location. If they're not organized yet, do that first.</p>
-      <div class="connect-actions">
-        <button class="btn btn-cta" type="button" id="connect-sp-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
-          Connect SharePoint
-        </button>
-        <button class="linkbtn" type="button" id="connect-skip-btn">Or upload files from your computer instead</button>
-      </div>
-    </div>
-
-    <div id="connect-returning" class="connect-state" hidden>
-      <div class="connected-row">
-        <span class="connected-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>
-          Connected to <strong id="connected-name"></strong>
-        </span>
-        <div class="row">
-          <button class="btn btn-ghost btn-sm" type="button" id="connect-view-btn">View files</button>
-          <button class="btn btn-ghost btn-sm" type="button" id="connect-change-btn">Change location</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="connect-reading" class="connect-state" hidden>
-      <p class="hint">Reading your files.</p>
-      <div class="track indet"><i></i></div>
-    </div>
-
-    <div id="connect-found" class="connect-state" hidden>
-      <div class="found-head">
-        <div>
-          <h2>Here's what we found</h2>
-          <p id="found-where"></p>
-        </div>
-        <div class="found-actions">
-          <button class="linkbtn" type="button" id="connect-back-btn">Choose a different folder</button>
-          <button class="btn btn-cta" type="button" id="connect-continue-btn">Looks good, continue</button>
-        </div>
-      </div>
-      <div class="found-stats" id="found-summary"></div>
-      <div class="tbl-wrap"><table class="found-table">
-        <thead><tr><th>File</th><th>Matched to</th><th>Size</th><th>Status</th></tr></thead>
-        <tbody id="found-list"></tbody>
-      </table></div>
-    </div>
-  </section>
-
   <!-- ===== Upload ===== -->
   <div id="view-1" style="display:grid;gap:22px">
-    <div id="docs-area" style="display:grid;gap:22px" hidden>
-        <section class="panel" style="padding:18px 20px" aria-label="Campaign summary">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap">
-            <h2 style="margin:0;font-size:16px;font-weight:600">Campaign summary</h2>
-            <span style="font-size:13px;color:var(--ink-3)">Cloned from Spring_Auto_2025</span>
-          </div>
-          <div class="facts" style="margin-top:12px">
-            <div class="fact"><span>Campaign</span><b id="cs-name"></b></div>
-            <div class="fact"><span>Campaign ID</span><b class="mono" id="cs-id"></b></div>
-            <div class="fact"><span>Documents attached</span><b id="cs-doc-count">0</b></div>
-            <div class="fact"><span>Platform</span><b>Google DV360</b></div>
-          </div>
-        </section>
+    <div id="docs-area" style="display:grid;gap:22px">
         <section aria-label="Documents" class="slots" id="slots"></section>
 
     <section class="panel" id="extract-panel" aria-label="Extracted campaign details">
       <div class="extract-head">
         <h2>Extracted campaign details</h2>
-        <span>Grouped by the document each row was pulled from. Review before continuing.</span>
+        <span>Grouped by the document each row was pulled from. Review and correct before continuing.</span>
       </div>
       <div class="extract-tbl tbl-wrap"><table>
         <thead><tr><th>Line item</th><th>Insertion order</th><th>Campaign name</th><th></th></tr></thead>
         <tbody id="extract-body"></tbody>
       </table></div>
+      <div class="extract-foot"><button class="btn btn-ghost btn-sm" type="button" id="extract-add">+ Add row</button></div>
     </section>
 
     <section class="panel" id="extra-panel" hidden aria-label="Additional documents">
@@ -189,101 +399,19 @@
 
     <div class="actionbar">
       <div class="todo" id="todo" role="status"></div>
-      <button class="btn btn-cta" id="to-review" type="button">Check documents</button>
+      <button class="btn btn-cta" id="to-review" type="button">Review documents</button>
     </div>
     </div>
   </div>
-
-  <!-- ===== Results: Summary + Line-by-line comparison ===== -->
-  <section id="validation-view" hidden style="display:grid;gap:22px">
-    <div class="pagehead">
-      <h1>Mismatches surfaced across documents</h1>
-      <p style="margin:0;color:var(--ink-2)">Every parameter is scored for confidence, with critical and review-level flags called out inline.</p>
-    </div>
-
-    <div class="rtabs" role="tablist" aria-label="Results views" id="rtabs">
-      <button class="rtab" type="button" role="tab" id="rtab-summary" aria-controls="res-summary" aria-selected="true">Summary <span class="rbadge" id="rbadge-summary"></span></button>
-      <button class="rtab" type="button" role="tab" id="rtab-compare" aria-controls="res-compare" aria-selected="false" tabindex="-1">Line-by-line comparison <span class="rbadge" id="rbadge-compare"></span></button>
-    </div>
-
-    <div class="res-panel" id="res-summary" role="tabpanel" aria-labelledby="rtab-summary">
-      <section class="panel val-card" style="padding:20px;display:grid;gap:16px">
-        <div class="val-head">
-          <span class="lbl">Geo validation engine <span class="badge opt">Live</span></span>
-          <button class="btn btn-ghost btn-sm" type="button" id="recheck-btn">Re-check</button>
-        </div>
-        <p class="val-sub" id="val-campaign-line"></p>
-        <div class="facts" id="val-facts"></div>
-        <div>
-          <h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Parameter validation</h3>
-          <div style="display:grid;gap:10px" id="val-rows"></div>
-        </div>
-      </section>
-
-      <section>
-        <h2 style="font-size:16px;margin:0 0 8px">Potential issues <span class="tally" id="issue-tally"></span></h2>
-        <div style="display:grid;gap:6px" id="issue-list"></div>
-      </section>
-
-      <section class="panel" style="padding:16px;display:grid;gap:4px">
-        <h2 style="margin:0;font-size:16px">Here's what to fix</h2>
-        <p style="margin:0;color:var(--ink-2);font-size:14px">Focus on these priorities to prevent the issues above.</p>
-        <h3 style="margin:10px 0 0;font-size:15px">Priority fixes</h3>
-        <div id="fix-list"></div>
-      </section>
-
-      <div class="foot">
-        <button class="btn btn-ghost" type="button" id="back-to-upload">Back to upload</button>
-      </div>
-    </div>
-
-    <div class="res-panel" id="res-compare" role="tabpanel" aria-labelledby="rtab-compare" hidden>
-      <div id="cmp-root"></div>
-    </div>
-  </section>
 
 </main>
-
-<div class="modal-backdrop" id="sp-modal-backdrop" hidden>
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sp-modal-title">
-    <div class="modal-head">
-      <h3 id="sp-modal-title">Connect SharePoint or OneDrive</h3>
-      <button class="iconbtn" type="button" id="sp-modal-close" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <div id="sp-step-link">
-        <p class="hint">Paste the link to the SharePoint or OneDrive location where your campaign files are stored.</p>
-        <div class="field">
-          <label for="sp-modal-url">SharePoint or OneDrive link</label>
-          <input type="url" id="sp-modal-url" placeholder="https://yourcompany.sharepoint.com/sites/...">
-          <small style="color:var(--ink-3);font-size:12px">Demo: <button type="button" class="linkbtn" id="sp-use-demo" style="font-size:12px">use the sample link</button></small>
-        </div>
-        <p class="msg" id="sp-modal-msg" role="status"></p>
-        <div class="row" style="justify-content:flex-end">
-          <button class="btn btn-primary" type="button" id="sp-modal-connect">Connect</button>
-        </div>
-      </div>
-      <div id="sp-step-browse" hidden>
-        <div class="crumbs" id="sp-crumbs"></div>
-        <div id="sp-browse-list"></div>
-        <div class="row" style="justify-content:flex-end">
-          <button class="btn btn-cta" type="button" id="sp-use-folder" hidden>Use this folder</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toast-text"></span><button type="button" id="toast-act" hidden></button></div>
 <input type="file" id="file-input" multiple hidden>
 
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
-<script src="js/triage.js"></script>
-<script src="js/compare.js"></script>
 <script>
 /* =====================================================================
-   CONFIG. Wire to your backend. Leave endpoints empty to run the built-in
+   CONFIG — wire to your backend. Leave endpoints empty to run the built-in
    simulator (add #scenarios to the URL to force failures for demos).
    ===================================================================== */
 const CONFIG = {
@@ -291,9 +419,8 @@ const CONFIG = {
   linkEndpoint:   "",   // POST JSON {slot, campaignId, url}      → 2xx {id,name,size} | 401 | 403 | 404
   submitEndpoint: "",   // "Review documents": POST JSON {campaign, documents, extracted} → 2xx {reference}
   reviewUrl:      "",   // optional: page of your review system to open after a successful hand-off
-  signInUrl: "login.html",
+  signInUrl: "/login",
   maxBytes: null,       // no file size limit
-  demoControls: true,   // show the "New user / Returning user" switch. Set to false for real users.
 };
 /* Signed-in user and campaign normally come from your session/API. */
 const USER = {name:"Alex Morgan", email:"alex.morgan@company.com", role:"Campaign Manager"};
@@ -323,7 +450,7 @@ const STEPS = ["Upload","Review","Adjudicate","Summary"];
 const $ = s => document.querySelector(s);
 const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const extOf = n => ((/\.([a-z0-9]+)$/i.exec(n)||[])[1]||"").toLowerCase();
-const fmt = b => b==null?"-":b<1024?b+" B":b<1048576?Math.max(1,Math.round(b/1024))+" KB":(+(b/1048576).toFixed(1))+" MB";
+const fmt = b => b==null?"—":b<1024?b+" B":b<1048576?Math.max(1,Math.round(b/1024))+" KB":(+(b/1048576).toFixed(1))+" MB";
 const allSlots = () => SLOTS.concat(extraSlots);
 const slotOf = k => allSlots().find(s=>s.key===k);
 const typeList = s => s.accept.map(a=>a.toUpperCase()).join(", ");
@@ -345,21 +472,12 @@ const handles = {};
 let extraSlots = [], extraSeq = 0;      // documents added beyond the named cards
 let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaign name preview rows
 
-/* ============================ auth gate ============================ */
-(function requireAuth(){
-  if(CONFIG.uploadEndpoint) return; // real backend: let the server enforce auth
-  if(!sessionStorage.getItem("iqa_auth")){
-    location.href = CONFIG.signInUrl + "?return=" + encodeURIComponent(location.pathname + location.search);
-  }
-})();
-
 /* ============================ shell ============================ */
 (function shell(){
   $("#avatar").textContent = USER.name.split(/\s+/).map(p=>p[0]).slice(0,2).join("").toUpperCase();
   $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(USER.role)}</small>`;
   $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}`;
-  $("#limits-text").innerHTML = `<b>No file size limit.</b> PDF, Word, PowerPoint, Excel and CSV are matched to a document automatically. Any other file type is welcome too, as an additional document.`;
-  $("#cs-name").textContent = campaign.name; $("#cs-id").textContent = campaign.id;
+  $("#limits-text").innerHTML = `<b>No file size limit.</b> PDF, Word, PowerPoint, Excel and CSV are matched to a document automatically — any other file type is welcome too, as an additional document.`;
   $("#browse-types").textContent = `${ALL_EXT.map(a=>a.toUpperCase()).join(", ")} match automatically · any other file type is added as an additional document`;
   const btn=$("#user-btn"), menu=$("#user-menu");
   const close=()=>{ menu.hidden=true; btn.setAttribute("aria-expanded","false"); };
@@ -368,7 +486,6 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
   document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !menu.hidden){ close(); btn.focus(); } });
   $("#signout").addEventListener("click",()=>{ close();
     if(Object.values(docs).some(d=>ACTIVE.includes(d.status))){ toast("Finish or cancel uploads in progress before signing out."); return; }
-    sessionStorage.removeItem("iqa_auth");
     location.href = CONFIG.signInUrl; });
   $("#help-btn").addEventListener("click",()=>toast("Add files of any type or size. Matching types go straight to a document; anything else is added as an additional document."));
 })();
@@ -399,7 +516,7 @@ function cardParts(d, s){
     case "uploading": { const p=Math.floor(d.progress); return {bar:`<div class="track"><i style="width:${p}%"></i></div>`, st:`<span class="st">${p}%</span>`}; }
     case "paused":    return {bar:`<div class="track"><i class="paused" style="width:${Math.max(4,Math.floor(d.progress))}%"></i></div>`, st:`<span class="st warn" title="${d.pauseReason==="session"?"Sign in needed":"Offline"}">Paused</span>`};
     case "scanning":  return {bar:`<div class="track indet"><i></i></div>`, st:`<span class="st">Scanning…</span>`};
-    case "ready":     return {bar:`<div class="track"><i class="done" style="width:100%"></i></div>`, st:`<span class="st ok" title="${SRC[d.source]}">${d.size?fmt(d.size):"Link"}</span>${s.extra?"":`<span><button type="button" class="act" data-act="replace">Replace</button></span>`}`};
+    case "ready":     return {bar:`<div class="track"><i class="done" style="width:100%"></i></div>`, st:`${movingKey===s.key&&!s.extra?"":`<span class="st ok" title="${SRC[d.source]}">${d.size?fmt(d.size):"Link"}</span>`}${s.extra?"":(movingKey===s.key?moveSelect(s.key,d):`<span><button type="button" class="act" data-act="move">Move</button><button type="button" class="act" data-act="replace">Replace</button></span>`)}`};
     case "error":     return {bar:`<div class="track"><i class="bad"></i></div>`, st:`<span class="st"></span>`+(d.retryable?`<button type="button" class="act" data-act="retry">Retry</button>`:(s.extra?"":`<button type="button" class="act" data-act="replace">Choose another</button>`))};
   }
 }
@@ -428,7 +545,6 @@ function renderSlots(){
 function renderCount(){
   const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length, el=$("#doc-count");
   el.hidden = n===0; el.textContent = `${n} document${n===1?"":"s"} uploaded`;
-  $("#cs-doc-count").textContent = n;
 }
 function renderExtraList(){
   $("#extra-panel").hidden = extraSlots.length===0;
@@ -520,7 +636,7 @@ function precheck(file, slot){
   return null;
 }
 /* Pick the document a file belongs to: name keywords first, then first empty slot of that type.
-   Returns null when nothing matches. The caller then adds it as an additional document. */
+   Returns null when nothing matches — the caller then adds it as an additional document. */
 function route(name, ext){
   const open=SLOTS.filter(s=>!docs[s.key] && s.accept.includes(ext));
   return (open.find(s=>s.match && s.match.test(name)) || open[0])?.key || null;
@@ -695,8 +811,9 @@ function slotAction(key, act){
     else { delete docs[key]; if(isExtra) extraSlots=extraSlots.filter(x=>x.key!==key); toast("Upload cancelled."); }
     renderSlots(); return; }
   if(act==="retry"){ d.loaded=0; d.progress=0; start(key); return; }
+  if(act==="move"){ movingKey=key; renderSlots(); document.querySelector(`[data-slot="${key}"] select.move`)?.focus(); return; }
   if(act==="replace"){
-    if(isExtra) return; // extras have no fixed slot to replace into, remove and re-add instead
+    if(isExtra) return; // extras have no fixed slot to replace into — remove and re-add instead
     if(d?.source==="sharepoint"){ selectTab($("#tab-sp")); $("#sp-url").focus(); pickTarget={key,replace:true,link:true}; }
     else pickFor(key,true);
     return; }
@@ -741,6 +858,7 @@ function moveDoc(from, to){
 }
 $("#extra-list").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel && sel.value) moveDoc(sel.dataset.move, sel.value); });
 $("#slots").addEventListener("change",e=>{ const sel=e.target.closest("[data-move]"); if(sel) moveDoc(sel.dataset.move, sel.value); });
+$("#slots").addEventListener("keydown",e=>{ if(e.key==="Escape" && movingKey){ movingKey=null; renderSlots(); } });
 $("#extra-list").addEventListener("click",e=>{
   const row=e.target.closest("[data-slot]"); if(!row) return;
   const act=e.target.closest("[data-act]")?.dataset.act; if(act) slotAction(row.dataset.slot,act);
@@ -762,7 +880,7 @@ function selectTab(t,focus=true){ tabs.forEach(x=>{ const on=x===t; x.setAttribu
 tabs.forEach((t,i)=>{ t.tabIndex=i?-1:0; t.addEventListener("click",()=>selectTab(t));
   t.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ e.preventDefault(); selectTab(tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length]); } }); });
 
-/* SharePoint link, routed automatically like a file; anything that doesn't match a
+/* SharePoint link — routed automatically like a file; anything that doesn't match a
    named document is still accepted, as an additional document (no "pick a type" step). */
 $("#pane-sp").addEventListener("submit",e=>{
   e.preventDefault();
@@ -856,9 +974,9 @@ $("#to-review").addEventListener("click",async()=>{
       await new Promise(r=>setTimeout(r,900));
       if(takeScen("submit")==="fail") throw new Error("We couldn't send the documents for review. Nothing was lost; try again.");
     }
-    btn.textContent="Check documents"; renderTodo();
-    showValidationView();
-  }catch(err){ btn.textContent="Check documents"; renderTodo(); toast(err.message); }
+    btn.textContent="Review documents"; renderTodo();
+    toast(`${payload.documents.length} document${payload.documents.length===1?"":"s"} sent for review.`);
+  }catch(err){ btn.textContent="Review documents"; renderTodo(); toast(err.message); }
 });
 
 /* ============================ extraction preview ============================ */
@@ -891,17 +1009,26 @@ function renderExtraction(){
     const label = !src ? "Added manually" : sl.extra ? "Additional document" : sl.title;
     html.push(`<tr class="ex-group"><td colspan="4"><span class="ex-src">${esc(label)}</span>${d?`<span class="ex-file" title="${esc(d.name)}">${esc(d.name)}</span>`:""}<span class="ex-n">${rows.length} row${rows.length>1?"s":""}</span></td></tr>`);
     rows.forEach(r=>html.push(`<tr data-row="${r.id}">
-      <td class="ex-ro">${esc(r.li)}</td>
-      <td class="ex-ro">${esc(r.io)}</td>
-      <td class="ex-ro">${esc(r.cn)}</td>
+      <td><input class="ex-in" data-f="li" value="${esc(r.li)}" aria-label="Line item${d?", from "+esc(d.name):""}"></td>
+      <td><input class="ex-in" data-f="io" value="${esc(r.io)}" aria-label="Insertion order"></td>
+      <td><input class="ex-in" data-f="cn" value="${esc(r.cn)}" aria-label="Campaign name"></td>
       <td><button type="button" class="xbtn" data-rm-row="${r.id}" aria-label="Remove row">${X}</button></td>
     </tr>`));
   });
   $("#extract-body").innerHTML=html.join("");
 }
+$("#extract-body").addEventListener("input",e=>{
+  const tr=e.target.closest("[data-row]"); if(!tr) return;
+  const row=extraction.find(r=>r.id==tr.dataset.row); if(row) row[e.target.dataset.f]=e.target.value;
+});
 $("#extract-body").addEventListener("click",e=>{
   const b=e.target.closest("[data-rm-row]"); if(!b) return;
   extraction=extraction.filter(r=>r.id!=b.dataset.rmRow); extractSig=""; syncExtraction();
+});
+$("#extract-add").addEventListener("click",()=>{
+  extraction.push({id:++extractSeq, source:null, li:"", io:"", cn:campaign.name});
+  extractSig=""; syncExtraction();
+  $("#extract-body").querySelector("tr:last-child input")?.focus();
 });
 
 /* ============================ scenario panel (#scenarios) ============================ */
@@ -920,348 +1047,8 @@ if(location.hash==="#scenarios"){
     renderBanners(); renderSlots(); });
 }
 
-/* ============================ connect / ingestion experience ============================ */
-const DEMO_LINK = "https://dentsu.sharepoint.com/sites/DrivenBrands/CampaignDocuments";
-const DEMO_FOLDERS = {
-  "Q3 2026 Display": [
-    {name:"Q3_2026_Display_MediaPlan.pdf", size:862*1024, slot:"mediaplan"},
-    {name:"Budget_Tracker_Q3.xlsx", size:58*1024, slot:"budget"},
-    {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
-    {name:"MAF_Signed.pdf", size:301*1024, slot:"maf"},
-    {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"tsheet"},
-    {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"tag"},
-    {name:"MediaPlan_OLD_v1.pdf", size:790*1024, skip:"An older version, already replaced"},
-    {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
-  ],
-  "Q4 Regional Auto": [
-    {name:"Q4_Regional_Auto_Media_Plan.xlsx", size:214*1024, slot:"mediaplan"},
-    {name:"Budget_Tracker_Q4.xlsx", size:58*1024, slot:"budget"},
-    {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
-    {name:"MAF_Signed.pdf", size:301*1024, slot:"maf"},
-    {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"tsheet"},
-    {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"tag"},
-    {name:"MediaPlan_OLD_v1.xlsx", size:190*1024, skip:"An older version, already replaced"},
-    {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
-  ],
-  "Archive": [],
-  "Templates": [],
-};
-const CONN_KEY = "iqa_sp_connection";
-/* The user's saved SharePoint connection. Stored per user in this browser for now.
-   For production, replace the body of get/set/clear with calls to your backend (see api.js). */
-const connStore = {
-  key(){ return CONN_KEY + ":" + USER.email; },
-  get(){ try{ return JSON.parse(localStorage.getItem(this.key()) || "null"); }catch(e){ return null; } },
-  set(v){ try{ localStorage.setItem(this.key(), JSON.stringify(v)); }catch(e){} },
-  clear(){ try{ localStorage.removeItem(this.key()); }catch(e){} }
-};
-const fileSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>`;
-const folderSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`;
-
-function showConnectState(id){ ["connect-welcome","connect-returning","connect-reading","connect-found"].forEach(s=>$("#"+s).hidden = s!==id); $("#connect-view").classList.toggle("wide", id==="connect-found"); }
-function revealDocsArea(){ $("#connect-view").hidden=true; $("#validation-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; setStep(2); }
-
-function openSpModal(){
-  $("#sp-modal-backdrop").hidden=false;
-  $("#sp-step-link").hidden=false; $("#sp-step-browse").hidden=true;
-  $("#sp-modal-url").value=""; setMsg($("#sp-modal-msg"));
-  $("#sp-modal-url").focus();
-}
-function closeSpModal(){ $("#sp-modal-backdrop").hidden=true; }
-$("#connect-sp-btn").addEventListener("click", openSpModal);
-$("#connect-change-btn").addEventListener("click", ()=>{ connStore.clear(); openSpModal(); });
-$("#sp-modal-close").addEventListener("click", closeSpModal);
-$("#sp-modal-backdrop").addEventListener("click", e=>{ if(e.target.id==="sp-modal-backdrop") closeSpModal(); });
-$("#sp-use-demo").addEventListener("click", ()=>{ $("#sp-modal-url").value=DEMO_LINK; });
-$("#connect-skip-btn").addEventListener("click", ()=>{ closeSpModal(); revealDocsArea(); });
-
-$("#sp-modal-connect").addEventListener("click", ()=>{
-  const raw=$("#sp-modal-url").value.trim(), msg=$("#sp-modal-msg"), btn=$("#sp-modal-connect");
-  if(!raw){ setMsg(msg,[],["Enter a SharePoint or OneDrive link to continue."]); return; }
-  btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Connecting.`;
-  setTimeout(()=>{
-    btn.disabled=false; btn.textContent="Connect";
-    if(raw.replace(/\/+$/,"").toLowerCase() !== DEMO_LINK.toLowerCase()){
-      setMsg(msg,[],["We couldn't connect to this location. Check the link and that you have access, then try again."]);
-      return;
-    }
-    setMsg(msg); openFolderBrowser();
-  }, 800);
-});
-
-let currentFolder=null;
-function openFolderBrowser(){ $("#sp-step-link").hidden=true; $("#sp-step-browse").hidden=false; renderCrumbs(null); renderFolderList(); }
-function renderCrumbs(folder){
-  $("#sp-crumbs").innerHTML = folder
-    ? `<button type="button" data-crumb="root">Driven Brands</button><span>/</span><span>${esc(folder)}</span>`
-    : `<span>Driven Brands</span>`;
-}
-$("#sp-crumbs").addEventListener("click", e=>{ if(e.target.closest("[data-crumb]")){ renderCrumbs(null); renderFolderList(); } });
-function renderFolderList(){
-  currentFolder=null; $("#sp-use-folder").hidden=true;
-  $("#sp-browse-list").innerHTML = Object.keys(DEMO_FOLDERS).map(name=>
-    `<div class="browse-row" data-folder="${esc(name)}">${folderSvg}<span>${esc(name)}</span></div>`
-  ).join("");
-}
-$("#sp-browse-list").addEventListener("click", e=>{
-  const row=e.target.closest("[data-folder]"); if(!row) return;
-  currentFolder = row.dataset.folder;
-  renderCrumbs(currentFolder);
-  const files = DEMO_FOLDERS[currentFolder] || [];
-  if(!files.length){ $("#sp-browse-list").innerHTML = `<div class="browse-empty">No campaign files found in this folder.</div>`; $("#sp-use-folder").hidden=true; return; }
-  $("#sp-browse-list").innerHTML = files.map(f=>`<div class="browse-row file">${fileSvg}<span>${esc(f.name)}</span></div>`).join("");
-  $("#sp-use-folder").hidden=false;
-});
-$("#sp-use-folder").addEventListener("click", ()=>{
-  closeSpModal();
-  connStore.set({site:"Driven Brands", folder:currentFolder, url:DEMO_LINK});
-  runIngestion(currentFolder);
-});
-
-function runIngestion(folder){
-  showConnectState("connect-reading");
-  const files = DEMO_FOLDERS[folder] || [];
-  setTimeout(()=>{ $("#found-where").innerHTML=`From <b>Driven Brands / ${esc(folder)}</b> on SharePoint`; renderFound(files); showConnectState("connect-found"); }, 1200);
-}
-let foundFiles=[];
-function renderFound(files){
-  foundFiles=files;
-  const ready=files.filter(f=>f.slot), skipped=files.filter(f=>f.skip);
-  const ic={found:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>`,
-    ok:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>`,
-    skip:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M7.5 7.5l9 9"/></svg>`};
-  $("#found-summary").innerHTML = `
-    <div class="fact"><span class="ic">${ic.found}</span><div><span>Files found</span><b>${files.length}</b></div></div>
-    <div class="fact ok"><span class="ic">${ic.ok}</span><div><span>Ready to use</span><b>${ready.length}</b></div></div>
-    <div class="fact skip"><span class="ic">${ic.skip}</span><div><span>Skipped</span><b>${skipped.length}</b></div></div>`;
-  $("#found-list").innerHTML = files.map(f=>`<tr class="${f.slot?"":"is-skip"}">
-      <td><div class="fcell">${fileSvg}<span title="${esc(f.name)}">${esc(f.name)}</span></div></td>
-      <td>${f.slot?esc(slotOf(f.slot)?.title||"—"):"—"}</td>
-      <td class="num">${fmt(f.size)}</td>
-      <td><span class="pill ${f.slot?"ok":"miss"}">${f.slot?"Ready":"Skipped"}</span>${f.skip?`<span class="why">${esc(f.skip)}</span>`:""}</td>
-    </tr>`).join("");
-  $("#connect-continue-btn").disabled = ready.length===0;
-}
-$("#connect-back-btn").addEventListener("click", ()=>{ openSpModal(); openFolderBrowser(); });
-$("#connect-continue-btn").addEventListener("click", ()=>{
-  const ready=foundFiles.filter(f=>f.slot);
-  ready.forEach(f=>commit(f.slot, {name:f.name, size:f.size, source:"sharepoint"}, {skipConfirm:true}));
-  revealDocsArea();
-  toast(`${ready.length} document${ready.length===1?"":"s"} added from SharePoint.`);
-});
-$("#connect-view-btn").addEventListener("click", ()=>{ const c=connStore.get(); if(c) runIngestion(c.folder); });
-
-function initConnect(){
-  const c=connStore.get();
-  if(c){ $("#connected-name").textContent = `${c.site} / ${c.folder}`; showConnectState("connect-returning"); }
-  else showConnectState("connect-welcome");
-}
-initConnect();
-
-/* ============================ demo switch: new vs returning user ============================ */
-/* Sits in the top bar next to the profile button. Hide it for real users with CONFIG.demoControls = false. */
-(function demoSwitch(){
-  if(CONFIG.demoControls === false) return;
-  const box = document.createElement("div");
-  box.className = "demo-switch";
-  box.setAttribute("role","group");
-  box.setAttribute("aria-label","Demo: choose which user view to show");
-  box.innerHTML = `<button type="button" data-mode="new">First-time view</button>
-    <button type="button" data-mode="returning">Returning view</button>`;
-  const bar = document.querySelector(".appbar-in"), user = bar && bar.querySelector(".user");
-  if(bar && user) bar.insertBefore(box, user); else document.body.appendChild(box);
-  const paint = () => box.querySelectorAll("button").forEach(b=>{
-    const on = (b.dataset.mode==="returning") === !!connStore.get();
-    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on);
-  });
-  box.addEventListener("click", e=>{
-    const b = e.target.closest("button[data-mode]"); if(!b) return;
-    if(b.dataset.mode==="new") connStore.clear();
-    else connStore.set({site:"Driven Brands", folder:Object.keys(DEMO_FOLDERS)[0], url:DEMO_LINK});
-    sessionStorage.removeItem("iqa_intake_state");
-    if(window.IQA_TRIAGE) IQA_TRIAGE.clearAll();
-    location.href = location.pathname;          // reload so the whole screen starts clean
-  });
-  paint();
-})();
-
-/* ============================ progress stepper: Connect → Upload → Check → Compare ============================ */
-const FLOW_STEPS = [
-  {id:"connect", label:"Connect"},
-  {id:"upload",  label:"Upload"},
-  {id:"check",   label:"Check"},
-  {id:"compare", label:"Compare"},
-];
-const flow = {current:1, reached:1, checked:false};
-const stepCheckSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4 4 10-10"/></svg>`;
-const issueIds = () => ISSUES.map((_,i)=>"iss-"+i);
-const issueTally = () => IQA_TRIAGE.counts(issueIds());
-
-function stepSub(i){
-  if(i===1){ const c=connStore.get(); return c ? c.folder : (flow.reached>=2 ? "From your computer" : "Link your files"); }
-  if(i===2){ const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length; return n ? `${n} document${n===1?"":"s"}` : "Add documents"; }
-  if(i===3){ if(!flow.checked) return "Run the checks"; const t=issueTally(); return t.open ? `${t.open} open` : "All resolved"; }
-  const s = window.IQA_COMPARE && IQA_COMPARE.summary();
-  return s ? (s.open ? `${s.open} open` : "All resolved") : "Line by line";
-}
-function renderStepper(){
-  $("#stepper").innerHTML = FLOW_STEPS.map((st,idx)=>{
-    const i=idx+1;
-    const state = i<flow.current ? "done" : i===flow.current ? "current" : i<=flow.reached ? "avail" : "locked";
-    const note = state==="done" ? " (completed)" : state==="locked" ? " (not available yet)" : "";
-    return `<li class="step is-${state}">
-      <button type="button" class="step-btn" data-step="${i}"${state==="current"?' aria-current="step"':""}${state==="locked"?' aria-disabled="true"':""}>
-        <span class="step-dot" aria-hidden="true">${state==="done"?stepCheckSvg:i}</span>
-        <span class="step-txt"><span class="step-name">${st.label}<span class="sr">${note}</span></span><span class="step-sub">${esc(stepSub(i))}</span></span>
-      </button>
-      ${i<FLOW_STEPS.length?'<span class="step-line" aria-hidden="true"></span>':""}
-    </li>`;
-  }).join("");
-}
-function focusHeading(n){
-  const h = n===1 ? document.querySelector("#connect-view .connect-state:not([hidden]) h2")
-          : n===2 ? $("#pagehead h1") : $("#validation-view h1");
-  if(h){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); }
-}
-function setStep(n,{focus=false}={}){
-  flow.current=n;
-  if(n>=3) flow.checked=true;
-  flow.reached = flow.checked ? 4 : Math.max(flow.reached,n);
-  renderStepper();
-  document.title = `${FLOW_STEPS[n-1].label} · IQA Programmatic display`;
-  if(focus) focusHeading(n);
-}
-function showConnectView(){
-  $("#docs-area").hidden=true; $("#validation-view").hidden=true; $("#pagehead").hidden=true; $("#connect-view").hidden=false;
-  initConnect(); setStep(1);
-}
-function goStep(i){
-  if(i===1) showConnectView();
-  else if(i===2) revealDocsArea();
-  else if(i===3) showResults("summary");
-  else showResults("compare");
-  setStep(i,{focus:true});
-}
-$("#stepper").addEventListener("click", e=>{
-  const b=e.target.closest("[data-step]"); if(!b) return;
-  const i=+b.dataset.step;
-  if(b.getAttribute("aria-disabled")==="true"){ toast(i===2 ? "Connect SharePoint or upload files first." : "Add your documents, then choose “Check documents”."); return; }
-  if(i!==flow.current) goStep(i);
-});
-
-/* ============================ validation results (mock) ============================ */
-/* Placeholder data only. The real comparison will be run by an agent against the QA SDF. */
-const VALIDATION = {
-  confidence:96.2, paramsChecked:142, flagsRaised:2, writeOffAvoided:260000,
-  rows:[
-    {label:"DMA boundary check", tag:"critical", desc:"Suburban zone mapped as rural. Expected 600K reach, projected 85K.", conf:31},
-    {label:"Postal code overlap", tag:"review", desc:"3 postal codes span state lines without delineation.", conf:62},
-    {label:"Rural area density coding", desc:"Matches Census density bands for target ZIPs.", conf:99.1},
-    {label:"Master taxonomy reconciliation", desc:"140 of 142 fields synced with master document.", conf:98.5},
-  ],
-};
-const ISSUES = [
-  {sev:"critical", title:"Geographic mismatch: EU targeting in DV360, but budget allocated to US only", desc:"Your brief allocates all budget to 12 US DMAs, but DV360 is configured to target EU, UK and CA as well. This could result in significant budget wasted.", impact:420000, source:"Geo_Tiers vs DV360 config"},
-  {sev:"high", title:"Frequency cap mismatch: 8/day in DV360, but brief recommends 3/day", desc:"Your brief shows a 3/day frequency cap performs best, but DV360 has 8/day. This could increase costs and reduce ROI.", impact:234000, source:"Campaign_Brief vs DV360 config"},
-  {sev:"high", title:"Missing creative assignments: 12 line items have no creative mapped", desc:"12 of 47 line items don't have creative assets assigned. These line items won't be able to serve until creatives are added.", impact:156000, source:"LineItem_Map vs Creative_AssetMap"},
-  {sev:"high", title:"Budget split logic undefined for 3 line items", desc:"3 line items don't have clear budget split rules. When you push to DV360, these will need manual budget allocation.", impact:23000, source:"LineItem_Details_Master.xlsx"},
-];
-const FIXES = [
-  {title:"Fix geographic targeting in DV360", desc:"Remove EU, UK and CA targets. Keep only the 12 US DMAs.", time:"5 minutes"},
-  {title:"Update frequency cap from 8/day to 3/day", desc:"Change the frequency cap setting in DV360 campaign settings.", time:"3 minutes"},
-  {title:"Assign creatives to 12 line items", desc:"Map the missing creative assets from Creative_AssetMap.xlsx to these line items.", time:"15 minutes"},
-  {title:"Define budget split for 3 line items", desc:"Add split logic to LineItem_Details_Master.xlsx rows 23, 35 and 41.", time:"5 minutes"},
-  {title:"Activate conversion tracking IDs in DV360", desc:"Add 4 conversion tracking IDs to the campaign in DV360.", time:"5 minutes"},
-];
-const money = n => "$"+(n>=1000?Math.round(n/1000)+"K":n);
-const checkSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>`;
-const warnSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 16.5h.01M10.3 3.9 2.6 17.5a1.7 1.7 0 0 0 1.5 2.5h15.8a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/></svg>`;
-
-function renderValidation(){
-  $("#val-campaign-line").textContent = `Campaign: ${campaign.name}, cloned from Spring_Auto_2025`;
-  $("#val-facts").innerHTML = `
-    <div class="fact"><span>Overall confidence</span><b style="color:var(--ok)">${VALIDATION.confidence}%</b></div>
-    <div class="fact"><span>Parameters checked</span><b>${VALIDATION.paramsChecked}</b></div>
-    <div class="fact"><span>Flags raised</span><b style="color:var(--bad)">${VALIDATION.flagsRaised}</b></div>
-    <div class="fact"><span>Est. write-off avoided</span><b>${money(VALIDATION.writeOffAvoided)}</b></div>`;
-  $("#val-rows").innerHTML = VALIDATION.rows.map(r=>{
-    const cls = r.tag==="critical"?"crit":r.tag==="review"?"review":"";
-    return `<div class="conf-row ${cls}">
-      <span class="cr-ic">${r.tag?warnSvg:checkSvg}</span>
-      <span class="cr-body"><span class="cr-title">${esc(r.label)}${r.tag?` - ${r.tag}`:""}</span><span class="cr-desc">${esc(r.desc)}</span></span>
-      <span class="cr-right"><span class="cr-pct">${r.conf}% conf.</span></span>
-    </div>`;
-  }).join("");
-  $("#issue-list").innerHTML = ISSUES.map((i,n)=>{
-    const id="iss-"+n, t=IQA_TRIAGE.get(id);
-    return `<div class="issue-card ${i.sev==="critical"?"":"high"} is-${t.status}" data-issue="${id}">
-    <h3>${esc(i.title)}</h3>
-    <p>${esc(i.desc)}</p>
-    <div class="issue-meta"><span class="pill ${i.sev==="critical"?"bad":"warn"}">${i.sev==="critical"?"Critical":"High"}</span><b>Est. impact: ${money(i.impact)}</b><span>Source: ${esc(i.source)}</span></div>
-    <div class="issue-triage">${IQA_TRIAGE.controlsHtml(id, i.title)}</div>
-  </div>`;
-  }).join("");
-  updateTally();
-  $("#fix-list").innerHTML = FIXES.map((f,i)=>`<div class="fix-row">
-    <span class="fix-num">${i+1}</span>
-    <div><h4>${esc(f.title)}</h4><p>${esc(f.desc)} Time: ${esc(f.time)}.</p></div>
-  </div>`).join("");
-}
-function showResults(tab="summary"){
-  $("#pagehead").hidden=true; $("#docs-area").hidden=true; $("#connect-view").hidden=true;
-  $("#validation-view").hidden=false;
-  renderValidation();
-  mountCompare();
-  updateBadges();
-  setResultsTab(tab);
-  scrollTo({top:0});
-}
-function showValidationView(){ showResults("summary"); focusHeading(3); }   // called after "Check documents"
-function setResultsTab(tab){
-  const cmp = tab==="compare";
-  $("#rtab-summary").setAttribute("aria-selected", String(!cmp)); $("#rtab-summary").tabIndex = cmp ? -1 : 0;
-  $("#rtab-compare").setAttribute("aria-selected", String(cmp)); $("#rtab-compare").tabIndex = cmp ? 0 : -1;
-  $("#res-summary").hidden = cmp; $("#res-compare").hidden = !cmp;
-  setStep(cmp ? 4 : 3);
-}
-$("#rtabs").addEventListener("click", e=>{ const b=e.target.closest(".rtab"); if(b) setResultsTab(b.id==="rtab-compare"?"compare":"summary"); });
-$("#rtabs").addEventListener("keydown", e=>{
-  if(e.key!=="ArrowRight" && e.key!=="ArrowLeft") return;
-  const toCmp = $("#rtab-compare").getAttribute("aria-selected")!=="true";
-  setResultsTab(toCmp?"compare":"summary"); $(toCmp?"#rtab-compare":"#rtab-summary").focus();
-});
-function mountCompare(){
-  if(window.IQA_COMPARE) IQA_COMPARE.mount($("#cmp-root"), {campaign:{id:campaign.id, name:campaign.name}, onData:()=>{ updateBadges(); renderStepper(); }});
-}
-function updateTally(){
-  const t=issueTally();
-  $("#issue-tally").textContent = `${t.open} open · ${t.resolved} resolved · ${t.waived} waived`;
-}
-function updateBadges(){
-  const t=issueTally(), sb=$("#rbadge-summary"), cb=$("#rbadge-compare"), s=window.IQA_COMPARE&&IQA_COMPARE.summary();
-  sb.textContent = t.open ? t.open : "✓"; sb.classList.toggle("okb", !t.open);
-  if(s){ cb.textContent = s.open ? s.open : "✓"; cb.classList.toggle("okb", !s.open); } else cb.textContent="";
-}
-/* Any status/owner change (on an issue or a compare row) refreshes counts everywhere. */
-IQA_TRIAGE.setCampaign(campaign.id);
-IQA_TRIAGE.bind($("#issue-list"));
-IQA_TRIAGE.onChange(()=>{
-  document.querySelectorAll("[data-issue]").forEach(c=>{ const t=IQA_TRIAGE.get(c.dataset.issue); c.classList.remove("is-open","is-resolved","is-waived"); c.classList.add("is-"+t.status); });
-  updateTally(); updateBadges(); renderStepper();
-});
-$("#back-to-upload").addEventListener("click", revealDocsArea);
-$("#recheck-btn").addEventListener("click", ()=>{
-  const btn=$("#recheck-btn");
-  btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Re-checking…`;
-  setTimeout(()=>{ btn.disabled=false; btn.textContent="Re-check"; renderValidation();
-    toast("Re-check complete. The same 2 flags remain until the fixes above are applied."); }, 900);
-});
-
 renderBanners();
 renderSlots();
-
-renderStepper();
-document.title = `${FLOW_STEPS[0].label} · IQA Programmatic display`;
 </script>
 </body>
 </html>
