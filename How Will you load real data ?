@@ -1,0 +1,27 @@
+How it works
+
+File picker: a hidden <input type="file" multiple> lets you select several files at once. Adding webkitdirectory lets you select a whole folder, and the browser then reports each file's path inside that folder. Chrome and Edge also have showDirectoryPicker(), which behaves like a real folder browser.
+Reading the files: the browser's built-in File API reads each file's contents on your machine. Nothing is sent to a server.
+Reading the contents: small free libraries parse the files in the browser:
+CSV: simple text splitting, or PapaParse.
+Excel (.xlsx): SheetJS.
+PDF: pdf.js.
+Feeding the existing screens: the prototype already works from a list of files like {name, size, slot, camp, cid, items, skip}. The demo-only picker would build that same list from your real files. Everything I built after that would run unchanged: the required SDF nudge, the "Is this the campaign you want to validate?" card, the skip reasons and the file read-outs.
+
+How the fields would be filled in
+
+Which box a file goes to: by file name (the prototype already does this) and by the column headers inside the file. For example, a CSV with "Line Item ID" and "Insertion Order" columns is treated as a DV360 SDF.
+Campaign name and ID: read from a campaign column in the SDF, or from text in the brief.
+Line item count: the number of rows in the SDF.
+Skip reasons: a wrong campaign, an unsupported file type, a file with "old" or "template" in its name, or an empty file.
+
+Limits
+
+Rules, not Claude: the picker can only apply fixed rules to real files. It can't call Claude from the page, because the API key would be exposed. The Claude contract you described would return the same fields from a backend later.
+The results don't change: the mismatches and revenue loss figures would still come from the fixed sample. Making them react to real files would mean building a simple comparison in the page, such as matching line items between the brief and the SDF. I can do that for CSV and Excel, but it would be a rough demo comparison and not the real compare logic.
+
+## Team IQA
+
+| Name | Role |
+|------|------|
+| Santhosh | Product Owner, Data & Technology,Bangalore|
