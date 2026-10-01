@@ -383,7 +383,7 @@ body #pagehead,body #docs-area,body #banners{max-width:none!important;width:100%
 #cmp-root .cmp-table td.dvst{white-space:nowrap;vertical-align:top}
 #cmp-root .cmp-table td.st .diff-note{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-3,#6B7785)}
 /* action buttons on the results bar: same size, bold */
-.rec-actions .btn,.foot-back .btn{display:inline-flex!important;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;width:216px;min-width:216px;height:44px;min-height:44px;margin:0!important;padding:0 14px;align-self:center;text-align:center;white-space:nowrap;line-height:1}
+.rec-actions .btn,.foot-back .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;width:216px;min-width:216px;height:44px;min-height:44px;margin:0!important;padding:0 14px;align-self:center;text-align:center;white-space:nowrap;line-height:1}
 .rec-actions{align-items:center!important}
 .rec-actions .btn-recheck::after{top:-6px;right:-6px}
 .rtag{display:inline-block;margin-left:10px;padding:2px 10px;border-radius:999px;background:#FDECEA;color:#B42318;font-size:12px;font-weight:700;vertical-align:middle;letter-spacing:.02em}
@@ -1034,8 +1034,14 @@ const primaryRole = () => ROLES[roleOrder.find(r=>myRoles().includes(r))||"clien
 
 /* Who is signed in. Real use: set USER.groups from the Okta ID token's "groups" claim (nobody in a known group gets Client, view only).
    Demo: the Role dropdown on the hidden demo bar. Both go away when CONFIG.demoControls is false. */
-const DEMO_ON = CONFIG.demoControls !== false;
-if(DEMO_ON){ try{ demoPersona=sessionStorage.getItem("iqa_demo_role")||"admin"; }catch(e){} USER.groups = DEMO_PERSONAS[demoPersona] || DEMO_PERSONAS.admin; }
+/* Signed-in account from login.html (hard-coded demo accounts): name, email and role. */
+let AUTH_ACCT = null;
+try{ const a=JSON.parse(sessionStorage.getItem("iqa_auth")||"null"); if(a && typeof a==="object" && a.email && DEMO_PERSONAS[a.role]) AUTH_ACCT=a; }catch(e){}
+if(AUTH_ACCT){ USER.name=AUTH_ACCT.name||USER.name; USER.email=AUTH_ACCT.email; }
+/* The demo bar (switch roles, first-time view, fail re-check) is for the Admin account only. Everyone else sees only their own role. */
+const DEMO_ON = CONFIG.demoControls !== false && (!AUTH_ACCT || AUTH_ACCT.role==="admin");
+if(AUTH_ACCT && !DEMO_ON){ demoPersona=AUTH_ACCT.role; USER.groups = DEMO_PERSONAS[demoPersona]; }
+else if(DEMO_ON){ try{ demoPersona=sessionStorage.getItem("iqa_demo_role")||(AUTH_ACCT?AUTH_ACCT.role:"admin"); }catch(e){} USER.groups = DEMO_PERSONAS[demoPersona] || DEMO_PERSONAS.admin; }
 else USER.groups = (window.IQA_OKTA_GROUPS && window.IQA_OKTA_GROUPS.length) ? window.IQA_OKTA_GROUPS : ["IQA-Client"];
 
 /* The campaign these documents belong to. Set it from your app (URL, session or campaign API). */
@@ -2183,7 +2189,7 @@ applyAccess();
 /* ============================ demo switch: new vs returning user ============================ */
 /* Sits in the top bar next to the profile button. Hide it for real users with CONFIG.demoControls = false. */
 (function demoSwitch(){
-  if(CONFIG.demoControls === false) return;
+  if(!DEMO_ON) return;
   const box = document.createElement("div");
   box.className = "demo-switch";
   box.setAttribute("role","group");

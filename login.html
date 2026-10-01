@@ -75,9 +75,22 @@ input[aria-invalid="true"]{border-color:var(--bad)}
     </div>
     <button class="btn" type="submit" id="submit-btn">Sign in</button>
   </form>
-  <p class="foot">This is a prototype. Any email and password will sign you in.</p>
+  <p class="foot">Prototype sign-in. Ask your admin for your demo account.</p>
 </div>
 <script>
+/* ===================================================================================
+   DEMO ACCOUNTS (hard-coded for the prototype). Change names, emails and passwords here.
+   This file is public on GitHub Pages, so anyone can read these: use made-up passwords,
+   never a real one. Real sign-in (Okta) replaces this later.
+   role: admin | qa | prog | client
+   =================================================================================== */
+const ACCOUNTS = [
+  {email:"admin@iqa.demo",        password:"Admin@IQA26",  name:"Alex Morgan",   role:"admin"},
+  {email:"qa@iqa.demo",           password:"Qa@IQA26",     name:"Sam Carter",    role:"qa"},
+  {email:"programmatic@iqa.demo", password:"Prog@IQA26",   name:"Jordan Lee",    role:"prog"},
+  {email:"client@iqa.demo",       password:"Client@IQA26", name:"Taylor Brooks", role:"client"}
+];
+
 const $ = s => document.querySelector(s);
 const params = new URLSearchParams(location.search);
 const returnTo = params.get("return") || "index.html";
@@ -87,12 +100,17 @@ $("#login-form").addEventListener("submit", e=>{
   email.removeAttribute("aria-invalid"); password.removeAttribute("aria-invalid"); err.textContent="";
   if(!email.value.trim()){ email.setAttribute("aria-invalid","true"); err.textContent="Enter your email."; email.focus(); return; }
   if(!password.value){ password.setAttribute("aria-invalid","true"); err.textContent="Enter your password."; password.focus(); return; }
-  sessionStorage.setItem("iqa_auth", JSON.stringify({email: email.value.trim()}));
+  const acct = ACCOUNTS.find(a=>a.email.toLowerCase()===email.value.trim().toLowerCase() && a.password===password.value);
+  if(!acct){
+    email.setAttribute("aria-invalid","true"); password.setAttribute("aria-invalid","true");
+    err.textContent="That email and password don't match. Check them and try again."; password.value=""; password.focus(); return;
+  }
+  try{ sessionStorage.removeItem("iqa_demo_role"); }catch(_){}
+  sessionStorage.setItem("iqa_auth", JSON.stringify({email:acct.email, name:acct.name, role:acct.role}));
   location.href = returnTo;
 });
 $("#forgot").addEventListener("click", ()=>{
-  $("#form-err").textContent = "";
-  alert("Contact your admin to reset your password. (Prototype: no email is sent.)");
+  $("#form-err").textContent = "Contact your admin to reset your password. (Prototype: no email is sent.)";
 });
 </script>
 </body>
