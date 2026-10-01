@@ -6,8 +6,13 @@ This is a click-through prototype. No real backend, no real SharePoint connectio
 no real file uploads. Everything is simulated to test the user journey.
 
 ## 1. Sign in
+ Email | Password | Name | Role |
+|-------|----------|------|------|
+| admin@iqa.demo | Admin@IQA26 | Alex Morgan | Admin |
+| qa@iqa.demo | Qa@IQA26 | Sam Carter | QA |
+| programmatic@iqa.demo | Prog@IQA26 | Jordan Lee | Programmatic |
+| client@iqa.demo | Client@IQA26 | Taylor Brooks | Client |
 
-Any email and password works. There is no real authentication.
 
 ## 2. Connect SharePoint (first-time user)
 
