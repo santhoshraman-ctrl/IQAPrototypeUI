@@ -1,5 +1,5 @@
 // Line-by-line comparison. Mounted inside the Results page (index.html) by IQA_COMPARE.mount().
-// Data comes from IQA_API.getCompareResult(); every difference can be triaged (status + owner).
+// Data comes from IQA_API.getCompareResult(); every difference can be triaged (status, who corrected it, how and why).
 (function () {
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const SEV_RANK = { high: 0, medium: 1, low: 2 };
@@ -128,23 +128,37 @@
     if (!isDiff(row)) return '<span class="dash">—</span>';
     const t = T().get(tid(sheet, row));
     const mark = { open: "○", resolved: "✓", waived: "⊘" }[t.status];
-    return '<span class="tri tri-' + t.status + '"><span aria-hidden="true">' + mark + "</span> " + T().statusLabel(t.status) + '</span><span class="tri-owner">' + esc(T().shortOwner(t.owner)) + "</span>";
+    return '<span class="tri tri-' + t.status + '"><span aria-hidden="true">' + mark + "</span> " + T().statusLabel(t.status) + "</span>";
+  }
+  // Who corrected it, how, and when. Empty until someone resolves or waives the difference.
+  function correctedHtml(sheet, row) {
+    if (!isDiff(row)) return '<span class="dash">—</span>';
+    const c = T().correction(tid(sheet, row));
+    if (!c) return '<span class="dash">—</span>';
+    const how = c.status === "resolved" ? c.methodLabel : "Risk accepted";
+    return '<span class="corr-who">' + esc(c.name) + '</span><span class="corr-meta" title="' + esc(c.whenFull) + '">' + esc(how) + " · " + esc(c.when) + "</span>";
   }
 
+  // Campaign name leads the table (campaign, then insertion order / line item), whatever order the data file lists the columns in.
+  function tableCols(sh) {
+    const cols = sh.columns.slice(), i = cols.findIndex((c) => /campaign/i.test(c.key + " " + c.label));
+    if (i > 0) cols.unshift(cols.splice(i, 1)[0]);
+    return cols;
+  }
   function renderTable() {
-    const sh = sheetOf(sheetKey), rows = visibleRows(sh);
-    const head = '<thead><tr><th scope="col">Status</th>' + sh.columns.map((c) => '<th scope="col">' + esc(c.label) + "</th>").join("") + '<th scope="col">Resolution</th></tr></thead>';
+    const sh = sheetOf(sheetKey), rows = visibleRows(sh), tcols = tableCols(sh);
+    const head = '<thead><tr><th scope="col">Status</th>' + tcols.map((c) => '<th scope="col">' + esc(c.label) + "</th>").join("") + '<th scope="col">Resolution</th><th scope="col">Corrected</th></tr></thead>';
     let body;
     if (!rows.length) {
-      body = '<tbody><tr><td class="cmp-none" colspan="' + (sh.columns.length + 2) + '">Nothing to show here. Everything on this sheet matches.</td></tr></tbody>';
+      body = '<tbody><tr><td class="cmp-none" colspan="' + (sh.columns.length + 3) + '">Nothing to show here. Everything on this sheet matches.</td></tr></tbody>';
     } else {
       body = "<tbody>" + rows.map((r) => {
         const [label, tone] = statusLabel(r.rowStatus), sel = r.id === selectedId;
         const sev = r.severity ? '<span class="sev sev-' + esc(r.severity) + '">' + esc(SEV_LABEL[r.severity]) + "</span>" : "";
         return '<tr class="row-' + esc(r.rowStatus) + (sel ? " sel" : "") + '" data-id="' + esc(r.id) + '">' +
           '<td class="st"><button type="button" class="pill ' + tone + '" data-id="' + esc(r.id) + '" aria-haspopup="dialog" aria-label="' + esc(label) + ". Open details for " + esc(r.id) + '">' + esc(label) + "</button>" + sev + "</td>" +
-          sh.columns.map((c) => { const cell = r.cells[c.key]; return '<td class="c-' + esc(cell ? cell.status : "match") + '">' + cellHtml(cell) + "</td>"; }).join("") +
-          '<td class="res">' + resolutionHtml(sh, r) + "</td></tr>";
+          tcols.map((c) => { const cell = r.cells[c.key]; return '<td class="c-' + esc(cell ? cell.status : "match") + '">' + cellHtml(cell) + "</td>"; }).join("") +
+          '<td class="res">' + resolutionHtml(sh, r) + '</td><td class="corr">' + correctedHtml(sh, r) + "</td></tr>";
       }).join("") + "</tbody>";
     }
     el("table").innerHTML = head + body;

@@ -107,6 +107,7 @@ body #extract-panel{padding:0;overflow:hidden}
       IQA Programmatic display
     </div>
     <div class="spacer"></div>
+    <button class="iconbtn" type="button" aria-label="Limits and rules" title="Limits and rules" id="limits-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
     <button class="iconbtn" type="button" aria-label="Help" id="help-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.5.2-.8.6-.8 1.1v.5M12 17h.01"/></svg></button>
     <div class="user">
       <button class="user-btn" type="button" id="user-btn" aria-haspopup="menu" aria-expanded="false">
@@ -115,6 +116,7 @@ body #extract-panel{padding:0;overflow:hidden}
       </button>
       <div class="menu" id="user-menu" role="menu" hidden>
         <div class="who" id="menu-who"></div>
+        <button role="menuitem" type="button" id="menu-access">Access and roles</button>
         <button role="menuitem" type="button" id="signout">Sign out</button>
       </div>
     </div>
@@ -135,6 +137,7 @@ body #extract-panel{padding:0;overflow:hidden}
     <div class="limits" id="limits">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
       <span id="limits-text"></span>
+      <button class="iconbtn limits-i" type="button" id="limits-i" aria-label="Limits and rules" title="Limits and rules"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
     </div>
   </div>
 
@@ -236,12 +239,6 @@ body #extract-panel{padding:0;overflow:hidden}
           <button class="btn btn-ghost btn-sm" type="button" id="confirm-no">Keep current</button>
           <button class="btn btn-primary btn-sm" type="button" id="confirm-yes">Replace</button>
         </div>
-      </div>
-      <div class="tabs" role="tablist" aria-label="How to add">
-        <button class="tab" role="tab" id="tab-pc" aria-controls="pane-pc" aria-selected="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>From your computer</button>
-        <button class="tab" role="tab" id="tab-sp" aria-controls="pane-sp" aria-selected="false">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>SharePoint link</button>
       </div>
       <fieldset id="intake-fields">
         <div class="pane" role="tabpanel" id="pane-pc" aria-labelledby="tab-pc">
@@ -363,7 +360,6 @@ body #extract-panel{padding:0;overflow:hidden}
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toast-text"></span><button type="button" id="toast-act" hidden></button></div>
-<input type="file" id="file-input" multiple hidden>
 
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
@@ -383,8 +379,53 @@ const CONFIG = {
   maxBytes: null,       // no file size limit
   demoControls: true,   // show the "New user / Returning user" switch. Set to false for real users.
 };
+
 /* Signed-in user and campaign normally come from your session/API. */
 const USER = {name:"Alex Morgan", email:"alex.morgan@company.com", role:"Campaign Manager"};
+/* ---- SharePoint rules. Files are read from the connected folder, never copied or uploaded, so the rules are
+   about what SharePoint can give us. Change the numbers here. */
+const SP_RULES = {
+  maxFileMB: 100,   // larger files are skipped
+  rules: [
+    "Files are read from the connected SharePoint folder. Nothing is copied or uploaded.",
+    "Only files inside that folder are used. Subfolders are not read.",
+    "Only files you can open in SharePoint are used. Files you don't have access to are skipped.",
+    "Each file can be up to 100 MB.",
+    "Campaign Briefs takes as many files as you need. Supporting documents takes up to 7 files of any type. The DV360 QA SDF and Geo mapping doc take one file each.",
+    "Temporary files SharePoint creates while a file is open (names starting with ~$) are ignored.",
+    "When a file has several versions, the latest saved version is used."
+  ]
+};
+
+/* ============================ roles and access ============================ */
+/* In production the roles come from Okta: the ID token's "groups" claim lists the signed-in person's groups.
+   Each group maps to a role below. Someone in several groups gets everything any of their roles allows.
+   Edit the "can" lists to change what a role may do. */
+const CAPS = [["view","View results"],["connect","Connect SharePoint and add files"],["run","Run checks"],["triage","Resolve or waive issues"],["simulate","Revenue loss simulator"],["download","Download SDF for review"],["admin","Access and rules console"]];
+/* Four personas. The "can" lists are the only place access is decided; change them here. Client is view only for now. */
+const ROLES = {
+  admin:{label:"Admin", team:"Platform", does:"Manages access and SharePoint rules. Sees everything.", group:"IQA-Admin", can:["view","connect","run","triage","simulate","download","admin"]},
+  qa:   {label:"QA", team:"QA", does:"Validates the setup, reviews issues and signs off the risk.", group:"IQA-QA", can:["view","connect","run","triage","simulate"]},
+  prog: {label:"Programmatic", team:"Programmatic", does:"Builds the campaign in DV360 and fixes what QA finds.", group:"IQA-Programmatic", can:["view","connect","run","triage","download"]},
+  client:{label:"Client", team:"Client (Driven Brands)", does:"Views results. What clients can do will be defined later.", group:"IQA-Client", can:["view"]}
+};
+const OKTA_GROUPS = Object.fromEntries(Object.entries(ROLES).map(([k,r])=>[r.group,k]));
+/* Demo only: who you are signed in as, from the Role dropdown on the hidden demo bar. */
+const DEMO_PERSONAS = {admin:["IQA-Admin"], qa:["IQA-QA"], prog:["IQA-Programmatic"], client:["IQA-Client"], both:["IQA-QA","IQA-Programmatic"]};
+const DEMO_PERSONA_LABELS = {admin:"Admin", qa:"QA", prog:"Programmatic", client:"Client (view only)", both:"QA + Programmatic (two groups)"};
+let demoPersona="admin";
+USER.groups = [];
+const myRoles = () => [...new Set(USER.groups.map(g=>OKTA_GROUPS[g]).filter(Boolean))];
+const can = c => myRoles().some(r=>ROLES[r].can.includes(c));
+const roleOrder = ["admin","prog","qa","client"];
+const primaryRole = () => ROLES[roleOrder.find(r=>myRoles().includes(r))||"client"].label;
+
+/* Who is signed in. Real use: set USER.groups from the Okta ID token's "groups" claim (nobody in a known group gets Client, view only).
+   Demo: the Role dropdown on the hidden demo bar. Both go away when CONFIG.demoControls is false. */
+const DEMO_ON = CONFIG.demoControls !== false;
+if(DEMO_ON){ try{ demoPersona=sessionStorage.getItem("iqa_demo_role")||"admin"; }catch(e){} USER.groups = DEMO_PERSONAS[demoPersona] || DEMO_PERSONAS.admin; }
+else USER.groups = (window.IQA_OKTA_GROUPS && window.IQA_OKTA_GROUPS.length) ? window.IQA_OKTA_GROUPS : ["IQA-Client"];
+
 /* The campaign these documents belong to. Set it from your app (URL, session or campaign API). */
 const CAMPAIGN = {id:"CMP-4821", name:"Q4 Regional Auto"};
 /* Single-file boxes: one document each. `match` routes files to a box by their name. */
@@ -447,7 +488,8 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
 })();
 
 /* ============================ shell ============================ */
-(function shell(){
+function paintUser(){
+  if(window.IQA_TRIAGE && IQA_TRIAGE.setActor) IQA_TRIAGE.setActor({name:USER.name, role:primaryRole()});
   $("#avatar").textContent = USER.name.split(/\s+/).map(p=>p[0]).slice(0,2).join("").toUpperCase();
   $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(USER.role)}</small>`;
   $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}`;
@@ -592,6 +634,7 @@ function blockers(){
 }
 function renderTodo(){
   const r=blockers(), el=$("#todo");
+  if(!can("run")) r.unshift({text:"Your role can't run checks"});
   const warnIc=`<svg width="18" height="18" class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>`;
   const okIc=`<svg width="18" height="18" class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>`;
   if(r.length){
@@ -621,7 +664,7 @@ const ZIP=[0x50,0x4B,0x03,0x04], OLE=[0xD0,0xCF,0x11,0xE0,0xA1,0xB1,0x1A,0xE1];
 async function inspect(file, ext){
   let head; const latin=b=>Array.from(b,c=>String.fromCharCode(c)).join("");
   try{ head=await readSlice(file,0,Math.min(file.size,4096)); }
-  catch{ return "We couldn't read this file. If it's stored online only (for example a OneDrive placeholder), download it first or add it as a SharePoint link."; }
+  catch{ return "We couldn't read this file. If it's stored online only, download it first or add it as a SharePoint link."; }
   if(ext==="pdf"){
     if(latin(head.slice(0,1024)).indexOf("%PDF")<0) return "This doesn't look like a real PDF. It may be damaged or renamed from another format.";
     const tail=await readSlice(file,Math.max(0,file.size-65536),file.size).catch(()=>new Uint8Array());
@@ -820,7 +863,7 @@ function addFiles(list, source, msgEl, target=null, explicit=false){
 }
 
 /* ============================ card interactions ============================ */
-function pickFor(key, replace=false){ pickTarget={key,replace}; $("#file-input").click(); }
+function pickFor(key, replace=false){ pickTarget={key,replace,link:!!replace}; const f=$("#sp-url"); f.scrollIntoView({block:"center",behavior:"smooth"}); f.focus(); toast("Add files to your SharePoint folder, or paste a file link below."); }
 $("#slots").addEventListener("click",e=>{
   const tg=e.target.closest("[data-toggle-group]");
   if(tg){ openGroup = openGroup===tg.dataset.toggleGroup ? null : tg.dataset.toggleGroup; renderSlots(); return; }
@@ -908,11 +951,7 @@ $("#slots").addEventListener("drop",e=>{ const c=e.target.closest("[data-group]"
   if(!e.dataTransfer.files.length){ toast("Only files can be dropped here. For a SharePoint file, paste its link instead."); return; }
   selectTab($("#tab-pc"),false); addFiles(e.dataTransfer.files,"upload",$("#pc-msg"),c.dataset.group?"grp:"+c.dataset.group:c.dataset.slot,false); });
 
-/* ============================ intake tabs ============================ */
-const tabs=[...document.querySelectorAll(".tab")];
-function selectTab(t,focus=true){ tabs.forEach(x=>{ const on=x===t; x.setAttribute("aria-selected",on); x.tabIndex=on?0:-1; document.getElementById(x.getAttribute("aria-controls")).hidden=!on; }); if(focus) t.focus(); }
-tabs.forEach((t,i)=>{ t.tabIndex=i?-1:0; t.addEventListener("click",()=>selectTab(t));
-  t.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ e.preventDefault(); selectTab(tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length]); } }); });
+function selectTab(){}  // the intake has a single SharePoint pane now
 
 /* SharePoint link, routed automatically like a file; anything that doesn't match a
    named document is still accepted, as an additional document (no "pick a type" step). */
@@ -924,8 +963,8 @@ $("#pane-sp").addEventListener("submit",e=>{
   if(!raw) return bad("Paste a SharePoint link first.");
   let u; try{ u=new URL(raw); }catch{ return bad("That isn't a complete link. It should start with https://"); }
   if(u.protocol!=="https:") return bad("Only secure (https://) links are accepted.");
-  if(!/(^|\.)sharepoint\.(com|us|cn)$|(^|\.)1drv\.ms$/i.test(u.hostname)){
-    if(/onedrive\.live\.com|drive\.google\.com|dropbox\.com|box\.com/i.test(u.hostname)) return bad("Personal OneDrive, Google Drive, Dropbox and Box links aren't supported. Use a company SharePoint or OneDrive for Business link.");
+  if(!/(^|\.)sharepoint\.(com|us|cn)$/i.test(u.hostname)){
+    if(/1drv\.ms|onedrive\.live\.com|drive\.google\.com|dropbox\.com|box\.com/i.test(u.hostname)) return bad("Only company SharePoint links are supported. Links from other storage services can't be used here.");
     return bad("This isn't a SharePoint link. It should point to a *.sharepoint.com address.");
   }
   const code=(/\/:([a-z]):\//i.exec(u.pathname)||[])[1]?.toLowerCase(), kind=code?LINK_KIND[code]:null;
@@ -951,33 +990,10 @@ $("#pane-sp").addEventListener("submit",e=>{
 });
 $("#sp-url").addEventListener("input",e=>e.target.removeAttribute("aria-invalid"));
 
-/* File browser (Upload tab, card click, Replace) */
-$("#browse-btn").addEventListener("click",()=>{ pickTarget=null; $("#file-input").click(); });
-$("#file-input").addEventListener("change",e=>{
-  const t=pickTarget; pickTarget=null;
-  if(e.target.files.length){
-    addFiles(e.target.files,"upload",$("#pc-msg"),t?.key||null,!!t?.replace);
-  }
-  e.target.value="";
-});
-$("#file-input").addEventListener("cancel",()=>{ pickTarget=null; });
 
-/* Attach (drag & drop / paste) */
-const drop=$("#drop"); let depth=0;
-drop.addEventListener("click",e=>{ if(e.target.closest("button")) return; pickTarget=null; $("#file-input").click(); });
-drop.addEventListener("dragenter",e=>{ e.preventDefault(); depth++; drop.classList.add("over"); });
-drop.addEventListener("dragover",e=>e.preventDefault());
-drop.addEventListener("dragleave",()=>{ if(--depth<=0){ depth=0; drop.classList.remove("over"); } });
-drop.addEventListener("drop",e=>{ e.preventDefault(); e.stopPropagation(); depth=0; drop.classList.remove("over");
-  if(!e.dataTransfer.files.length){ setMsg($("#pc-msg"),[],["Only files can be dropped here. For a SharePoint file, paste its link in the SharePoint tab."]); return; }
-  addFiles(e.dataTransfer.files,"upload",$("#pc-msg")); });
+/* Stop the browser from opening a file dropped outside a card. */
 addEventListener("dragover",e=>e.preventDefault());
-addEventListener("drop",e=>{ e.preventDefault(); if(step!==1||finished) return; if(e.dataTransfer.files.length){ selectTab($("#tab-pc"),false); addFiles(e.dataTransfer.files,"upload",$("#pc-msg")); } });
-document.addEventListener("paste",e=>{
-  if(step!==1||finished||e.target.matches("input,textarea")) return;
-  const f=[...(e.clipboardData?.files||[])]; if(!f.length) return;
-  e.preventDefault(); selectTab($("#tab-pc"),false); addFiles(f,"upload",$("#pc-msg"));
-});
+addEventListener("drop",e=>e.preventDefault());
 
 /* ============================ connectivity ============================ */
 addEventListener("offline",()=>{ online=false; pauseAll("offline"); renderBanners(); renderSlots(); });
