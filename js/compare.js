@@ -139,25 +139,33 @@
     return '<span class="corr-who">' + esc(c.name) + '</span><span class="corr-meta" title="' + esc(c.whenFull) + '">' + esc(how) + " · " + esc(c.when) + "</span>";
   }
 
-  // Campaign name leads the table (campaign, then insertion order / line item), whatever order the data file lists the columns in.
+  // Column order: Campaign name, Insertion order, Line item, then Status, then the remaining columns,
+  // whatever order the data file lists them in.
   function tableCols(sh) {
-    const cols = sh.columns.slice(), i = cols.findIndex((c) => /campaign/i.test(c.key + " " + c.label));
-    if (i > 0) cols.unshift(cols.splice(i, 1)[0]);
-    return cols;
+    const find = (re) => sh.columns.findIndex((c) => re.test(c.key + " " + c.label));
+    const lead = [], rest = sh.columns.slice();
+    [/campaign/i, /insertion/i, /line\s*item|lineitem/i].forEach((re) => {
+      const i = rest.findIndex((c) => re.test(c.key + " " + c.label));
+      if (i >= 0) lead.push(rest.splice(i, 1)[0]);
+    });
+    return { lead, rest };
   }
   function renderTable() {
-    const sh = sheetOf(sheetKey), rows = visibleRows(sh), tcols = tableCols(sh);
-    const head = '<thead><tr><th scope="col">Status</th>' + tcols.map((c) => '<th scope="col">' + esc(c.label) + "</th>").join("") + '<th scope="col">Resolution</th><th scope="col">Corrected</th></tr></thead>';
+    const sh = sheetOf(sheetKey), rows = visibleRows(sh), tc = tableCols(sh);
+    const th = (c) => '<th scope="col">' + esc(c.label) + "</th>";
+    const head = "<thead><tr>" + tc.lead.map(th).join("") + '<th scope="col">Status</th>' + tc.rest.map(th).join("") + '<th scope="col">Resolution</th><th scope="col">Corrected</th></tr></thead>';
     let body;
     if (!rows.length) {
       body = '<tbody><tr><td class="cmp-none" colspan="' + (sh.columns.length + 3) + '">Nothing to show here. Everything on this sheet matches.</td></tr></tbody>';
     } else {
       body = "<tbody>" + rows.map((r) => {
         const [label, tone] = statusLabel(r.rowStatus), sel = r.id === selectedId;
+        const td = (c) => { const cell = r.cells[c.key]; return '<td class="c-' + esc(cell ? cell.status : "match") + '">' + cellHtml(cell) + "</td>"; };
         const sev = r.severity ? '<span class="sev sev-' + esc(r.severity) + '">' + esc(SEV_LABEL[r.severity]) + "</span>" : "";
         return '<tr class="row-' + esc(r.rowStatus) + (sel ? " sel" : "") + '" data-id="' + esc(r.id) + '">' +
+          tc.lead.map(td).join("") +
           '<td class="st"><button type="button" class="pill ' + tone + '" data-id="' + esc(r.id) + '" aria-haspopup="dialog" aria-label="' + esc(label) + ". Open details for " + esc(r.id) + '">' + esc(label) + "</button>" + sev + "</td>" +
-          tcols.map((c) => { const cell = r.cells[c.key]; return '<td class="c-' + esc(cell ? cell.status : "match") + '">' + cellHtml(cell) + "</td>"; }).join("") +
+          tc.rest.map(td).join("") +
           '<td class="res">' + resolutionHtml(sh, r) + '</td><td class="corr">' + correctedHtml(sh, r) + "</td></tr>";
       }).join("") + "</tbody>";
     }

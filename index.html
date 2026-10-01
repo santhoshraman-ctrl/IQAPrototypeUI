@@ -81,9 +81,10 @@ body #extract-panel{padding:0;overflow:hidden}
 #extract-content{padding:0 20px 16px;border-top:1px solid var(--line,#DCE1E7)}
 #extract-content .et-note{margin:12px 0 4px;font-size:13px;color:var(--ink-3,#6B7785)}
 /* Profile menu must open above the progress steps */
-body .appbar-in{position:relative;z-index:40}
+body header.appbar,body .appbar,body .appbar-in{z-index:80}
+body .appbar-in{position:relative}
 body .user{position:relative}
-body .user .menu{z-index:50}
+body .user .menu{z-index:90}
 body .stepper{position:relative;z-index:1}
 /* Results: download button + revenue loss simulator */
 .res-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -407,7 +408,7 @@ body #pagehead,body #docs-area,body #banners{max-width:none!important;width:100%
 @media (prefers-reduced-motion:reduce){.btn-recheck.nudge,.btn-recheck.nudge::after{animation:none}}
 .rec-head{overflow:visible!important}
 /* title bar stays put while the page scrolls under it */
-.rec-sticky{position:sticky;top:var(--sticky-top,0px);z-index:40;padding:6px 0;background:rgba(243,245,248,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.rec-sticky{position:sticky;top:var(--sticky-top,0px);z-index:30;padding:6px 0;background:rgba(243,245,248,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 /* comparison table: long values wrap instead of overlapping their neighbours */
 #cmp-root table{width:100%;table-layout:auto}
 #cmp-root th{white-space:nowrap}
@@ -790,7 +791,7 @@ body .demo-switch.is-hidden{display:none !important}
           <button class="btn btn-recheck nudge" type="button" id="recheck-btn" title="Run the checks again after you fix something"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg><span>Re-check</span></button>
         <button class="btn btn-cta" type="button" id="download-sdf">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
-        Download SDF for review
+        Download IQA Report
       </button>
         </div>
       </div>
@@ -1007,7 +1008,7 @@ const SP_RULES = {
 /* In production the roles come from Okta: the ID token's "groups" claim lists the signed-in person's groups.
    Each group maps to a role below. Someone in several groups gets everything any of their roles allows.
    Edit the "can" lists to change what a role may do. */
-const CAPS = [["view","View results"],["connect","Connect SharePoint and add files"],["run","Run checks"],["triage","Resolve or waive issues"],["simulate","Revenue loss simulator"],["download","Download SDF for review"],["admin","Access and rules console"]];
+const CAPS = [["view","View results"],["connect","Connect SharePoint and add files"],["run","Run checks"],["triage","Resolve or waive issues"],["simulate","Revenue loss simulator"],["download","Download IQA Report"],["admin","Access and rules console"]];
 /* Four personas. The "can" lists are the only place access is decided; change them here. Client is view only for now. */
 const ROLES = {
   admin:{label:"Admin", team:"Platform", does:"Manages access and SharePoint rules. Sees everything.", group:"IQA-Admin", can:["view","connect","run","triage","simulate","download","admin"]},
@@ -2109,7 +2110,7 @@ function applyAccess(){
   const sim=document.querySelector(".sim-card");
   if(sim){ const on=can("simulate"); setShown(sim,on); const n=lockNote("sim-locked", sim, `Revenue loss simulator is available to ${rolesWith("simulate")}.`); setShown(n,!on); }
   const dl=$("#download-sdf");
-  if(dl){ const on=can("download"); setShown(dl,on); const n=lockNote("dl-locked", dl, `Download SDF for review is available to ${rolesWith("download")}.`); setShown(n,!on); }
+  if(dl){ const on=can("download"); setShown(dl,on); const n=lockNote("dl-locked", dl, `Download IQA Report is available to ${rolesWith("download")}.`); setShown(n,!on); }
 }
 /* Re-apply access after the role changes (demo dropdown) without reloading, so the screen you are on updates. */
 function refreshAccess(){
@@ -2220,9 +2221,9 @@ applyAccess();
 
 /* ============================ progress stepper: Connect → Upload → Check → Compare ============================ */
 const FLOW_STEPS = [
-  {id:"connect", label:"Connect"},
-  {id:"upload",  label:"Upload"},
-  {id:"check",   label:"Check"},   // shown as "Check & Re-Run" once a re-run has happened (see stepLabel)
+  {id:"connect", label:"Campaign Upload"},
+  {id:"upload",  label:"Campaign Review"},
+  {id:"check",   label:"Revalidate & Re-run"},
   {id:"compare", label:"Summary"},
 ];
 const flow = {current:1, reached:1, checked:false};
@@ -2231,14 +2232,14 @@ const issueIds = () => ISSUES.map((_,i)=>"iss-"+i);
 const issueTally = () => IQA_TRIAGE.counts(issueIds());
 
 function stepSub(i){
-  if(i===1){ const c=connStore.get(); return c ? folderName(resolvePath(c.folder)) : "Link your files"; }
+  if(i===1){ return "Connect SharePoint"; }
   if(i===2){ const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length; return n ? `${n} document${n===1?"":"s"}` : "Add documents"; }
   if(i===3){ if(!flow.checked) return "Run the checks"; const t=issueTally(); return t.open ? `${t.open} open` : "All resolved"; }
   if(!flow.checked) return "After the checks";
   return can("simulate") ? `${usd(qaNumbers().saved)} saved` : "QA outcome";
 }
 const rerunCount = () => Math.max(0,(window.IQA_TRIAGE?IQA_TRIAGE.runNumber():1)-1);
-const stepLabel = idx => (FLOW_STEPS[idx].id==="check" && rerunCount()>0) ? "Check & Re-Run" : FLOW_STEPS[idx].label;
+const stepLabel = idx => FLOW_STEPS[idx].label;
 const qcTitle = () => `Intelligent Quality Check · ${campaign.name}`;
 function paintTitle(){
   const h=$("#res-title"); if(!h) return;
@@ -2719,7 +2720,7 @@ $("#lib-search").addEventListener("keydown",e=>{
 $("#lib-list").addEventListener("click",e=>{ const li=e.target.closest("li[data-i]"); if(li) pickLib(+li.dataset.i); });
 document.addEventListener("click",e=>{ if(!$("#lib-pop").hidden && !e.target.closest("#sim-library-pick")) closeLib(); });
 
-/* ============================ Download SDF for review ============================ */
+/* ============================ Download IQA Report ============================ */
 /* Downloads the QA SDF line items as a CSV that opens in Excel, with a review flag, priority,
    the Media Plan value for every mismatched field, and the note. Built from the comparison data. */
 $("#download-sdf").addEventListener("click", async ()=>{
