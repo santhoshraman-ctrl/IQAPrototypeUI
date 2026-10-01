@@ -90,7 +90,8 @@
               "right": "300x250",
               "status": "match"
             }
-          }
+          },
+          "dv360Status": "active"
         },
         {
           "id": "LI-1002",
@@ -133,7 +134,8 @@
               "right": "728x90",
               "status": "match"
             }
-          }
+          },
+          "dv360Status": "active"
         },
         {
           "id": "LI-1003",
@@ -176,7 +178,8 @@
               "right": "160x600",
               "status": "match"
             }
-          }
+          },
+          "dv360Status": "paused"
         },
         {
           "id": "LI-1004",
@@ -219,12 +222,13 @@
               "right": "1920x1080",
               "status": "match"
             }
-          }
+          },
+          "dv360Status": "active"
         },
         {
           "id": "LI-1005",
           "rowStatus": "missing_in_right",
-          "severity": "high",
+          "severity": "critical",
           "note": "In the Media Plan but not found in the SDF. It will not be set up.",
           "cells": {
             "lineItem": {
@@ -305,7 +309,8 @@
               "right": "320x50",
               "status": "extra"
             }
-          }
+          },
+          "dv360Status": "paused"
         },
         {
           "id": "LI-1007",
@@ -348,7 +353,8 @@
               "right": "Audio",
               "status": "match"
             }
-          }
+          },
+          "dv360Status": "draft"
         }
       ]
     },
@@ -400,7 +406,8 @@
               "right": "2026-12-31",
               "status": "match"
             }
-          }
+          },
+          "dv360Status": "active"
         },
         {
           "id": "IO-48213-B",
@@ -428,7 +435,8 @@
               "right": "2026-12-31",
               "status": "match"
             }
-          }
+          },
+          "dv360Status": "active"
         }
       ]
     }

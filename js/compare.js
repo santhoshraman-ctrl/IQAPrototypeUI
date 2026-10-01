@@ -2,8 +2,11 @@
 // Data comes from IQA_API.getCompareResult(); every difference can be triaged (status, who corrected it, how and why).
 (function () {
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const SEV_RANK = { high: 0, medium: 1, low: 2 };
-  const SEV_LABEL = { high: "High", medium: "Medium", low: "Low" };
+  const SEV_RANK = { critical: 0, high: 1, medium: 2, low: 3 };
+  const SEV_LABEL = { critical: "Critical", high: "High", medium: "Medium", low: "Low" };
+  // Campaign status in DV360 (data field "dv360Status"): Active, Paused or Draft.
+  const DV_STATUS = { active: ["Active", "ok"], paused: ["Paused", "warn"], draft: ["Draft", "info"] };
+  const dvPill = (s) => { const k = String(s || "").toLowerCase(), v = DV_STATUS[k]; return v ? '<span class="pill dv ' + v[1] + '">' + v[0] + "</span>" : '<span class="dash" title="Not found in DV360">—</span>'; };
   const T = () => window.IQA_TRIAGE;
 
   let root = null, data = null, ctx = {}, loading = false;
@@ -109,7 +112,7 @@
 
   function visibleRows(sheet) {
     let rows = sheet.rows.map((r, i) => ({ r, i })).filter((x) => !diffOnly || isDiff(x.r));
-    if (sortBy === "severity") rows.sort((a, b) => ((SEV_RANK[a.r.severity] ?? 3) - (SEV_RANK[b.r.severity] ?? 3)) || (a.i - b.i));
+    if (sortBy === "severity") rows.sort((a, b) => ((SEV_RANK[a.r.severity] ?? 4) - (SEV_RANK[b.r.severity] ?? 4)) || (a.i - b.i));
     return rows.map((x) => x.r);
   }
 
@@ -153,18 +156,18 @@
   function renderTable() {
     const sh = sheetOf(sheetKey), rows = visibleRows(sh), tc = tableCols(sh);
     const th = (c) => '<th scope="col">' + esc(c.label) + "</th>";
-    const head = "<thead><tr>" + tc.lead.map(th).join("") + '<th scope="col">Status</th>' + tc.rest.map(th).join("") + '<th scope="col">Resolution</th><th scope="col">Corrected</th></tr></thead>';
+    const head = "<thead><tr>" + tc.lead.map(th).join("") + '<th scope="col" title="Campaign status in DV360">Status</th><th scope="col" title="How urgent the difference is">Priority</th>' + tc.rest.map(th).join("") + '<th scope="col">Resolution</th><th scope="col">Corrected</th></tr></thead>';
     let body;
     if (!rows.length) {
-      body = '<tbody><tr><td class="cmp-none" colspan="' + (sh.columns.length + 3) + '">Nothing to show here. Everything on this sheet matches.</td></tr></tbody>';
+      body = '<tbody><tr><td class="cmp-none" colspan="' + (sh.columns.length + 4) + '">Nothing to show here. Everything on this sheet matches.</td></tr></tbody>';
     } else {
       body = "<tbody>" + rows.map((r) => {
         const [label, tone] = statusLabel(r.rowStatus), sel = r.id === selectedId;
         const td = (c) => { const cell = r.cells[c.key]; return '<td class="c-' + esc(cell ? cell.status : "match") + '">' + cellHtml(cell) + "</td>"; };
-        const sev = r.severity ? '<span class="sev sev-' + esc(r.severity) + '">' + esc(SEV_LABEL[r.severity]) + "</span>" : "";
         return '<tr class="row-' + esc(r.rowStatus) + (sel ? " sel" : "") + '" data-id="' + esc(r.id) + '">' +
           tc.lead.map(td).join("") +
-          '<td class="st"><button type="button" class="pill ' + tone + '" data-id="' + esc(r.id) + '" aria-haspopup="dialog" aria-label="' + esc(label) + ". Open details for " + esc(r.id) + '">' + esc(label) + "</button>" + sev + "</td>" +
+          '<td class="dvst">' + dvPill(r.dv360Status) + "</td>" +
+          '<td class="st"><button type="button" class="pill ' + (r.severity ? "sev-" + esc(r.severity) : tone) + '" data-id="' + esc(r.id) + '" aria-haspopup="dialog" aria-label="' + (r.severity ? esc(SEV_LABEL[r.severity]) + " priority. " : "") + esc(label) + ". Open details for " + esc(r.id) + '">' + (r.severity ? esc(SEV_LABEL[r.severity]) : esc(label)) + '</button><span class="diff-note">' + esc(label) + "</span></td>" +
           tc.rest.map(td).join("") +
           '<td class="res">' + resolutionHtml(sh, r) + '</td><td class="corr">' + correctedHtml(sh, r) + "</td></tr>";
       }).join("") + "</tbody>";
@@ -201,7 +204,7 @@
     d.innerHTML =
       '<div class="dr-head"><div><div class="d-id">' + esc(row.id) + " · " + esc(sh.name) + '</div><h2 tabindex="-1" data-el="dr-title">' + esc(title) + '</h2></div>' +
       '<button class="iconbtn" type="button" data-el="dr-close" aria-label="Close details"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>' +
-      '<div class="d-pills"><span class="pill ' + tone + '">' + esc(label) + "</span>" + sev + "</div>" +
+      '<div class="d-pills"><span class="pill ' + tone + '">' + esc(label) + "</span>" + sev + (row.dv360Status ? dvPill(row.dv360Status).replace('class="pill dv ', 'title="DV360 status" class="pill dv ') : "") + "</div>" +
       (row.note ? '<p class="d-note">' + esc(row.note) + "</p>" : '<p class="d-note muted">Every field matches between the two documents.</p>') +
       '<table class="d-table"><thead><tr><th scope="col">Field</th><th scope="col">' + esc(L) + '</th><th scope="col">' + esc(R) + "</th></tr></thead><tbody>" + fields + "</tbody></table>" +
       triage +

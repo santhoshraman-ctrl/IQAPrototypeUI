@@ -377,6 +377,11 @@ body #pagehead,body #docs-area,body #banners{max-width:none!important;width:100%
 /* Re-check: dark, with a red pulsing ring and dot until it has been clicked (and again after new fixes are logged) */
 .rec-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 
+/* comparison table: DV360 status + priority */
+#cmp-root .cmp .pill.sev-critical,#cmp-root .pill.sev-critical{background:#6E0F0B;color:#fff}
+#cmp-root .cmp-table .pill.dv{cursor:default}
+#cmp-root .cmp-table td.dvst{white-space:nowrap;vertical-align:top}
+#cmp-root .cmp-table td.st .diff-note{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-3,#6B7785)}
 /* action buttons on the results bar: same size, bold */
 .rec-actions .btn,.foot-back .btn{display:inline-flex!important;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;width:216px;min-width:216px;height:44px;min-height:44px;margin:0!important;padding:0 14px;align-self:center;text-align:center;white-space:nowrap;line-height:1}
 .rec-actions{align-items:center!important}
