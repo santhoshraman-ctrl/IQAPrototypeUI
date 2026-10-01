@@ -57,6 +57,11 @@ body #connect-view:not(.wide){max-width:920px;width:100%;box-sizing:border-box;m
 /* SharePoint window: wider, with larger rows that are easy to click */
 body .modal{width:min(760px,calc(100vw - 32px));max-width:none}
 body .modal .modal-body{padding:20px 24px 24px}
+/* The folder browser gets a much larger window so long file lists and their read-outs fit. */
+body .modal.browsing{width:min(1120px,calc(100vw - 48px));max-height:calc(100vh - 48px);display:flex;flex-direction:column}
+body .modal.browsing .modal-body{flex:1;min-height:0;overflow:auto}
+body .modal.browsing .browse-list{max-height:clamp(340px,calc(100vh - 340px),760px)}
+body .modal.browsing .browse-row .bs{font-size:13px}
 body .modal .field input{min-height:44px;font-size:15px}
 .browse-bar{padding:4px 0 10px;border-bottom:1px solid var(--line,#DCE1E7);margin-bottom:6px}
 .browse-bar .iconbtn{width:36px;height:36px}
@@ -75,6 +80,484 @@ body #extract-panel{padding:0;overflow:hidden}
 .extract-toggle[aria-expanded="true"] .et-chev{transform:rotate(180deg)}
 #extract-content{padding:0 20px 16px;border-top:1px solid var(--line,#DCE1E7)}
 #extract-content .et-note{margin:12px 0 4px;font-size:13px;color:var(--ink-3,#6B7785)}
+/* Profile menu must open above the progress steps */
+body .appbar-in{position:relative;z-index:40}
+body .user{position:relative}
+body .user .menu{z-index:50}
+body .stepper{position:relative;z-index:1}
+/* Results: download button + revenue loss simulator */
+.res-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.res-head .btn svg{margin-right:6px;vertical-align:-3px}
+.sim-card{padding:20px;display:grid;gap:14px}
+.sim-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.sim-head h2{margin:0;font-size:16px}
+.sim-head p{margin:4px 0 0;font-size:14px;color:var(--ink-2,#5A6675);max-width:560px}
+.sim-total{display:grid;justify-items:end;gap:2px;text-align:right}
+.sim-total span{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3,#6B7785)}
+.sim-total b{font-size:26px;line-height:1.1;color:var(--bad,#8A1C1C)}
+.sim-total small{font-size:12px;color:var(--ink-3,#6B7785)}
+.sim-row{display:flex;align-items:center;gap:12px}
+.sim-row select{flex:1;min-width:0;min-height:44px;font:inherit;font-size:15px;padding:0 12px;border:1px solid var(--line,#DCE1E7);border-radius:8px;background:var(--surface,#fff);color:inherit}
+.sim-desc{margin:0;font-size:14px;color:var(--ink-2,#5A6675)}
+.sim-grid{display:grid;grid-template-columns:220px 1fr;gap:12px 20px;align-items:center}
+.sim-grid label{font-size:14px;color:var(--ink-2,#5A6675)}
+.sim-grid input[type=number]{min-height:40px;font:inherit;font-size:15px;padding:0 12px;border:1px solid var(--line,#DCE1E7);border-radius:8px;background:var(--surface,#fff);color:inherit;box-sizing:border-box;width:100%}
+.sim-range{display:flex;align-items:center;gap:14px}
+.sim-range input{flex:1;accent-color:var(--accent,#1F4583)}
+.sim-range output{min-width:64px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.sim-result{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-top:14px;border-top:1px solid var(--line,#DCE1E7)}
+.sim-result > span{font-size:15px;color:var(--ink-2,#5A6675)}
+.sim-result b{font-size:30px;color:var(--bad,#8A1C1C);font-variant-numeric:tabular-nums}
+.sim-note{display:block;font-size:12px;color:var(--ink-3,#6B7785)}
+.sim-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.sim-foot p{margin:0;font-size:12px;color:var(--ink-3,#6B7785);max-width:720px}
+.sim-foot .linkbtn{font-size:13px;white-space:nowrap}
+.sim-modes{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:var(--sunken,#ECEFF3);justify-self:start;flex-wrap:wrap}
+.sim-mode{all:unset;cursor:pointer;font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;color:var(--ink-2,#5A6675)}
+.sim-mode[aria-selected="true"]{background:var(--surface,#fff);color:var(--ink,#18212B);box-shadow:0 1px 3px rgba(24,33,43,.12)}
+.sim-mode:focus-visible{outline:2px solid var(--accent,#1F4583);outline-offset:2px}
+.sim-count{font-weight:500;color:var(--ink-3,#6B7785)}
+.lib{position:relative}
+.lib-btn{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border:1px solid var(--line,#DCE1E7);border-radius:8px;background:var(--surface,#fff);cursor:pointer;font-size:15px}
+.lib-btn:hover{border-color:var(--ink-3,#6B7785)}
+.lib-btn:focus-visible{outline:2px solid var(--accent,#1F4583);outline-offset:1px}
+.lib-btn svg{width:18px;height:18px;flex:none;color:var(--ink-3,#6B7785);transition:transform .15s}
+.lib-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.lib-btn-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-pop{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:var(--surface,#fff);border:1px solid var(--line,#DCE1E7);border-radius:10px;box-shadow:0 8px 24px rgba(24,33,43,.14);padding:8px}
+.lib-pop input{box-sizing:border-box;width:100%;min-height:38px;font:inherit;font-size:14px;padding:0 10px;border:1px solid var(--line,#DCE1E7);border-radius:6px;margin-bottom:6px;background:var(--surface,#fff);color:inherit}
+.lib-list{list-style:none;margin:0;padding:0;max-height:244px;overflow:auto}
+.lib-list li{display:flex;align-items:center;gap:10px;padding:9px 10px 9px 12px;border-radius:6px;cursor:pointer;font-size:14px;border-left:4px solid var(--sevc,transparent)}
+.lib-list li .t{flex:1;min-width:0}
+.lib-list li:hover,.lib-list li.active{background:var(--sunken,#F4F6F8)}
+.lib-list li[aria-selected="true"] .t{font-weight:600}
+.lib-list .empty{color:var(--ink-3,#6B7785);cursor:default}
+.lib-detail{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lib-detail > div{padding:10px 12px;border-radius:8px;background:var(--sunken,#F4F6F8)}
+.lib-detail span{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3,#6B7785)}
+.lib-detail p{margin:4px 0 0;font-size:13px;color:var(--ink-2,#5A6675);line-height:1.45}
+.sim-calc{margin:-6px 0 0;text-align:right;font-size:13px;color:var(--ink-2,#5A6675);font-variant-numeric:tabular-nums}
+.pill.info{background:var(--sunken,#ECEFF3);color:var(--ink-2,#5A6675)}
+
+.limits{display:flex;align-items:center;gap:10px}
+.limits .limits-i{margin-left:auto;flex:none}
+.lock-note{margin:0;padding:10px 14px;border:1px dashed var(--line,#C9D1DA);border-radius:10px;background:var(--sunken,#F6F8FA);color:var(--ink-3,#6B7785);font-size:13.5px}
+.ac-list.lim{grid-template-columns:1fr}
+.ac-list.lim small{display:block;color:var(--ink-3,#6B7785);font-size:12.5px}
+body.no-connect .stepper{display:none}
+.connect-noaccess{max-width:520px;margin:20px auto;text-align:center;display:flex;flex-direction:column;align-items:center}
+.connect-noaccess .btn{align-self:center}
+
+/* Roles and access */
+.role-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.rchip{display:inline-block;padding:2px 8px;border-radius:999px;background:#E8EEF8;color:#1F4583;font-size:12px;font-weight:600}
+.connect-noaccess{padding:18px 22px;border-radius:12px;border:1px solid var(--line,#DCE1E7);background:var(--sunken,#F4F6F8)}
+.connect-noaccess strong{display:block;font-size:16px}
+.connect-noaccess p{margin:6px 0 14px;font-size:14px;color:var(--ink-2,#5A6675)}
+.ro-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ro-note{font-size:12.5px;color:var(--ink-3,#6B7785)}
+body .modal.access-modal{width:min(1120px,calc(100vw - 48px));max-height:calc(100vh - 48px);display:flex;flex-direction:column}
+body .modal.access-modal .modal-body{flex:1;min-height:0;overflow:auto}
+.access-modal h4{margin:20px 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3,#6B7785)}
+.ac-lead{margin:0;font-size:14.5px}
+.ac-mine{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ac-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px 18px}
+.ac-list li{display:flex;align-items:center;gap:8px;font-size:14px}
+.ac-list li.no{color:var(--ink-3,#6B7785)}
+.ck{width:16px;height:16px;flex:none;display:inline-flex;align-items:center;justify-content:center}
+.ck.yes{color:#1B7A45}.ck.no{color:#9AA4B0;font-weight:700}
+.ac-table{width:100%;border-collapse:collapse;font-size:13px}
+.ac-table th,.ac-table td{padding:8px 10px;border-bottom:1px solid var(--line,#DCE1E7);text-align:left;vertical-align:top}
+.ac-table th.c,.ac-table td.c{text-align:center}
+.ac-table th{font-size:12px;color:var(--ink-3,#6B7785);font-weight:600}
+.ac-table td small{display:block;margin-top:2px;color:var(--ink-3,#6B7785);font-size:12px}
+.ac-table .mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.ac-table tr.me{background:#F3F7FD}
+.ac-note{margin:8px 0 0;font-size:12.5px;color:var(--ink-3,#6B7785)}
+.ac-rules{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px;color:var(--ink-2,#5A6675)}
+.demo-role{display:inline-flex;align-items:center;gap:6px;font-size:12px;margin-left:8px}
+.demo-role select{font:inherit;font-size:12px;padding:3px 6px;max-width:210px}
+
+/* Required-file nudge, campaign confirmation, file read-outs */
+.nudge{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;border:1px solid #F6CE8B;border-left:4px solid #F79009;background:#FFF8E8;margin:0 0 14px}
+.nudge>svg{width:22px;height:22px;flex:none;color:#B45309;margin-top:1px}
+.nudge strong{display:block;font-size:15px;color:#7A4500}
+.nudge p{margin:4px 0 10px;font-size:13.5px;line-height:1.45;color:#5C4A2A}
+.nudge .nact{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.confirm-card{border:1px solid var(--accent,#1F4583);border-radius:12px;background:#F3F7FD;padding:16px 18px;margin:0 0 14px}
+.cf-head{display:flex;gap:12px;align-items:flex-start}
+.cf-ic{width:28px;height:28px;border-radius:50%;background:var(--accent,#1F4583);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.cf-head h3{margin:0;font-size:16px}
+.cf-head p{margin:3px 0 0;font-size:13.5px;color:var(--ink-2,#5A6675)}
+.cands{display:grid;gap:8px;margin:14px 0}
+.cand{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line,#DCE1E7);border-radius:10px;background:#fff;cursor:pointer}
+.cand.on{border-color:var(--accent,#1F4583);box-shadow:0 0 0 1px var(--accent,#1F4583)}
+.cand input{margin-top:4px;accent-color:var(--accent,#1F4583)}
+.cand .cb{min-width:0;flex:1}
+.cand .ct{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cand .ct b{font-size:15px}
+.cand .mono{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink-3,#6B7785)}
+.cand small{display:block;margin-top:2px;font-size:12.5px;color:var(--ink-3,#6B7785);overflow-wrap:anywhere}
+.cand .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tg{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.tg svg{width:12px;height:12px}
+.tg.ok{background:#E6F6EC;color:#1B6B3C}.tg.warn{background:#FFF4DC;color:#8A5200}
+.cf-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cf-note{font-size:13px;color:var(--ink-3,#6B7785)}
+.confirmed{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#E6F6EC;border:1px solid #A9DDBF;color:#1B5E37;margin:0 0 14px;font-size:14px}
+.confirmed svg{width:18px;height:18px;flex:none}
+.confirmed .mono{font-family:ui-monospace,Menlo,monospace;font-size:12px;opacity:.8}
+.confirmed .linkbtn{margin-left:auto}
+.found-hint{font-size:13px;color:#8A5200;align-self:center}
+.fname2{display:flex;flex-direction:column;min-width:0}
+.fname2 .fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fsub{display:block;margin-top:2px;font-size:12px;line-height:1.35;color:var(--ink-3,#6B7785);white-space:normal}
+.fsub b{font-weight:600;color:var(--ink-2,#5A6675)}
+.found-table tr.is-skip .why{display:block;margin-top:4px;font-size:12.5px;color:#8A5200}
+.browse-row .bf{display:flex;flex-direction:column;min-width:0;flex:1}
+.browse-row .bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.browse-row .bs{margin-top:2px;font-size:12px;line-height:1.35;color:var(--ink-3,#6B7785)}
+.browse-row .bs b{font-weight:600;color:var(--ink-2,#5A6675)}
+.browse-row .bs.skip{color:#8A5200}
+.browse-row.file.is-skip .bn{color:var(--ink-3,#6B7785)}
+.foot-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.note-warn{color:#B45309;font-weight:600}
+.rv-missing{margin:10px 0 0;padding:10px 12px;border-radius:8px;background:#FFF4DC;border:1px solid #F6CE8B;color:#7A4500;font-size:13.5px}
+@media (max-width:640px){.confirmed{flex-wrap:wrap}.confirmed .linkbtn{margin-left:0}}
+.sev-chip{display:inline-flex;align-items:center;justify-content:center;min-width:68px;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.02em;border:1px solid var(--sevb);background:var(--sevbg);color:var(--sevt);white-space:nowrap}
+[data-sev="Critical"]{--sevc:#D92D20;--sevb:#F5B5B0;--sevbg:#FDECEA;--sevt:#9F1C12}
+[data-sev="High"]{--sevc:#F79009;--sevb:#F6CE8B;--sevbg:#FFF4DC;--sevt:#8A5200}
+[data-sev="Medium"]{--sevc:#2E9E5B;--sevb:#A9DDBF;--sevbg:#E6F6EC;--sevt:#1B6B3C}
+.lib-btn[data-sev]{border-left:4px solid var(--sevc)}
+.lib-detail > div[data-sev]{background:var(--sevbg);border:1px solid var(--sevb);border-left:4px solid var(--sevc)}
+.lib-detail > div[data-sev] span{color:var(--sevt)}
+.lib-detail > div[data-sev] p{color:#2B3440}
+
+@media (max-width:640px){.lib-detail{grid-template-columns:1fr}.sim-calc{text-align:left}}
+@media (max-width:640px){.sim-grid{grid-template-columns:1fr;gap:6px}.sim-grid label{margin-top:6px}.sim-total{justify-items:start;text-align:left}}
+
+/* results page: collapsible simulator, embedded comparison, QA summary */
+.sim-head{cursor:pointer}
+.sim-head h2{margin:0}
+.sim-toggle{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:16px;font-weight:600;color:var(--ink,#18212B);border-radius:6px}
+.sim-toggle:focus-visible{outline:2px solid var(--accent,#1F4583);outline-offset:3px}
+.sim-toggle svg{width:18px;height:18px;flex:none;color:var(--ink-3,#6B7785);transition:transform .15s}
+.sim-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.sim-body{display:grid;gap:14px}
+.sim-card:not(.is-open) .sim-head p{display:none}
+.cmp-sec{display:grid;gap:8px}
+.cmp-sec>h2{margin:0;font-size:16px}
+.cmp-sec>p{margin:0;font-size:14px;color:var(--ink-2,#5A6675)}
+.qa{display:grid;gap:16px}
+.qa h2{margin:0;font-size:16px}
+.qa-hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.qa-stat{border:1px solid var(--line,#DCE1E7);border-radius:12px;padding:14px 16px;background:#fff;display:grid;gap:2px;align-content:start}
+.qa-stat span{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3,#6B7785)}
+.qa-stat b{font-size:26px;line-height:1.15}
+.qa-stat small{font-size:12.5px;color:var(--ink-3,#6B7785)}
+.qa-stat.good{background:#F0FAF4;border-color:#BFE3CC}.qa-stat.good b{color:#1B6B3C}
+.qa-stat.bad b{color:var(--bad,#8A1C1C)}.qa-stat.warn b{color:#8A5200}
+.qa-card{border:1px solid var(--line,#DCE1E7);border-radius:12px;padding:16px 18px;background:#fff;display:grid;gap:10px}
+.qa-card>p{margin:0;font-size:14px;color:var(--ink-2,#5A6675)}
+.qa-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.qa-lines{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:14px}
+.qa-lines li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line,#E6EAEF);padding-bottom:6px}
+.qa-lines li:last-child{border-bottom:0;padding-bottom:0}
+.qa-tbl-wrap{overflow:auto}
+.qa-tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.qa-tbl th,.qa-tbl td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line,#E6EAEF)}
+.qa-tbl th{font-size:12px;color:var(--ink-3,#6B7785);font-weight:600}
+.qa-tbl .muted{color:var(--ink-3,#6B7785)}
+.qa-tbl td.n{white-space:nowrap;font-weight:600}
+.qa-lock{margin:0;padding:12px 14px;border:1px dashed var(--line,#CBD3DC);border-radius:10px;font-size:14px;color:var(--ink-2,#5A6675);background:var(--sunken,#F6F8FA)}
+.qa-conf{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.qa-conf-n{font-size:34px;font-weight:700;line-height:1;color:var(--ok,#1B6B3C)}
+.qa-conf-n small{display:block;font-size:12px;font-weight:600;color:var(--ink-3,#6B7785);margin-top:4px}
+.qa-fac{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.qa-fac li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-size:14px}
+.qa-fac small{grid-column:1/-1;color:var(--ink-3,#6B7785);font-size:12.5px}
+.qa-bar{grid-column:1/-1;height:6px;border-radius:99px;background:#E6EAEF;overflow:hidden}.qa-bar i{display:block;height:100%;background:var(--accent,#1F4583)}
+.qa-det{border:1px solid var(--line,#DCE1E7);border-radius:12px;background:#fff}
+.qa-det>summary{cursor:pointer;padding:14px 18px;font-size:16px;font-weight:600;list-style:none;display:flex;gap:10px;align-items:center}
+.qa-det>summary::-webkit-details-marker{display:none}
+.qa-det>summary .sum-n{font-size:13px;font-weight:400;color:var(--ink-3,#6B7785)}
+.qa-det>summary:focus-visible{outline:2px solid var(--accent,#1F4583);outline-offset:-2px;border-radius:12px}
+.qa-det[open]>summary{border-bottom:1px solid var(--line,#E6EAEF)}
+.qa-det>div{padding:12px 18px 16px}
+@media (max-width:860px){.qa-hero{grid-template-columns:1fr 1fr}.qa-two{grid-template-columns:1fr}}
+@media (max-width:520px){.qa-hero{grid-template-columns:1fr}.qa-conf{grid-template-columns:1fr}}
+
+/* ---------- Salesforce-style path, progress bar, record header, hover tips (SLDS 2 look: brighter blue, rounded, airy) ---------- */
+:root{--sf-blue:#0176D3;--sf-blue-d:#014486;--sf-green:#2E844A;--sf-green-l:#45C65A}
+body .stepper{background:#fff;border-bottom:1px solid #E5E8EC}
+.flow-row{display:flex;align-items:center;gap:14px;padding-top:10px;padding-bottom:10px}
+.flow-step{font-size:13px;font-weight:600;color:var(--ink,#18212B);white-space:nowrap}
+.flow-step span{font-weight:400;color:var(--ink-3,#6B7785)}
+.flow-track{flex:1;height:6px;border-radius:99px;background:#E1E7EE;overflow:hidden}
+.flow-track i{display:block;height:100%;width:0;border-radius:99px;background:var(--sf-blue);transition:width .45s ease,background .3s}
+.flow-track i.full{background:var(--sf-green)}
+.flow-pct{font-size:13px;font-weight:600;color:var(--ink-2,#44505E);min-width:38px;text-align:right}
+body #stepper{list-style:none;margin:0;display:flex;justify-content:flex-start;gap:0;padding-top:0;padding-bottom:14px}
+body #stepper .pth{flex:1 1 0;min-width:0;position:relative}
+body #stepper .pth+.pth{margin-left:-12px}
+body #stepper .pth-btn{all:unset;box-sizing:border-box;width:100%;height:50px;display:flex;align-items:center;gap:10px;padding:0 26px 0 30px;cursor:pointer;background:#E3E9F0;color:#2B3642;
+  clip-path:polygon(0 0,calc(100% - 15px) 0,100% 50%,calc(100% - 15px) 100%,0 100%,15px 50%);transition:background .15s}
+body #stepper .pth:first-child .pth-btn{padding-left:20px;clip-path:polygon(0 0,calc(100% - 15px) 0,100% 50%,calc(100% - 15px) 100%,0 100%);border-radius:25px 0 0 25px}
+body #stepper .pth:last-child .pth-btn{padding-right:20px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,15px 50%);border-radius:0 25px 25px 0}
+body #stepper .pth:first-child:last-child .pth-btn{clip-path:none;border-radius:25px}
+body #stepper .pth-btn:hover{background:#D3DDE8}
+body #stepper .pth-btn:focus-visible{outline:2px solid var(--sf-blue-d);outline-offset:-4px}
+body #stepper .is-done .pth-btn{background:var(--sf-green-l);background:#4BCA63;color:#0B3D1B}
+body #stepper .is-done .pth-btn:hover{background:#3DB955}
+body #stepper .is-current .pth-btn{background:var(--sf-blue);color:#fff}
+body #stepper .is-locked .pth-btn{background:#EEF1F5;color:#7A8694;cursor:not-allowed}
+.pth-ic{width:22px;height:22px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;border:1.5px solid currentColor}
+.is-done .pth-ic{border-color:#0B3D1B;background:#0B3D1B;color:#fff}.is-done .pth-ic svg{width:13px;height:13px}
+.is-current .pth-ic{background:#fff;color:var(--sf-blue);border-color:#fff}
+.pth-txt{display:grid;min-width:0;line-height:1.2}
+.pth-name{font-size:13.5px;font-weight:700;white-space:nowrap}
+.pth-sub{font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:720px){body #stepper{overflow-x:auto}body #stepper .pth{flex:0 0 168px}.flow-step span{display:none}}
+.rec-head{background:#fff;border:1px solid #DDE3EA;border-radius:14px;box-shadow:0 1px 3px rgba(24,33,43,.06);overflow:hidden}
+.rec-top{display:flex;align-items:center;gap:14px;padding:16px 20px;flex-wrap:wrap}
+.rec-ic{width:44px;height:44px;border-radius:10px;background:var(--sf-blue);color:#fff;display:grid;place-items:center;flex:none}
+.rec-ic svg{width:24px;height:24px}
+.rec-main{flex:1;min-width:220px;display:grid;gap:2px}
+.rec-obj{font-size:12px;font-weight:600;color:var(--ink-3,#6B7785);letter-spacing:.02em}
+.rec-head h1{margin:0;font-size:22px;line-height:1.2}
+.rec-hl{display:flex;flex-wrap:wrap;gap:12px 40px;margin:0;padding:14px 20px 16px;border-top:1px solid #E6EAEF;background:#FAFBFC}
+.rec-hl>div{display:grid;gap:3px;min-width:0}
+.rec-hl dt{font-size:12px;color:var(--ink-3,#6B7785)}
+.rec-hl dd{margin:0;font-size:14px;font-weight:500;color:var(--ink,#18212B)}
+.rec-hl dd.pos{color:var(--sf-green)}
+.tip{position:relative;display:inline-flex;align-items:center;gap:6px}
+.tip-i{all:unset;box-sizing:border-box;width:16px;height:16px;border-radius:50%;border:1.5px solid #6B7785;color:#6B7785;font:700 10.5px/13px sans-serif;text-align:center;cursor:help}
+.tip-i:focus-visible{outline:2px solid var(--sf-blue);outline-offset:2px}
+.tip-b{position:absolute;left:0;bottom:calc(100% + 9px);width:min(300px,78vw);padding:10px 12px;border-radius:8px;background:#18212B;color:#fff;font-size:12.5px;line-height:1.45;font-weight:400;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(3px);transition:opacity .12s,transform .12s;z-index:40;pointer-events:none}
+.tip-b::after{content:"";position:absolute;left:14px;top:100%;border:6px solid transparent;border-top-color:#18212B}
+.tip:hover .tip-b,.tip:focus-within .tip-b{opacity:1;visibility:visible;transform:none}
+.tip.tip-off .tip-b{opacity:0;visibility:hidden}
+.qa-tbl td.ts{white-space:nowrap}
+.qa-sub{margin:0;font-size:13.5px;color:var(--ink-2,#5A6675)}
+
+/* ---------- results page: Salesforce-style three-region record layout (sides 1 : centre 3 : sides 1, i.e. 3:2) ---------- */
+:root{--wrap:1800px}
+body .appbar-in,body .flow-wrap,body main{max-width:var(--wrap)!important;width:100%;box-sizing:border-box;margin-left:auto;margin-right:auto}
+body .appbar-in,body .flow-wrap{padding-left:32px;padding-right:32px}
+@media (max-width:720px){body .appbar-in,body .flow-wrap,body main{padding-left:16px;padding-right:16px}}
+body .stepper{display:block!important}
+body #stepper{padding-left:0!important;padding-right:0!important}
+body #pagehead,body #docs-area,body #banners{max-width:none!important;width:100%;box-sizing:border-box}
+#res-summary.res-grid:not([hidden]){display:grid;gap:20px}
+.res-row{display:grid;grid-template-columns:minmax(0,3fr) minmax(300px,2fr);gap:20px;align-items:start}
+.res-row>*{min-width:0}
+.res-left{display:grid;gap:16px;min-width:0}
+.res-stack{display:grid;gap:16px}
+.res-grid>.foot{margin-top:0}
+@media (max-width:1199px){.res-row{grid-template-columns:1fr}}
+.sum-box{padding:16px 18px;display:grid;gap:10px}
+.sum-box h2{margin:0;font-size:16px}
+.sum-box .rec-hl{flex-direction:column;flex-wrap:nowrap;gap:0;padding:0;border:0;background:none}
+.sum-box .rec-hl>div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid #EEF1F4}
+.sum-box .rec-hl>div:last-child{border-bottom:0;padding-bottom:0}
+.sum-box .rec-hl dd{text-align:right}
+.res-stack .val-card{padding:16px 18px!important}
+.res-stack .facts{grid-template-columns:1fr 1fr!important}
+.cmp-sec{background:#fff;border:1px solid #DDE3EA;border-radius:14px;box-shadow:0 1px 3px rgba(24,33,43,.06);padding:18px 20px;gap:10px;min-width:0}
+.cmp-sec .cmp table th,.cmp-sec .cmp table td{padding-top:8px;padding-bottom:8px}
+.qa{max-width:1280px;margin-left:auto;margin-right:auto;width:100%}
+
+/* Potential issues: status buttons sit on the right of each card and their form pops over instead of pushing the card open */
+.issue-card{position:relative;display:grid!important;grid-template-columns:minmax(0,1fr) auto;column-gap:24px;align-items:start;overflow:visible!important}
+.issue-card>h3,.issue-card>p,.issue-card>.issue-meta{grid-column:1}
+.issue-card>.issue-triage{grid-column:2;grid-row:1/span 3;border:0!important;margin:0!important;padding:0!important;justify-self:end}
+.issue-card:has(.tri-form:not([hidden])){z-index:30}
+@media (max-width:700px){.issue-card{grid-template-columns:1fr}.issue-card>.issue-triage{grid-column:1;grid-row:auto;justify-self:start}}
+/* Re-check: dark, with a red pulsing ring and dot until it has been clicked (and again after new fixes are logged) */
+.rec-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* action buttons on the results bar: same size, bold */
+.rec-actions .btn,.foot-back .btn{display:inline-flex!important;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;width:216px;min-width:216px;height:44px;min-height:44px;margin:0!important;padding:0 14px;align-self:center;text-align:center;white-space:nowrap;line-height:1}
+.rec-actions{align-items:center!important}
+.rec-actions .btn-recheck::after{top:-6px;right:-6px}
+.rtag{display:inline-block;margin-left:10px;padding:2px 10px;border-radius:999px;background:#FDECEA;color:#B42318;font-size:12px;font-weight:700;vertical-align:middle;letter-spacing:.02em}
+.btn-back{display:inline-flex;align-items:center;gap:8px;font-weight:700!important;color:#0B2A5B!important;background:#fff!important;border:1.5px solid #0B2A5B!important;border-radius:10px;padding:0 18px;cursor:pointer}
+.btn-back:hover{background:#EAF1FB!important}
+.btn-back svg{stroke:#0B2A5B}
+.foot-back{display:flex;justify-content:flex-start;padding:4px 0 8px}
+@media (max-width:640px){.rec-actions{width:100%}.rec-actions .btn{flex:1 1 100%;width:100%}}
+
+/* comparison row drawer: wider slide-out panel */
+#cmp-root .cmp-drawer{position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;height:100vh!important;max-height:none!important;width:min(780px,94vw)!important;max-width:94vw!important;overflow:auto;box-sizing:border-box;background:#fff;border-left:1px solid #D5DCE6;box-shadow:-18px 0 48px rgba(11,42,91,.22);padding:22px 26px 28px;z-index:90;animation:drIn .22s ease-out}
+#cmp-root .cmp-drawer[hidden]{display:none!important}
+#cmp-root .cmp-drawer .d-table{width:100%;table-layout:auto}
+#cmp-root .cmp-drawer .d-table td,#cmp-root .cmp-drawer .d-table th{overflow-wrap:anywhere;word-break:break-word}
+@keyframes drIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){#cmp-root .cmp-drawer{animation:none}}
+.btn-recheck{position:relative;display:inline-flex;align-items:center;gap:8px;font-weight:700!important;color:#fff!important;background:#0B2A5B!important;border:1.5px solid #0B2A5B!important;border-radius:10px;padding:0 18px;min-height:44px;cursor:pointer}
+.btn-recheck svg{width:16px;height:16px;flex:none;color:#fff!important;stroke:#fff!important}
+.btn-recheck:hover{background:#123B7D!important}
+.btn-recheck:disabled{opacity:.75;cursor:wait}
+.btn-recheck.nudge{animation:rcPulse 1.7s ease-out infinite,rcBlink 1.7s ease-in-out infinite}
+.btn-recheck.nudge::after{content:"";position:absolute;top:-6px;right:-6px;width:14px;height:14px;border-radius:50%;background:#E5322D;border:2px solid #fff;animation:rcDot 1.7s ease-in-out infinite}
+.btn-recheck.nudge:hover,.btn-recheck.nudge:focus-visible,.btn-recheck.nudge:hover::after{animation-play-state:paused}
+@keyframes rcPulse{0%{box-shadow:0 0 0 0 rgba(229,50,45,.6)}70%{box-shadow:0 0 0 13px rgba(229,50,45,0)}100%{box-shadow:0 0 0 0 rgba(229,50,45,0)}}
+@keyframes rcBlink{0%,100%{filter:brightness(1)}50%{filter:brightness(1.4)}}
+@keyframes rcDot{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+@media (prefers-reduced-motion:reduce){.btn-recheck.nudge,.btn-recheck.nudge::after{animation:none}}
+.rec-head{overflow:visible!important}
+/* title bar stays put while the page scrolls under it */
+.rec-sticky{position:sticky;top:var(--sticky-top,0px);z-index:40;padding:6px 0;background:rgba(243,245,248,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+/* comparison table: long values wrap instead of overlapping their neighbours */
+#cmp-root table{width:100%;table-layout:auto}
+#cmp-root th{white-space:nowrap}
+#cmp-root td{vertical-align:top;overflow-wrap:anywhere;min-width:90px;max-width:260px}
+#cmp-root td.st,#cmp-root td.res{white-space:nowrap;min-width:0;max-width:none}
+#cmp-root td.corr{min-width:130px}
+#cmp-root .was,#cmp-root .now{display:block}
+#cmp-root .arr{display:none}
+#cmp-root .now::before{content:"→ ";font-weight:400;color:#6B7785}
+/* notifications */
+.notif{position:relative;display:inline-flex}
+.notif-btn{position:relative}
+.notif-btn.ring svg{animation:bellRing 1s ease-in-out 1}
+@keyframes bellRing{0%,100%{transform:rotate(0)}15%{transform:rotate(14deg)}30%{transform:rotate(-12deg)}45%{transform:rotate(9deg)}60%{transform:rotate(-6deg)}75%{transform:rotate(3deg)}}
+.notif-badge{position:absolute;top:-3px;right:-3px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:99px;background:#E5322D;color:#fff;border:2px solid #fff;font:700 10px/13px sans-serif;text-align:center}
+.notif-btn.has-action .notif-badge{animation:rcDot 1.7s ease-in-out infinite}
+.notif-panel{position:absolute;right:0;top:calc(100% + 10px);width:min(400px,calc(100vw - 24px));max-height:min(70vh,520px);overflow:auto;background:#fff;border:1px solid #DDE3EA;border-radius:14px;box-shadow:0 16px 40px rgba(24,33,43,.22);z-index:200;text-align:left}
+.np-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 16px 10px;border-bottom:1px solid #E6EAEF;position:sticky;top:0;background:#fff}
+.np-head b{font-size:15px}.np-sub{font-size:12.5px;color:var(--ink-3,#6B7785)}
+.np-list{list-style:none;margin:0;padding:0}
+.np-item{display:grid;grid-template-columns:32px 1fr;gap:10px;padding:12px 16px;border-bottom:1px solid #EEF1F4}
+.np-item:last-child{border-bottom:0}
+.np-item.unread{background:#F5F9FE}
+.np-ic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#E6EEF8;color:#1F4583}
+.np-item.action .np-ic{background:#FBE3E1;color:#B42318}
+.np-ic svg{width:17px;height:17px}
+.np-body b{font-size:13.5px;display:block}
+.np-body p{margin:2px 0 6px;font-size:13px;color:var(--ink-2,#44505E);line-height:1.4}
+.np-time{font-size:12px;color:var(--ink-3,#6B7785);margin-right:10px}
+.np-cta{font:inherit;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:8px;border:1.5px solid #0B2A5B;background:#0B2A5B;color:#fff;cursor:pointer}
+.np-item.team .np-cta{background:#fff;color:#0B2A5B}
+.np-empty{margin:0;padding:22px 16px;text-align:center;font-size:13.5px;color:var(--ink-3,#6B7785)}
+@media (max-width:520px){.notif-panel{position:fixed;left:12px;right:12px;top:64px;width:auto}}
+
+/* ---------- tighter top, compact parameter list, QA tab columns, smooth scroll ---------- */
+body.is-results main{padding-top:12px!important;row-gap:10px!important}
+#banners:empty{display:none!important}
+body .stepper{margin-bottom:0!important}
+body #stepper{padding-bottom:10px}
+.flow-row{padding-top:8px!important;padding-bottom:6px!important}
+#validation-view{gap:10px!important}
+.rtabs{margin:0!important}
+.rec-top{padding:10px 18px!important}
+.rec-ic{width:38px!important;height:38px!important}
+.rec-head h1{font-size:20px!important}
+h1[tabindex="-1"]:focus,h1[tabindex="-1"]:focus-visible{outline:0!important}
+.pv{border:1px solid #DDE3EA;border-radius:10px;background:#fff}
+.pv>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 12px;font-size:14px;font-weight:600}
+.pv>summary::-webkit-details-marker{display:none}
+.pv>summary:focus-visible{outline:2px solid var(--sf-blue);outline-offset:-2px;border-radius:10px}
+.pv-t{flex:1}
+.pv-sum{display:inline-flex;gap:6px}
+.pv-chip{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px}
+.pv-chip.bad{background:#FBE3E1;color:#8A1C1C}.pv-chip.ok{background:#E3F4E8;color:#1B6B3C}
+.pv-chev{width:18px;height:18px;color:var(--ink-3,#6B7785);transition:transform .2s}
+.pv[open] .pv-chev{transform:rotate(180deg)}
+.pv-list{border-top:1px solid #E6EAEF;border-radius:0 0 10px 10px;overflow:hidden}
+.pv-row{display:grid;grid-template-columns:18px 1fr auto;gap:2px 8px;align-items:center;padding:8px 12px;border-bottom:1px solid #EEF1F4;font-size:13px}
+.pv-row:last-child{border-bottom:0}
+.pv-ic{grid-row:1/3;align-self:start;width:16px;height:16px;margin-top:2px;color:#2E844A}.pv-ic svg{width:16px;height:16px}
+.pv-row.crit .pv-ic{color:#B42318}.pv-row.review .pv-ic{color:#B7791F}
+.pv-l{font-weight:600}.pv-l em{font-style:normal;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.03em;margin-left:4px}
+.pv-row.crit .pv-l em{color:#B42318}.pv-row.review .pv-l em{color:#B7791F}
+.pv-pct{font-weight:700;font-size:12.5px;color:var(--ink-2,#44505E)}
+.pv-row.crit .pv-pct{color:#B42318}
+.pv-d{grid-column:2/4;font-size:12px;color:var(--ink-3,#6B7785);line-height:1.35}
+.qa{max-width:none!important}
+.qa-grid{display:grid;grid-template-columns:minmax(240px,1fr) minmax(0,3fr) minmax(260px,1fr);gap:16px;align-items:start}
+.qa-col{display:grid;gap:16px;min-width:0;align-content:start}
+.qa-conf{grid-template-columns:1fr!important;gap:12px!important;justify-items:start}
+@media (max-width:1199px){.qa-grid{grid-template-columns:1fr 1fr}.qa-grid>.qa-col:nth-child(2){grid-column:1/-1;order:-1}}
+@media (max-width:760px){.qa-grid{grid-template-columns:1fr}}
+
+/* ---------- check page: bold Geo engine, compact Summary, title-only issues, fix drop-down ---------- */
+.res-stack .val-card{border:1px solid #BCD0E6!important;border-top:4px solid var(--sf-blue)!important;background:linear-gradient(180deg,#F1F7FE 0,#fff 96px)!important;box-shadow:0 6px 18px rgba(1,68,134,.14)!important}
+.res-stack .val-card .lbl{font-size:18px!important;font-weight:800!important;color:#0B2A5B}
+.res-stack .val-card .fact b{font-size:24px!important;font-weight:800!important}
+.res-stack .val-card .fact span{font-weight:700}
+.sum-box{padding:12px 16px!important;gap:4px!important}
+.sum-box .rec-hl>div{padding:6px 0!important}
+.issue-card>h3{margin:0}
+.issue-toggle{all:unset;box-sizing:border-box;display:inline-flex;align-items:flex-start;gap:8px;cursor:pointer;font:inherit;font-weight:700;color:inherit;border-radius:6px}
+.issue-toggle:focus-visible{outline:2px solid var(--sf-blue);outline-offset:3px}
+.issue-toggle svg{width:16px;height:16px;flex:none;margin-top:3px;color:var(--ink-3,#6B7785);transition:transform .15s}
+.issue-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.issue-desc{margin:8px 0 0 24px}
+.issue-card .issue-meta{margin-left:24px}
+.fix-dd{padding:0!important}
+.fix-dd>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 18px;font-size:16px;font-weight:600}
+.fix-dd>summary::-webkit-details-marker{display:none}
+.fix-dd>summary:focus-visible{outline:2px solid var(--sf-blue);outline-offset:-2px;border-radius:12px}
+.fd-t{font-weight:700}.fd-sum{flex:1;font-size:13px;font-weight:400;color:var(--ink-3,#6B7785)}
+.fix-dd[open] .pv-chev{transform:rotate(180deg)}
+.fix-dd[open]>summary{border-bottom:1px solid #E6EAEF}
+.fd-body{padding:12px 18px 16px;display:grid;gap:6px}
+.fd-body>p{margin:0;font-size:14px;color:var(--ink-2,#5A6675)}
+.sim-card:not(.is-open) .sim-total b{font-size:30px}
+/* re-check confirmation */
+.rc-backdrop{position:fixed;inset:0;background:rgba(17,24,34,.5);display:grid;place-items:center;z-index:300;padding:16px}
+.rc-backdrop[hidden]{display:none}
+.rc-modal{position:relative;background:#fff;border-radius:16px;width:min(540px,100%);max-height:92vh;overflow:auto;padding:26px;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:left;display:grid;gap:12px}
+.rc-ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#E6EEF8;color:#0B2A5B}
+.rc-ic svg{width:22px;height:22px}
+.rc-ic.ok{background:#E3F4E8;color:#1B6B3C}.rc-ic.bad{background:#FBE3E1;color:#B42318}
+.rc-modal h3{margin:0;font-size:20px}
+.rc-sub{margin:-6px 0 0;font-size:13.5px;color:var(--ink-3,#6B7785)}
+.rc-read{border:1px solid #DDE3EA;border-radius:12px;padding:12px 14px;background:#F8FAFC;display:grid;gap:8px;font-size:14px}
+.rc-read ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rc-read li{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start}
+.rc-read li svg{width:16px;height:16px;margin-top:2px;color:#0B2A5B}
+.rc-heads{border-radius:10px;background:#FFF6E0;border:1px solid #F2DDA5;padding:10px 12px;font-size:13.5px;line-height:1.45;color:#5C4200}
+.rc-reason{border-radius:10px;background:#FDF1F0;border:1px solid #F3C9C5;padding:10px 12px;font-size:13px;line-height:1.45;color:#7A1A14}
+.rc-reason b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.rc-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:4px;flex-wrap:wrap}
+.rc-btn{font:inherit;font-size:14px;font-weight:700;min-height:42px;padding:0 20px;border-radius:10px;border:1.5px solid #0B2A5B;background:#0B2A5B;color:#fff;cursor:pointer}
+.rc-btn:hover{background:#123B7D}
+.rc-btn.ghost{background:#fff;color:#0B2A5B}.rc-btn.ghost:hover{background:#EEF3FA}
+.rc-btn:focus-visible{outline:3px solid #8DB9EA;outline-offset:2px}
+.rc-steps{list-style:none;margin:4px 0;padding:0;display:grid;gap:10px;font-size:14px}
+.rc-steps li{display:flex;align-items:center;gap:10px;color:var(--ink-3,#6B7785)}
+.rc-steps li .d{width:18px;height:18px;border-radius:50%;border:2px solid #C8D2DE;flex:none;display:grid;place-items:center}
+.rc-steps li.now{color:var(--ink,#18212B);font-weight:600}.rc-steps li.now .d{border-color:#0176D3;border-top-color:transparent;animation:rcSpin .8s linear infinite}
+.rc-steps li.done{color:var(--ink,#18212B)}.rc-steps li.done .d{background:#2E844A;border-color:#2E844A;color:#fff}
+.rc-steps li.done .d::after{content:"";width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+@keyframes rcSpin{to{transform:rotate(360deg)}}
+/* welcome card: smaller, buttons lined up */
+body #connect-view:not(.wide){max-width:760px!important;margin-left:auto!important;margin-right:auto!important}
+#connect-welcome .connect-actions{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+#connect-sp-btn,#view-latest{width:min(380px,100%);min-height:48px;justify-content:center}
+#connect-welcome .connect-info{max-width:560px;margin-left:auto;margin-right:auto}
+#connect-welcome .connect-tip{max-width:560px;margin-left:auto;margin-right:auto;text-align:center}
+.qa-fac{width:100%}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* Returning-user screen */
+.rv-head h2{margin:0 0 4px}
+.rv-head p{margin:0 0 18px;color:var(--ink-2,#5A6675)}
+.rv-loc{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line,#DCE1E7);border-radius:12px;background:var(--surface,#fff);margin-bottom:14px;flex-wrap:wrap}
+.rv-ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--sunken,#ECEFF3);flex:none}
+.rv-ic svg{width:22px;height:22px}
+.rv-loc-txt{display:grid;gap:2px;flex:1;min-width:220px}
+.rv-lbl{font-size:12px;color:var(--ink-3,#6B7785);display:flex;align-items:center;gap:6px}
+.rv-dot{width:8px;height:8px;border-radius:50%;background:var(--ok,#2E8A55)}
+.rv-meta{font-size:12px;color:var(--ink-3,#6B7785)}
+#rv-files .fcell{display:flex;align-items:center;gap:10px;min-width:0}
+#rv-files .fcell svg{width:18px;height:18px;flex:none}
+.rv-skipped{font-size:13px;color:var(--ink-3,#6B7785);margin:8px 0 0}
+.rv-actions{display:flex;align-items:center;justify-content:flex-end;gap:16px;margin-top:18px;flex-wrap:wrap}
+/* Hidden demo controls: revealed with Ctrl+Shift+D, 5 clicks on the logo, or ?demo=1 */
+body .demo-switch.is-hidden{display:none !important}
 /* SharePoint folder browser */
 .browse-bar{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .browse-bar .iconbtn[disabled]{opacity:.35;cursor:default}
@@ -122,7 +605,14 @@ body #extract-panel{padding:0;overflow:hidden}
     </div>
   </div>
   <nav class="stepper" aria-label="Progress">
-    <ol class="stepper-in" id="stepper"></ol>
+    <div class="flow-wrap">
+      <div class="flow-row">
+        <span class="flow-step" id="flow-step"></span>
+        <div class="flow-track" role="progressbar" aria-label="Overall progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="flow-bar"><i id="flow-fill"></i></div>
+        <span class="flow-pct" id="flow-pct"></span>
+      </div>
+      <ol id="stepper"></ol>
+    </div>
   </nav>
 </header>
 
@@ -151,28 +641,46 @@ body #extract-panel{padding:0;overflow:hidden}
       </div>
       <div class="connect-info">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
-        <span>We'll read the files in this location to find what's needed for merchandising.</span>
+        <span>Quality check: we compare your media plan, brief and QA SDF line by line and flag mismatches before launch.</span>
       </div>
-      <p class="connect-tip">Tip: keep the files you use before working in DV360 in one SharePoint location. If they're not organized yet, do that first.</p>
+      <p class="connect-tip">Tip: keep the files you use before working in DV360 in one SharePoint location. You'll need at least a campaign brief and the DV360 QA SDF.</p>
+      <div class="connect-noaccess" id="connect-noaccess" style="display:none">
+        <strong>You have view access</strong>
+        <p>Your role can't connect a SharePoint location or run checks. You can open the latest results for the campaign your team checked.</p>
+        <button class="btn btn-cta" type="button" id="view-latest">View latest results</button>
+      </div>
       <div class="connect-actions">
         <button class="btn btn-cta" type="button" id="connect-sp-btn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
           Connect SharePoint
         </button>
-        <button class="linkbtn" type="button" id="connect-skip-btn">Or upload files from your computer instead</button>
       </div>
     </div>
 
     <div id="connect-returning" class="connect-state" hidden>
-      <div class="connected-row">
-        <span class="connected-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>
-          Connected to <strong id="connected-name"></strong>
-        </span>
-        <div class="row">
-          <button class="btn btn-ghost btn-sm" type="button" id="connect-view-btn">View files</button>
-          <button class="btn btn-ghost btn-sm" type="button" id="connect-change-btn">Change location</button>
+      <div class="rv-head">
+        <h2>Welcome back, <span id="rv-name"></span></h2>
+        <p>Your SharePoint location is still connected. We've re-read it, so these are your latest files.</p>
+      </div>
+      <div class="rv-loc">
+        <span class="rv-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+        <div class="rv-loc-txt">
+          <span class="rv-lbl"><span class="rv-dot" aria-hidden="true"></span>Connected SharePoint location</span>
+          <strong id="connected-name"></strong>
+          <span class="rv-meta" id="rv-meta"></span>
         </div>
+        <button class="btn btn-ghost btn-sm" type="button" id="connect-change-btn">Change location</button>
+      </div>
+      <div class="found-stats" id="rv-stats"></div>
+      <div class="tbl-wrap"><table class="found-table">
+        <thead><tr><th>File</th><th>Goes to</th><th>Size</th></tr></thead>
+        <tbody id="rv-files"></tbody>
+      </table></div>
+      <p class="rv-missing" id="rv-missing" hidden></p>
+      <p class="rv-skipped" id="rv-skipped" hidden></p>
+      <div class="rv-actions">
+        <button class="linkbtn" type="button" id="connect-view-btn">Review how files were matched</button>
+        <button class="btn btn-cta" type="button" id="rv-continue">Continue with these files</button>
       </div>
     </div>
 
@@ -188,10 +696,13 @@ body #extract-panel{padding:0;overflow:hidden}
           <p id="found-where"></p>
         </div>
         <div class="found-actions">
+          <span class="found-hint" id="found-hint" role="status"></span>
           <button class="linkbtn" type="button" id="connect-back-btn">Choose a different folder</button>
           <button class="btn btn-cta" type="button" id="connect-continue-btn">Continue</button>
         </div>
       </div>
+      <div id="found-nudge" hidden></div>
+      <div id="found-confirm" hidden></div>
       <div class="found-stats" id="found-summary"></div>
       <div class="tbl-wrap"><table class="found-table">
         <thead><tr><th>File</th><th>Matched to</th><th>Size</th><th>Status</th></tr></thead>
@@ -241,19 +752,8 @@ body #extract-panel{padding:0;overflow:hidden}
         </div>
       </div>
       <fieldset id="intake-fields">
-        <div class="pane" role="tabpanel" id="pane-pc" aria-labelledby="tab-pc">
-          <div class="drop" id="drop">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg>
-            <strong>Drag and drop files here</strong>
-            <span>You can drop several at once, of any file type. Each one goes to the matching box, or to Supporting documents.</span>
-            <button class="btn btn-primary" type="button" id="browse-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>Browse files…</button>
-            <small id="browse-types" style="color:var(--ink-3);font-size:13px"></small>
-          </div>
-          <div class="msg" id="pc-msg" role="status"></div>
-        </div>
-        <form class="pane" role="tabpanel" id="pane-sp" aria-labelledby="tab-sp" novalidate hidden>
-          <p class="hint">Paste a sharing link from SharePoint or OneDrive for Business (in SharePoint: <em>Share → Copy link</em>). Links have no size limit.</p>
+        <form class="pane" id="pane-sp" aria-label="Add a SharePoint file link" novalidate>
+          <p class="hint">Paste a sharing link from SharePoint (in SharePoint: <em>Share → Copy link</em>). Links have no size limit.</p>
           <div class="field">
             <label for="sp-url">SharePoint link</label>
             <div class="row">
@@ -276,66 +776,171 @@ body #extract-panel{padding:0;overflow:hidden}
   </div>
 
   <!-- ===== Results: Summary + Line-by-line comparison ===== -->
-  <section id="validation-view" hidden style="display:grid;gap:22px">
-    <div class="pagehead">
-      <h1>Mismatches surfaced across documents</h1>
-      <p style="margin:0;color:var(--ink-2)">Every parameter is scored for confidence, with critical and review-level flags called out inline.</p>
+  <section id="validation-view" hidden style="display:grid;gap:16px">
+    <div class="rec-sticky" id="rec-sticky">
+    <div class="rec-head">
+      <div class="rec-top">
+        <span class="rec-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5h6M9 13l2 2 4-4.5"/></svg></span>
+        <div class="rec-main">
+          <span class="rec-obj">Campaign QA</span>
+          <h1 id="res-title">Intelligent Quality Check</h1>
+        </div>
+        <div class="rec-actions">
+          <button class="btn btn-back js-back" type="button" id="back-to-upload-top"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Back to upload</span></button>
+          <button class="btn btn-recheck nudge" type="button" id="recheck-btn" title="Run the checks again after you fix something"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg><span>Re-check</span></button>
+        <button class="btn btn-cta" type="button" id="download-sdf">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+        Download SDF for review
+      </button>
+        </div>
+      </div>
+    </div>
     </div>
 
     <div class="rtabs" role="tablist" aria-label="Results views" id="rtabs">
-      <button class="rtab" type="button" role="tab" id="rtab-summary" aria-controls="res-summary" aria-selected="true">Summary <span class="rbadge" id="rbadge-summary"></span></button>
-      <button class="rtab" type="button" role="tab" id="rtab-compare" aria-controls="res-compare" aria-selected="false" tabindex="-1">Line-by-line comparison <span class="rbadge" id="rbadge-compare"></span></button>
+      <button class="rtab" type="button" role="tab" id="rtab-summary" aria-controls="res-summary" aria-selected="true">Mismatches <span class="rbadge" id="rbadge-summary"></span></button>
+      <button class="rtab" type="button" role="tab" id="rtab-compare" aria-controls="res-compare" aria-selected="false" tabindex="-1">QA summary <span class="rbadge" id="rbadge-compare"></span></button>
     </div>
 
-    <div class="res-panel" id="res-summary" role="tabpanel" aria-labelledby="rtab-summary">
-      <section class="panel val-card" style="padding:20px;display:grid;gap:16px">
-        <div class="val-head">
-          <span class="lbl">Geo validation engine <span class="badge opt">Live</span></span>
-          <button class="btn btn-ghost btn-sm" type="button" id="recheck-btn">Re-check</button>
-        </div>
-        <p class="val-sub" id="val-campaign-line"></p>
-        <div class="facts" id="val-facts"></div>
-        <div>
-          <h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Parameter validation</h3>
-          <div style="display:grid;gap:10px" id="val-rows"></div>
-        </div>
+    <div class="res-panel res-grid" id="res-summary" role="tabpanel" aria-labelledby="rtab-summary">
+      <section class="cmp-sec" aria-labelledby="cmp-title">
+        <h2 id="cmp-title">Line-by-line comparison</h2>
+        <p>Every line item and insertion order, QA SDF against the media plan. Mark each difference as resolved or waived and say who corrected it and why.</p>
+        <div id="cmp-root"></div>
       </section>
-
+      <div class="res-row">
+        <div class="res-left">
       <section>
         <h2 style="font-size:16px;margin:0 0 8px">Potential issues <span class="tally" id="issue-tally"></span></h2>
         <div style="display:grid;gap:6px" id="issue-list"></div>
       </section>
+      <details class="panel fix-dd" id="fix-dd">
+        <summary><span class="fd-t">Here's what to fix</span><span class="fd-sum" id="fix-sum"></span><svg class="pv-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <div class="fd-body">
+          <p>Focus on these priorities to prevent the issues above.</p>
+          <div id="fix-list"></div>
+        </div>
+      </details>
+      <section class="panel sim-card" id="sim-card" aria-labelledby="sim-title">
+        <div class="sim-head" id="sim-head">
+          <div>
+            <h2 id="sim-title"><button type="button" class="sim-toggle" id="sim-toggle" aria-expanded="false" aria-controls="sim-body"><span>Revenue loss simulator</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h2>
+            <p>What an error could cost if the campaign goes live without a fix. Change the assumptions to test scenarios.</p>
+          </div>
+          <div class="sim-total" aria-live="polite">
+            <span>If you proceed now</span>
+            <b id="sim-total"></b>
+            <small id="sim-total-sub"></small>
+          </div>
+        </div>
 
-      <section class="panel" style="padding:16px;display:grid;gap:4px">
-        <h2 style="margin:0;font-size:16px">Here's what to fix</h2>
-        <p style="margin:0;color:var(--ink-2);font-size:14px">Focus on these priorities to prevent the issues above.</p>
-        <h3 style="margin:10px 0 0;font-size:15px">Priority fixes</h3>
-        <div id="fix-list"></div>
+        <div class="sim-body" id="sim-body" hidden>
+        <div class="sim-modes" role="tablist" aria-label="What to simulate">
+          <button type="button" role="tab" class="sim-mode" data-mode="campaign" aria-selected="true">This campaign's issues</button>
+          <button type="button" role="tab" class="sim-mode" data-mode="library" aria-selected="false">Error scenario library <span class="sim-count" id="lib-count"></span></button>
+        </div>
+
+        <!-- campaign issues -->
+        <div class="sim-row" id="sim-campaign-pick">
+          <label class="sr" for="sim-scenario">Issue</label>
+          <select id="sim-scenario"></select>
+          <span class="pill" id="sim-sev"></span>
+        </div>
+
+        <!-- scenario library: compact searchable picker -->
+        <div class="lib" id="sim-library-pick" hidden>
+          <button type="button" class="lib-btn" id="lib-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="lib-pop">
+            <span class="lib-btn-name" id="lib-btn-name"></span>
+            <span class="sev-chip" id="lib-btn-sev"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="lib-pop" id="lib-pop" hidden>
+            <input type="search" id="lib-search" placeholder="Search scenarios, e.g. ZIP, tier, template" aria-label="Search error scenarios" autocomplete="off">
+            <ul class="lib-list" id="lib-list" role="listbox" aria-label="Error scenarios"></ul>
+          </div>
+        </div>
+
+        <p class="sim-desc" id="sim-desc"></p>
+        <div class="lib-detail" id="lib-detail" hidden>
+          <div id="lib-result-box"><span>Result</span><p id="lib-result"></p></div>
+          <div id="lib-cause-box"><span>Triage cause</span><p id="lib-cause"></p></div>
+        </div>
+
+        <div class="sim-grid">
+          <label for="sim-budget" id="sim-budget-lbl">Planned daily budget (USD)</label>
+          <input type="number" id="sim-budget" min="0" step="50" inputmode="numeric">
+          <label for="sim-lis" class="lib-only" hidden>Line items affected</label>
+          <input type="number" id="sim-lis" class="lib-only" min="1" max="100" step="1" inputmode="numeric" hidden>
+          <label for="sim-lag">Detection lag</label>
+          <div class="sim-range"><input type="range" id="sim-lag" min="1" max="60"><output id="sim-lag-out" for="sim-lag"></output></div>
+          <label for="sim-share" id="sim-share-lbl">Spend misdirected</label>
+          <div class="sim-range"><input type="range" id="sim-share" min="0" max="100" step="5"><output id="sim-share-out" for="sim-share"></output></div>
+        </div>
+        <div class="sim-result">
+          <span>Simulated revenue loss <span class="sim-note" id="sim-note"></span></span>
+          <b id="sim-loss"></b>
+        </div>
+        <p class="sim-calc" id="sim-calc"></p>
+        <div class="sim-foot">
+          <p id="sim-foot-text"></p>
+          <button class="linkbtn" type="button" id="sim-reset">Reset assumptions</button>
+        </div>
+        </div>
       </section>
-
-      <div class="foot">
-        <button class="btn btn-ghost" type="button" id="back-to-upload">Back to upload</button>
+        </div>
+        <div class="res-stack">
+      <section class="panel val-card" style="padding:20px;display:grid;gap:16px">
+        <div class="val-head">
+          <span class="lbl">Geo validation engine <span class="badge opt">Live</span></span>
+        </div>
+        <p class="val-sub" id="val-campaign-line"></p>
+        <div class="facts" id="val-facts"></div>
+        <details class="pv" id="pv">
+          <summary><span class="pv-t">Parameter validation <span class="tip"><button type="button" class="tip-i" aria-label="About parameter validation" aria-describedby="tip-pv">i</button><span class="tip-b" role="tooltip" id="tip-pv">Each row checks one campaign setting across your documents. Red means a mismatch, green means it matches. The % is how sure the AI is.</span></span></span><span class="pv-sum" id="pv-sum"></span><svg class="pv-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="pv-list" id="val-rows"></div>
+        </details>
+      </section>
+      <section class="panel sum-box" aria-labelledby="sum-title"><h2 id="sum-title">Summary</h2><dl class="rec-hl" id="rec-hl"></dl></section>
+        </div>
       </div>
     </div>
 
     <div class="res-panel" id="res-compare" role="tabpanel" aria-labelledby="rtab-compare" hidden>
-      <div id="cmp-root"></div>
+      <div class="qa" id="qa-root"></div>
+    </div>
+
+    <div class="foot foot-back">
+      <button class="btn btn-back js-back" type="button" id="back-to-upload"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Back to upload</span></button>
     </div>
   </section>
 
 </main>
 
+<div class="rc-backdrop" id="rc-backdrop" hidden>
+  <div class="rc-modal" role="dialog" aria-modal="true" aria-labelledby="rc-title" id="rc-modal"><div id="rc-body"></div></div>
+</div>
+
+<div class="modal-backdrop" id="access-backdrop" hidden>
+  <div class="modal access-modal" role="dialog" aria-modal="true" aria-labelledby="access-title">
+    <div class="modal-head">
+      <h3 id="access-title">Access and roles</h3>
+      <button class="iconbtn" type="button" id="access-close" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="access-body"></div>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="sp-modal-backdrop" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sp-modal-title">
     <div class="modal-head">
-      <h3 id="sp-modal-title">Connect SharePoint or OneDrive</h3>
+      <h3 id="sp-modal-title">Connect SharePoint</h3>
       <button class="iconbtn" type="button" id="sp-modal-close" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
     <div class="modal-body">
       <div id="sp-step-link">
-        <p class="hint">Paste the link to the SharePoint or OneDrive location where your campaign files are stored.</p>
+        <p class="hint">Paste the link to the SharePoint location where your campaign files are stored.</p>
         <div class="field">
-          <label for="sp-modal-url">SharePoint or OneDrive link</label>
+          <label for="sp-modal-url">SharePoint link</label>
           <input type="url" id="sp-modal-url" placeholder="https://yourcompany.sharepoint.com/sites/...">
           <small style="color:var(--ink-3);font-size:12px">Demo: <button type="button" class="linkbtn" id="sp-use-demo" style="font-size:12px">use the sample link</button></small>
         </div>
@@ -352,7 +957,8 @@ body #extract-panel{padding:0;overflow:hidden}
         <div id="sp-browse-list" class="browse-list" role="list"></div>
         <div class="browse-foot">
           <span class="browse-note" id="sp-folder-note" role="status"></span>
-          <button class="btn btn-cta" type="button" id="sp-use-folder">Use this folder</button>
+          <span class="foot-actions"><button class="linkbtn" type="button" id="sp-recheck" hidden>Check folder again</button>
+          <button class="btn btn-cta" type="button" id="sp-use-folder">Use this folder</button></span>
         </div>
       </div>
     </div>
@@ -377,7 +983,7 @@ const CONFIG = {
   reviewUrl:      "",   // optional: page of your review system to open after a successful hand-off
   signInUrl: "login.html",
   maxBytes: null,       // no file size limit
-  demoControls: true,   // show the "New user / Returning user" switch. Set to false for real users.
+  demoControls: true,   // the hidden demo bar (New user / Returning user, Role). Set to false for real users: demo roles and demo data controls go away.
 };
 
 /* Signed-in user and campaign normally come from your session/API. */
@@ -430,7 +1036,7 @@ else USER.groups = (window.IQA_OKTA_GROUPS && window.IQA_OKTA_GROUPS.length) ? w
 const CAMPAIGN = {id:"CMP-4821", name:"Q4 Regional Auto"};
 /* Single-file boxes: one document each. `match` routes files to a box by their name. */
 const SLOTS = [
-  {key:"qasdf", title:"DV360 QA SDF",    required:false,  accept:["csv","xlsx","xlsm","xlsb","xls"], match:/sdf|dv360|structured[\s_-]*data/i, full:"DV360 Structured Data File (QA export)"},
+  {key:"qasdf", title:"DV360 QA SDF",    required:true, accept:["csv","xlsx","xlsm","xlsb","xls"], match:/sdf|dv360|structured[\s_-]*data/i, full:"DV360 Structured Data File (QA export)"},
   {key:"geo",   title:"Geo mapping doc", required:false, accept:["csv","xlsx","xlsm","xlsb","xls"], match:/geo|zip|dma|postal|mapping|region/i},
 ];
 /* Multi-file boxes. max: how many files the box holds (Infinity = no limit). accept: [] = any file type. */
@@ -491,11 +1097,13 @@ let extraction = [], extractSeq = 0;    // Line item / Insertion order / Campaig
 function paintUser(){
   if(window.IQA_TRIAGE && IQA_TRIAGE.setActor) IQA_TRIAGE.setActor({name:USER.name, role:primaryRole()});
   $("#avatar").textContent = USER.name.split(/\s+/).map(p=>p[0]).slice(0,2).join("").toUpperCase();
-  $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(USER.role)}</small>`;
-  $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}`;
-  $("#limits-text").innerHTML = `<b>No file size limit.</b> Campaign Briefs takes as many files as you need. Supporting documents takes up to ${groupOf("extra").max} files of any type.`;
+  $("#user-name").innerHTML = `${esc(USER.name)}<small>${esc(primaryRole())}${myRoles().length>1?` +${myRoles().length-1}`:""}</small>`;
+  $("#menu-who").innerHTML = `<strong>${esc(USER.name)}</strong>${esc(USER.email)}<span class="role-chips">${myRoles().map(r=>`<span class="rchip">${esc(ROLES[r].label)}</span>`).join("")}</span>`;
+}
+(function shell(){
+  paintUser();
+  $("#limits-text").innerHTML = `<b>Files are read from your SharePoint folder.</b> Nothing is uploaded. Up to ${SP_RULES.maxFileMB} MB per file. Campaign Briefs takes as many files as you need; Supporting documents up to ${groupOf("extra").max}.`;
   $("#cs-name").textContent = campaign.name; $("#cs-id").textContent = campaign.id;
-  $("#browse-types").textContent = `Files are matched to a box by name · anything else goes to Supporting documents`;
   const btn=$("#user-btn"), menu=$("#user-menu");
   const close=()=>{ menu.hidden=true; btn.setAttribute("aria-expanded","false"); };
   btn.addEventListener("click",e=>{ e.stopPropagation(); const open=menu.hidden; menu.hidden=!open; btn.setAttribute("aria-expanded",open); });
@@ -944,12 +1552,9 @@ $("#confirm-yes").addEventListener("click",()=>{ const p=pending; hideConfirm();
 $("#confirm-no").addEventListener("click",()=>{ hideConfirm(); toast("Kept the current file."); });
 function hideConfirm(){ pending=null; $("#confirm").hidden=true; }
 
-/* Drop straight onto a card */
-$("#slots").addEventListener("dragover",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); document.querySelectorAll(".slot.dragover").forEach(x=>x!==c&&x.classList.remove("dragover")); c.classList.add("dragover"); });
-$("#slots").addEventListener("dragleave",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(c && !c.contains(e.relatedTarget)) c.classList.remove("dragover"); });
-$("#slots").addEventListener("drop",e=>{ const c=e.target.closest("[data-group]")||e.target.closest("[data-slot]"); if(!c) return; e.preventDefault(); e.stopPropagation(); c.classList.remove("dragover");
-  if(!e.dataTransfer.files.length){ toast("Only files can be dropped here. For a SharePoint file, paste its link instead."); return; }
-  selectTab($("#tab-pc"),false); addFiles(e.dataTransfer.files,"upload",$("#pc-msg"),c.dataset.group?"grp:"+c.dataset.group:c.dataset.slot,false); });
+/* Files can't be dropped or uploaded from a computer: documents come from the user's SharePoint folder. */
+$("#slots").addEventListener("dragover",e=>{ if(e.target.closest("[data-group],[data-slot]")) e.preventDefault(); });
+$("#slots").addEventListener("drop",e=>{ e.preventDefault(); e.stopPropagation(); toast("Uploading from your computer isn't available. Add the file to your SharePoint folder instead."); });
 
 function selectTab(){}  // the intake has a single SharePoint pane now
 
@@ -1114,7 +1719,7 @@ const DEMO_TREE = {
   folders: {
     "2026 Campaigns": { files: [], folders: {
       "Q3 2026 Display": { folders:{}, files: [
-        {name:"Q3_2026_Display_MediaPlan.pdf", size:862*1024, slot:"grp:briefs"},
+        {name:"Q3_2026_Display_MediaPlan.pdf", size:862*1024, slot:"grp:briefs", camp:"Q3 2026 Display", cid:"CMP-4710"},
         {name:"Budget_Tracker_Q3.xlsx", size:58*1024, slot:"grp:extra"},
         {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
         {name:"MAF_Signed.pdf", size:301*1024, slot:"grp:extra"},
@@ -1122,24 +1727,32 @@ const DEMO_TREE = {
         {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"grp:extra"},
         {name:"MediaPlan_OLD_v1.pdf", size:790*1024, skip:"An older version, already replaced"},
         {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
+      ], later:[
+        /* Demo only: the QA SDF "appears" after the user adds it to SharePoint and taps Check again. */
+        {name:"DV360_QA_SDF_Q3_2026.csv", size:33*1024, slot:"qasdf", camp:"Q3 2026 Display", cid:"CMP-4710", items:12},
       ]},
       "Q4 Regional Auto": { folders:{}, files: [
-        {name:"Q4_Regional_Auto_Media_Plan.xlsx", size:214*1024, slot:"grp:briefs"},
-        {name:"Q4_Regional_Auto_Creative_Brief.pdf", size:1240*1024, slot:"grp:briefs"},
-        {name:"DV360_QA_SDF_LineItems.csv", size:36*1024, slot:"qasdf"},
+        {name:"Q4_Regional_Auto_Media_Plan.xlsx", size:214*1024, slot:"grp:briefs", camp:"Q4 Regional Auto", cid:"CMP-4821"},
+        {name:"Q4_Regional_Auto_Creative_Brief.pdf", size:1240*1024, slot:"grp:briefs", camp:"Q4 Regional Auto", cid:"CMP-4821"},
+        {name:"DV360_QA_SDF_LineItems.csv", size:36*1024, slot:"qasdf", camp:"Q4 Regional Auto", cid:"CMP-4821", items:7},
+        {name:"DV360_QA_SDF_Q3_Display_Export.csv", size:33*1024, slot:"qasdf", camp:"Q3 2026 Display", cid:"CMP-4710", items:12},
+        {name:"DV360_QA_SDF_Spring_Export.csv", size:31*1024, slot:"qasdf", camp:"Spring Auto 2025", cid:"CMP-3902", items:9},
         {name:"Geo_Mapping_DMAs.csv", size:12*1024, slot:"geo"},
         {name:"Budget_Tracker_Q4.xlsx", size:58*1024, slot:"grp:extra"},
         {name:"MAF_Signed.pdf", size:301*1024, slot:"grp:extra"},
         {name:"Traffic_TSheet.xlsx", size:44*1024, slot:"grp:extra"},
         {name:"Tag_Sheet_Final.xlsx", size:29*1024, slot:"grp:extra"},
         {name:"MediaPlan_OLD_v1.xlsx", size:190*1024, skip:"An older version, already replaced"},
+        {name:"Historic_Delivery_Export_2025.csv", size:180*1024*1024, slot:"grp:extra"},
+        {name:"Finance_Approvals.xlsx", size:76*1024, slot:"grp:extra", noaccess:true},
+        {name:"~$Q4_Regional_Auto_Media_Plan.xlsx", size:1*1024, slot:"grp:briefs"},
         {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
       ]},
     }},
     "Archive": { files: [], folders: {
       "Spring_Auto_2025": { folders:{}, files: [
-        {name:"Spring_Auto_2025_Media_Plan.xlsx", size:198*1024, slot:"grp:briefs"},
-        {name:"DV360_QA_SDF_Spring_2025.csv", size:31*1024, slot:"qasdf"},
+        {name:"Spring_Auto_2025_Media_Plan.xlsx", size:198*1024, slot:"grp:briefs", camp:"Spring Auto 2025", cid:"CMP-3902"},
+        {name:"DV360_QA_SDF_Spring_2025.csv", size:31*1024, slot:"qasdf", camp:"Spring Auto 2025", cid:"CMP-3902", items:9},
         {name:"Geo_Mapping_Spring.csv", size:10*1024, slot:"geo"},
       ]},
     }},
@@ -1151,6 +1764,73 @@ const DEMO_TREE = {
 };
 /* The folder the demo "Returning view" opens. Paths are folder names joined with "/". */
 const DEMO_DEFAULT_FOLDER = "2026 Campaigns/Q4 Regional Auto";
+
+
+/* Why a file is not used, or null when it is fine. Checked before anything else. */
+function ruleSkip(f){
+  if(f.skip) return f.skip;
+  if(f.noaccess) return "You don't have access to this file in SharePoint";
+  if(/^~\$|\.tmp$/i.test(f.name||"")) return "A temporary file SharePoint creates while a file is open";
+  if((f.size||0) > SP_RULES.maxFileMB*1024*1024) return `Larger than the ${SP_RULES.maxFileMB} MB limit`;
+  return null;
+}
+
+/* ---- What each file is, and which campaign it belongs to.
+   In production a Claude contract reads each file and returns this (type, campaign, a one-line read-out),
+   mapping the fields in the ingestion files to the fields in the QA SDF. Here it is simulated from the demo data. */
+function describeFile(f){
+  const n=f.name||"";
+  if(f.slot==="grp:briefs") return {kind:"Campaign brief", help: /media[\s_-]*plan/i.test(n) ? "Media plan with budgets, flight dates and targeting for each line item." : /creative/i.test(n) ? "Creative brief with messaging, formats and creative requirements." : "The plan this campaign should follow."};
+  if(f.slot==="qasdf") return {kind:"DV360 QA SDF", help:`Line item export from DV360${f.items?` (${f.items} line items)`:""}. This is what we check against the brief.`};
+  if(f.slot==="geo") return {kind:"Geo mapping", help:"Lists the DMAs and ZIP codes each line item should target."};
+  if(f.slot==="grp:extra"){
+    const h=/maf/i.test(n)?"Signed media authorization form.":/traffic/i.test(n)?"Traffic instructions for creative delivery.":/tag/i.test(n)?"Tag sheet with the tracking tags placed on each creative.":/budget/i.test(n)?"Budget tracker with planned against spent budget.":/brand/i.test(n)?"Brand rules for creative and messaging.":"Supporting document kept for reference.";
+    return {kind:"Supporting document", help:h};
+  }
+  return {kind:"", help:""};
+}
+/* Which files are used for the chosen campaign, and why the others are skipped. */
+function evalFiles(files, chosen){
+  const seen=new Set(); let extras=0;
+  return files.map(f=>{
+    const rs=ruleSkip(f); if(rs) return {f, ok:false, reason:rs};
+    if(!f.slot) return {f, ok:false, reason:"We couldn't tell what this file is for"};
+    if(f.camp && chosen && f.camp!==chosen) return {f, ok:false, reason:`Belongs to a different campaign (${f.camp})`};
+    if(!f.slot.startsWith("grp:")){
+      if(seen.has(f.slot)) return {f, ok:false, reason:`Another ${boxTitle(f.slot)} file is already being used`};
+      seen.add(f.slot);
+    } else if(f.slot==="grp:extra" && ++extras>groupOf("extra").max) return {f, ok:false, reason:`Supporting documents holds up to ${groupOf("extra").max} files`};
+    return {f, ok:true};
+  });
+}
+/* Campaigns named inside the files (only briefs and QA SDFs carry one). */
+function candidatesOf(files){
+  const m=new Map();
+  files.forEach(f=>{
+    if(!f.slot||!f.camp||ruleSkip(f)) return;
+    const c=m.get(f.camp)||{name:f.camp,id:f.cid,brief:false,sdf:null,items:null,files:[]};
+    c.files.push(f.name);
+    if(f.slot==="grp:briefs") c.brief=true;
+    if(f.slot==="qasdf" && !c.sdf){ c.sdf=f.name; c.items=f.items; }
+    m.set(f.camp,c);
+  });
+  return [...m.values()];
+}
+function defaultChoice(files, folder, saved){
+  const c=candidatesOf(files); if(!c.length) return null;
+  if(saved && c.some(x=>x.name===saved)) return saved;
+  const norm=x=>(x||"").toLowerCase().replace(/[^a-z0-9]/g,""), leaf=norm(pathParts(folder).pop());
+  const byName=c.find(x=>leaf && norm(x.name)===leaf); if(byName) return byName.name;
+  return (c.find(x=>x.brief&&x.sdf)||c[0]).name;
+}
+function missingRequired(rows){
+  const m=[]; if(!rows.some(r=>r.ok&&r.f.slot==="grp:briefs")) m.push("Campaign Briefs"); if(!rows.some(r=>r.ok&&r.f.slot==="qasdf")) m.push("DV360 QA SDF"); return m;
+}
+function applyCampaign(name){
+  const c=candidatesOf(foundFiles).find(x=>x.name===name) || (name?{name,id:""}:null);
+  if(!c) return; campaign.name=c.name; if(c.id) campaign.id=c.id;
+  $("#cs-name").textContent=campaign.name; $("#cs-id").textContent=campaign.id;
+}
 const pathParts = p => (p||"").split("/").filter(Boolean);
 function nodeAt(path){ let n=DEMO_TREE; for(const part of pathParts(path)){ n=n.folders?.[part]; if(!n) return null; } return n; }
 /* Older saved connections stored only the folder name; find it anywhere in the tree. */
@@ -1174,11 +1854,12 @@ const connStore = {
 const fileSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>`;
 const folderSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`;
 
-function showConnectState(id){ ["connect-welcome","connect-returning","connect-reading","connect-found"].forEach(s=>$("#"+s).hidden = s!==id); $("#connect-view").classList.toggle("wide", id==="connect-found"); }
+function showConnectState(id){ ["connect-welcome","connect-returning","connect-reading","connect-found"].forEach(s=>$("#"+s).hidden = s!==id); $("#connect-view").classList.toggle("wide", id==="connect-found"||id==="connect-returning"); }
 function revealDocsArea(){ $("#connect-view").hidden=true; $("#validation-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; setStep(2); }
 
 function openSpModal(){
   $("#sp-modal-backdrop").hidden=false;
+  $("#sp-modal-backdrop .modal").classList.remove("browsing");
   $("#sp-step-link").hidden=false; $("#sp-step-browse").hidden=true;
   $("#sp-modal-url").value=""; setMsg($("#sp-modal-msg"));
   $("#sp-modal-url").focus();
@@ -1189,11 +1870,10 @@ $("#connect-change-btn").addEventListener("click", ()=>{ connStore.clear(); open
 $("#sp-modal-close").addEventListener("click", closeSpModal);
 $("#sp-modal-backdrop").addEventListener("click", e=>{ if(e.target.id==="sp-modal-backdrop") closeSpModal(); });
 $("#sp-use-demo").addEventListener("click", ()=>{ $("#sp-modal-url").value=DEMO_LINK; });
-$("#connect-skip-btn").addEventListener("click", ()=>{ closeSpModal(); revealDocsArea(); });
 
 $("#sp-modal-connect").addEventListener("click", ()=>{
   const raw=$("#sp-modal-url").value.trim(), msg=$("#sp-modal-msg"), btn=$("#sp-modal-connect");
-  if(!raw){ setMsg(msg,[],["Enter a SharePoint or OneDrive link to continue."]); return; }
+  if(!raw){ setMsg(msg,[],["Enter a SharePoint link to continue."]); return; }
   btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Connecting.`;
   setTimeout(()=>{
     btn.disabled=false; btn.textContent="Connect";
@@ -1206,7 +1886,7 @@ $("#sp-modal-connect").addEventListener("click", ()=>{
 });
 
 let currentFolder="";   // path of the folder being browsed ("" = site root)
-function openFolderBrowser(path=""){ $("#sp-step-link").hidden=true; $("#sp-step-browse").hidden=false; browseTo(resolvePath(path)); }
+function openFolderBrowser(path=""){ $("#sp-modal-backdrop .modal").classList.add("browsing"); $("#sp-step-link").hidden=true; $("#sp-step-browse").hidden=false; browseTo(resolvePath(path)); }
 function browseTo(path){
   const node=nodeAt(path) || DEMO_TREE; currentFolder=nodeAt(path)?path:"";
   const parts=pathParts(currentFolder);
@@ -1222,14 +1902,18 @@ function browseTo(path){
   $("#sp-browse-list").innerHTML =
     subs.map(([name,n])=>{ const p=currentFolder?currentFolder+"/"+name:name;
       return `<div class="browse-row folder" role="listitem button" tabindex="0" data-path="${esc(p)}" aria-label="Open folder ${esc(name)}">${folderSvg}<span>${esc(name)}</span><span class="b-meta">${countIn(n)}</span>${chev}</div>`; }).join("") +
-    files.map(f=>`<div class="browse-row file" role="listitem">${fileSvg}<span>${esc(f.name)}</span><span class="b-meta">${fmt(f.size)}</span></div>`).join("") +
+    files.map(f=>{ const d=describeFile(f), rs=ruleSkip(f), sub=rs?`<small class="bs skip">Skipped · ${esc(rs)}</small>`:`<small class="bs">${d.kind?`<b>${esc(d.kind)}</b> · `:""}${esc(d.help)}</small>`;
+      return `<div class="browse-row file${rs?" is-skip":""}" role="listitem">${fileSvg}<div class="bf"><span class="bn">${esc(f.name)}</span>${sub}</div><span class="b-meta">${fmt(f.size)}</span></div>`; }).join("") +
     (!subs.length && !files.length ? `<div class="browse-empty">This folder is empty.</div>` : "");
-  const usable=files.filter(f=>f.slot).length, btn=$("#sp-use-folder");
+  const usable=files.filter(f=>f.slot && !ruleSkip(f)).length, btn=$("#sp-use-folder");
   btn.disabled = !usable;
-  btn.textContent = parts.length ? `Use “${folderName(currentFolder)}”` : "Use this folder";
-  $("#sp-folder-note").textContent = usable
-    ? `${usable} campaign file${usable===1?"":"s"} in this folder`
-    : subs.length ? "No campaign files here. Open a folder to look inside." : "No campaign files in this folder.";
+  btn.textContent = "Use this folder";
+  btn.title = parts.length ? `Use the folder “${folderName(currentFolder)}”` : "Use this folder";
+  const skippedN=files.filter(f=>ruleSkip(f)).length, hasSdf=files.some(f=>f.slot==="qasdf" && !ruleSkip(f));
+  $("#sp-recheck").hidden = !(usable && !hasSdf);
+  $("#sp-folder-note").innerHTML = usable
+    ? `${usable} campaign file${usable===1?"":"s"}${skippedN?`, ${skippedN} skipped`:""}` + (hasSdf?"":` · <span class="note-warn">No DV360 QA SDF yet</span>`)
+    : esc(subs.length ? "No campaign files here. Open a folder to look inside." : "No campaign files in this folder.");
 }
 function openRow(el){ const p=el.dataset.path; if(p!=null) browseTo(p); }
 $("#sp-crumbs").addEventListener("click", e=>{ const b=e.target.closest("[data-path]"); if(b) browseTo(b.dataset.path); });
@@ -1240,23 +1924,39 @@ $("#sp-browse-list").addEventListener("keydown", e=>{
   if(r && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); openRow(r); $("#sp-browse-list .browse-row")?.focus(); }
   if(e.key==="Backspace" && pathParts(currentFolder).length){ e.preventDefault(); $("#sp-up").click(); }
 });
+/* Re-read the folder. Demo: files waiting in node.later "arrive" as if the user had just added them to SharePoint. */
+$("#sp-recheck").addEventListener("click", e=>{
+  const b=e.currentTarget, node=nodeAt(currentFolder); b.disabled=true; b.textContent="Checking…";
+  setTimeout(()=>{
+    b.disabled=false; b.textContent="Check folder again";
+    if(node?.later?.length){ const n=node.later.length; node.files.push(...node.later); node.later=[]; toast(`Found ${n} new file${n===1?"":"s"} in the folder.`); }
+    else toast("No new files yet. Add the file to your SharePoint folder, then check again.");
+    browseTo(currentFolder);
+  }, 900);
+});
 $("#sp-use-folder").addEventListener("click", ()=>{
   if($("#sp-use-folder").disabled) return;
   closeSpModal();
-  connStore.set({site:DEMO_SITE, folder:currentFolder, url:DEMO_LINK});
+  connStore.set({site:DEMO_SITE, folder:currentFolder, url:DEMO_LINK, connectedAt:Date.now(), lastUsedAt:Date.now()});
   runIngestion(currentFolder);
 });
 
+let foundFiles=[], foundCtx={folder:"",choice:null,confirmed:false};
 function runIngestion(folder){
   showConnectState("connect-reading");
   folder = resolvePath(folder);
   const files = (nodeAt(folder)?.files) || [];
-  setTimeout(()=>{ $("#found-where").innerHTML=`From <b>${esc(pathLabel(folder))}</b> on SharePoint`; renderFound(files); showConnectState("connect-found"); }, 1200);
+  setTimeout(()=>{
+    foundCtx={folder, choice:defaultChoice(files,folder,connStore.get()?.campaign), confirmed:false};
+    $("#found-where").innerHTML=`From <b>${esc(pathLabel(folder))}</b> on SharePoint`;
+    renderFound(files); showConnectState("connect-found"); }, 1200);
 }
-let foundFiles=[];
+const tickSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4 4 10-10"/></svg>`;
+const nudgeSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/></svg>`;
 function renderFound(files){
   foundFiles=files;
-  const ready=files.filter(f=>f.slot), skipped=files.filter(f=>f.skip);
+  const cands=candidatesOf(files), rows=evalFiles(files, foundCtx.choice);
+  const ready=rows.filter(r=>r.ok), skipped=rows.filter(r=>!r.ok), missing=missingRequired(rows);
   const ic={found:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>`,
     ok:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>`,
     skip:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M7.5 7.5l9 9"/></svg>`};
@@ -1264,29 +1964,215 @@ function renderFound(files){
     <div class="fact"><span class="ic">${ic.found}</span><div><span>Files found</span><b>${files.length}</b></div></div>
     <div class="fact ok"><span class="ic">${ic.ok}</span><div><span>Ready to use</span><b>${ready.length}</b></div></div>
     <div class="fact skip"><span class="ic">${ic.skip}</span><div><span>Skipped</span><b>${skipped.length}</b></div></div>`;
-  $("#found-list").innerHTML = files.map(f=>`<tr class="${f.slot?"":"is-skip"}">
-      <td><div class="fcell">${fileSvg}<span title="${esc(f.name)}">${esc(f.name)}</span></div></td>
-      <td>${f.slot?esc(boxTitle(f.slot.replace(/^grp:/,""))||"—"):"—"}</td>
+  $("#found-list").innerHTML = rows.map(({f,ok,reason})=>{ const d=describeFile(f);
+    return `<tr class="${ok?"":"is-skip"}">
+      <td><div class="fcell">${fileSvg}<div class="fname2"><span class="fn" title="${esc(f.name)}">${esc(f.name)}</span>${ok&&d.kind?`<small class="fsub"><b>${esc(d.kind)}</b> · ${esc(d.help)}</small>`:""}</div></div></td>
+      <td>${ok?esc(boxTitle(f.slot.replace(/^grp:/,""))||"—"):"—"}</td>
       <td class="num">${fmt(f.size)}</td>
-      <td><span class="pill ${f.slot?"ok":"miss"}">${f.slot?"Ready":"Skipped"}</span>${f.skip?`<span class="why">${esc(f.skip)}</span>`:""}</td>
-    </tr>`).join("");
-  $("#connect-continue-btn").disabled = ready.length===0;
+      <td><span class="pill ${ok?"ok":"miss"}">${ok?"Ready":"Skipped"}</span>${ok?"":`<span class="why">${esc(reason)}</span>`}</td>
+    </tr>`; }).join("");
+
+  /* 1. Required files still missing: nudge */
+  const nudge=$("#found-nudge");
+  if(missing.length){
+    const forWhat = foundCtx.choice && cands.length>1 ? ` for ${foundCtx.choice}` : "";
+    nudge.hidden=false;
+    nudge.innerHTML=`<div class="nudge" role="alert">${nudgeSvg}<div class="nb">
+      <strong>Add the ${esc(missing.join(" and the "))}${esc(forWhat)} to continue</strong>
+      <p>${missing.includes("DV360 QA SDF")?"The DV360 QA SDF is required. It's the export from DV360 that we check your campaign brief against. ":""}${missing.includes("Campaign Briefs")?"A campaign brief is required. It's the plan we check the SDF against. ":""}Add ${missing.length>1?"them":"it"} to your SharePoint folder, then check again.</p>
+      <div class="nact"><button class="btn btn-primary btn-sm" type="button" id="found-recheck">Check folder again</button>
+      <button class="linkbtn" type="button" id="found-link">Paste a file link instead</button></div></div></div>`;
+  } else nudge.hidden=true;
+
+  /* 2. Which campaign is this? Asked once the required files are in (or whenever several campaigns are in the folder). */
+  const conf=$("#found-confirm");
+  if(cands.length && (!missing.length || cands.length>1)){
+    const cur=cands.find(c=>c.name===foundCtx.choice)||cands[0];
+    if(foundCtx.confirmed && !missing.length){
+      conf.innerHTML=`<div class="confirmed">${tickSvg}<span>Validating <b>${esc(cur.name)}</b>${cur.id?` <span class="mono">${esc(cur.id)}</span>`:""}</span><button class="linkbtn" type="button" id="found-change">Change</button></div>`;
+    } else {
+      const tag=(ok,yes,no)=>`<span class="tg ${ok?"ok":"warn"}">${ok?tickSvg:""}${ok?yes:no}</span>`;
+      const opt=c=>`<label class="cand${c.name===cur.name?" on":""}">${cands.length>1?`<input type="radio" name="cand" value="${esc(c.name)}" ${c.name===cur.name?"checked":""}>`:""}
+        <div class="cb"><div class="ct"><b>${esc(c.name)}</b>${c.id?`<span class="mono">${esc(c.id)}</span>`:""}</div>
+        <small>Found in ${c.files.map(esc).join(", ")}</small>
+        <div class="tags">${tag(c.brief,"Campaign brief","No campaign brief")}${tag(!!c.sdf,`DV360 QA SDF${c.items?` · ${c.items} line items`:""}`,"No DV360 QA SDF")}</div></div></label>`;
+      conf.innerHTML=`<div class="confirm-card">
+        <div class="cf-head"><span class="cf-ic">?</span><div><h3>Is this the campaign you want to validate?</h3>
+        <p>${cands.length>1?`We found files for ${cands.length} campaigns in this folder. Pick the one to check so we compare the right SDF to the right brief.`:"We read your files and found this campaign. Check it's the one you mean before we go on."}</p></div></div>
+        <div class="cands">${cands.map(opt).join("")}</div>
+        <div class="cf-actions"><button class="btn btn-cta btn-sm" type="button" id="found-yes" ${missing.length?"disabled":""}>Yes, validate this campaign</button>
+        <button class="linkbtn" type="button" id="found-no">No, choose a different folder</button>${missing.length?`<span class="cf-note">Add the missing files first.</span>`:""}</div></div>`;
+    }
+    conf.hidden=false;
+  } else { conf.hidden=true; conf.innerHTML=""; }
+
+  const needConfirm = cands.length>0 && !foundCtx.confirmed;
+  $("#connect-continue-btn").disabled = ready.length===0 || missing.length>0 || needConfirm;
+  $("#found-hint").textContent = missing.length ? `Add the ${missing.join(" and the ")} to continue` : needConfirm ? "Confirm the campaign to continue" : "";
 }
-$("#connect-back-btn").addEventListener("click", ()=>{ const c=connStore.get(); openSpModal(); openFolderBrowser(c ? pathParts(resolvePath(c.folder)).slice(0,-1).join("/") : ""); });
-$("#connect-continue-btn").addEventListener("click", ()=>{
-  const ready=foundFiles.filter(f=>f.slot);
-  ready.forEach(f=>place(f.slot, {name:f.name, size:f.size, source:"sharepoint"}, {skipConfirm:true}));
-  revealDocsArea();
-  toast(`${ready.length} document${ready.length===1?"":"s"} added from SharePoint.`);
+$("#connect-found").addEventListener("change", e=>{ if(e.target.name==="cand"){ foundCtx.choice=e.target.value; foundCtx.confirmed=false; renderFound(foundFiles); } });
+$("#connect-found").addEventListener("click", e=>{
+  const id=e.target.closest("button")?.id;
+  if(id==="found-yes"){ foundCtx.confirmed=true; renderFound(foundFiles); }
+  else if(id==="found-change"){ foundCtx.confirmed=false; renderFound(foundFiles); }
+  else if(id==="found-no") $("#connect-back-btn").click();
+  else if(id==="found-link"){ finishIngest(true); pickFor("qasdf"); }
+  else if(id==="found-recheck"){
+    const b=e.target.closest("button"); b.disabled=true; b.textContent="Checking…";
+    setTimeout(()=>{
+      /* Demo: files waiting in node.later "arrive" as if the user had just added them to SharePoint. */
+      const node=nodeAt(foundCtx.folder);
+      if(node?.later?.length){ const n=node.later.length; node.files.push(...node.later); node.later=[];
+        foundCtx.choice=defaultChoice(node.files,foundCtx.folder,connStore.get()?.campaign); foundCtx.confirmed=false;
+        toast(`Found ${n} new file${n===1?"":"s"} in the folder.`); renderFound(node.files); }
+      else { toast("No new files yet. Add the file to your SharePoint folder, then check again."); renderFound(foundFiles); }
+    }, 900);
+  }
 });
+$("#connect-back-btn").addEventListener("click", ()=>{ const c=connStore.get(); openSpModal(); openFolderBrowser(c ? pathParts(resolvePath(c.folder)).slice(0,-1).join("/") : ""); });
+function finishIngest(quiet){
+  const ready=evalFiles(foundFiles, foundCtx.choice).filter(r=>r.ok);
+  ready.forEach(r=>place(r.f.slot, {name:r.f.name, size:r.f.size, source:"sharepoint"}, {skipConfirm:true}));
+  if(foundCtx.choice){ applyCampaign(foundCtx.choice); const c=connStore.get(); if(c) connStore.set({...c, campaign:foundCtx.choice}); }
+  touchConnection(); revealDocsArea();
+  if(!quiet) toast(`${ready.length} document${ready.length===1?"":"s"} added from SharePoint.`);
+}
+$("#connect-continue-btn").addEventListener("click", ()=>{ if(!$("#connect-continue-btn").disabled) finishIngest(); });
 $("#connect-view-btn").addEventListener("click", ()=>{ const c=connStore.get(); if(c) runIngestion(c.folder); });
 
+/* Returning user: show who they are, where they're connected, and the files found there now.
+   In production the connection comes from your backend (per signed-in user), and the file list
+   from a fresh Microsoft Graph read of that folder. Here both are simulated. */
+function ago(t){
+  if(!t) return "";
+  const m=Math.round((Date.now()-t)/60000);
+  if(m<1) return "just now"; if(m<60) return `${m} minute${m===1?"":"s"} ago`;
+  const h=Math.round(m/60); if(h<24) return `${h} hour${h===1?"":"s"} ago`;
+  const d=Math.round(h/24); return `${d} day${d===1?"":"s"} ago`;
+}
+function renderReturning(c){
+  const folder=resolvePath(c.folder), files=(nodeAt(folder)?.files)||[];
+  const rows=evalFiles(files, defaultChoice(files,folder,c.campaign)), ready=rows.filter(r=>r.ok).map(r=>r.f), skipped=rows.filter(r=>!r.ok), missing=missingRequired(rows);
+  $("#rv-name").textContent = USER.name.split(/\s+/)[0];
+  $("#connected-name").textContent = pathLabel(folder);
+  $("#rv-meta").textContent = [c.connectedAt?`Connected ${new Date(c.connectedAt).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"})}`:"", c.lastUsedAt?`last used ${ago(c.lastUsedAt)}`:""].filter(Boolean).join(" · ");
+  const boxes=new Set(ready.map(f=>f.slot)).size;
+  $("#rv-stats").innerHTML = `
+    <div class="fact"><div><span>Files found</span><b>${files.length}</b></div></div>
+    <div class="fact ok"><div><span>Ready to use</span><b>${ready.length}</b></div></div>
+    <div class="fact"><div><span>Boxes filled</span><b>${boxes} of 4</b></div></div>`;
+  $("#rv-files").innerHTML = ready.map(f=>`<tr>
+      <td><div class="fcell">${fileSvg}<span title="${esc(f.name)}">${esc(f.name)}</span></div></td>
+      <td>${esc(boxTitle(f.slot.replace(/^grp:/,"")))}</td>
+      <td class="num">${fmt(f.size)}</td></tr>`).join("") || `<tr><td colspan="3">No campaign files in this location yet.</td></tr>`;
+  $("#rv-skipped").hidden = !skipped.length;
+  $("#rv-skipped").textContent = skipped.length ? `${skipped.length} file${skipped.length===1?" was":"s were"} skipped: ${skipped.map(r=>`${r.f.name} (${r.reason})`).join("; ")}.` : "";
+  $("#rv-missing").hidden=!missing.length; $("#rv-missing").textContent = missing.length ? `Still needed: ${missing.join(" and ")}. Add ${missing.length>1?"them":"it"} to your SharePoint folder, then continue to check again.` : "";
+  $("#rv-continue").disabled = !ready.length;
+}
 function initConnect(){
+  if(!can("connect")){ showConnectState("connect-welcome"); return; }   // view-only roles never see a connected location
   const c=connStore.get();
-  if(c){ $("#connected-name").textContent = pathLabel(resolvePath(c.folder)); showConnectState("connect-returning"); }
+  if(c){ renderReturning(c); showConnectState("connect-returning"); }
   else showConnectState("connect-welcome");
 }
+function touchConnection(){ const c=connStore.get(); if(c) connStore.set({...c, lastUsedAt:Date.now()}); }
+$("#rv-continue").addEventListener("click", ()=>{
+  const c=connStore.get(); if(!c) return;
+  const folder=resolvePath(c.folder), files=(nodeAt(folder)?.files)||[];
+  const choice=defaultChoice(files,folder,c.campaign), cands=candidatesOf(files);
+  /* Go straight in only when the campaign was confirmed before and nothing required is missing. */
+  if(missingRequired(evalFiles(files,choice)).length || (cands.length && !(c.campaign && cands.some(x=>x.name===c.campaign)))){ runIngestion(c.folder); return; }
+  foundFiles=files; foundCtx={folder,choice,confirmed:true}; finishIngest();
+});
 initConnect();
+
+/* ---- Apply the signed-in person's access to the screens. */
+const setShown = (el,on) => { if(el) el.style.display = on ? "" : "none"; };
+const rolesWith = cap => Object.values(ROLES).filter(r=>r.can.includes(cap)).map(r=>r.label).join(" and ");
+function lockNote(id, after, text){
+  let n=document.getElementById(id);
+  if(!n){ n=document.createElement("div"); n.id=id; n.className="lock-note"; after.insertAdjacentElement("afterend", n); }
+  n.textContent=text; return n;
+}
+function applyAccess(){
+  const conn=can("connect");
+  document.body.classList.toggle("no-connect", !conn);
+  setShown(document.querySelector("#connect-welcome .connect-actions"), conn);
+  setShown(document.querySelector("#connect-welcome .connect-tip"), conn);
+  setShown(document.querySelector("#connect-welcome .connect-info"), conn);
+  setShown($("#connect-noaccess"), !conn);
+  setShown($("#menu-access"), true);
+  const lead=document.querySelector("#connect-welcome .connect-lead");
+  if(lead){ if(!lead.dataset.orig) lead.dataset.orig=lead.textContent; lead.textContent = conn ? lead.dataset.orig : "Open the latest campaign results. Your role has view access."; }
+  /* Things a role can't use are replaced by a short note saying who can, so the difference is visible. */
+  const sim=document.querySelector(".sim-card");
+  if(sim){ const on=can("simulate"); setShown(sim,on); const n=lockNote("sim-locked", sim, `Revenue loss simulator is available to ${rolesWith("simulate")}.`); setShown(n,!on); }
+  const dl=$("#download-sdf");
+  if(dl){ const on=can("download"); setShown(dl,on); const n=lockNote("dl-locked", dl, `Download SDF for review is available to ${rolesWith("download")}.`); setShown(n,!on); }
+}
+/* Re-apply access after the role changes (demo dropdown) without reloading, so the screen you are on updates. */
+function refreshAccess(){
+  paintUser(); applyAccess(); renderTodo(); renderNotif();
+  if(!$("#validation-view").hidden){ showResults($("#rtab-compare").getAttribute("aria-selected")==="true" ? "compare" : "summary"); return; }
+  if(!can("connect")){
+    $("#docs-area").hidden=true; $("#pagehead").hidden=true; $("#connect-view").hidden=false; initConnect(); applyAccess(); return;
+  }
+  if(!$("#connect-view").hidden) initConnect();
+}
+$("#view-latest").addEventListener("click", ()=>showResults("summary"));
+/* Issue status stays visible to everyone, but only roles that can triage get the buttons. */
+(function gateTriage(){
+  const T=window.IQA_TRIAGE; if(!T || T.__gated || !T.controlsHtml) return;
+  const orig=T.controlsHtml.bind(T);
+  T.controlsHtml=(id,title)=>{
+    if(can("triage")) return orig(id,title);
+    const st=(T.get(id)||{}).status||"open", cls={open:"info",resolved:"ok",waived:"miss"}[st]||"info";
+    return `<div class="ro-status"><span class="pill ${cls}">${esc(st.charAt(0).toUpperCase()+st.slice(1))}</span><span class="ro-note">View only. Your role can't change an issue's status.</span></div>${st==="open"?"":`<div class="tri-done">${T.summaryHtml(id)}</div>`}`;
+  };
+  T.__gated=true;
+})();
+
+/* ---- Access and roles window. Everyone sees their own access; admins also see every role. */
+function renderAccess(){
+  const mine=myRoles(), adm=can("admin");
+  const yes=`<svg class="ck yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-label="Yes"><path d="m5 12.5 4 4 10-10"/></svg>`;
+  const no=`<span class="ck no" aria-label="No">–</span>`;
+  let h=`<p class="ac-lead">Signed in as <b>${esc(USER.name)}</b>. Your access comes from your Okta groups${adm?".":". To change it, ask an admin."}</p>
+    <h4>Your access</h4>
+    <div class="ac-mine">${mine.map(r=>`<span class="rchip">${esc(ROLES[r].label)}</span>`).join("")}</div>
+    <ul class="ac-list">${CAPS.filter(([k])=>k!=="admin"||adm).map(([k,l])=>`<li class="${can(k)?"yes":"no"}">${can(k)?yes:no}<span>${esc(l)}</span></li>`).join("")}</ul>`;
+  if(adm){
+    h+=`<h4>Every role</h4>
+    <div class="tbl-wrap"><table class="ac-table"><thead><tr><th>Role</th><th>Okta group</th>${CAPS.map(([,l])=>`<th class="c">${esc(l)}</th>`).join("")}</tr></thead><tbody>
+    ${Object.entries(ROLES).map(([k,r])=>`<tr class="${mine.includes(k)?"me":""}"><td><b>${esc(r.label)}</b><small>${esc(r.does)}</small></td><td class="mono">${esc(r.group)}</td>${CAPS.map(([c])=>`<td class="c">${r.can.includes(c)?yes:no}</td>`).join("")}</tr>`).join("")}
+    </tbody></table></div>
+    <p class="ac-note">People in several groups get everything any of their roles allows.</p>`;
+  }
+  h+=`<h4>SharePoint rules</h4><ul class="ac-rules">${SP_RULES.rules.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`;
+  $("#access-body").innerHTML=h;
+}
+function renderLimits(){
+  const no=`<span class="ck no" aria-label="No">–</span>`;
+  const miss=CAPS.filter(([k])=>k!=="admin" && !can(k));
+  $("#access-body").innerHTML=`<h4>Your role</h4>
+    <div class="ac-mine">${myRoles().map(r=>`<span class="rchip">${esc(ROLES[r].label)}</span>`).join("")}</div>
+    ${miss.length ? `<ul class="ac-list lim">${miss.map(([k,l])=>`<li class="no">${no}<span><b>${esc(l)}</b><small>Available to ${esc(rolesWith(k))}.</small></span></li>`).join("")}</ul>` : `<p class="ac-lead">No restrictions for your role.</p>`}
+    <h4>SharePoint rules</h4><ul class="ac-rules">${SP_RULES.rules.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`;
+}
+function openAccess(mode){
+  $("#access-title").textContent = mode==="limits" ? "Limits and rules" : "Access and roles";
+  mode==="limits" ? renderLimits() : renderAccess();
+  $("#access-backdrop").hidden=false; $("#access-close").focus();
+}
+function closeAccess(){ $("#access-backdrop").hidden=true; }
+$("#menu-access").addEventListener("click", ()=>{ $("#user-menu").hidden=true; $("#user-btn").setAttribute("aria-expanded","false"); openAccess(); });
+$("#limits-btn").addEventListener("click", ()=>openAccess("limits"));
+$("#limits-i").addEventListener("click", ()=>openAccess("limits"));
+$("#access-close").addEventListener("click", closeAccess);
+$("#access-backdrop").addEventListener("click", e=>{ if(e.target.id==="access-backdrop") closeAccess(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("#access-backdrop").hidden) closeAccess(); });
+applyAccess();
 
 /* ============================ demo switch: new vs returning user ============================ */
 /* Sits in the top bar next to the profile button. Hide it for real users with CONFIG.demoControls = false. */
@@ -1297,19 +2183,36 @@ initConnect();
   box.setAttribute("role","group");
   box.setAttribute("aria-label","Demo: choose which user view to show");
   box.innerHTML = `<button type="button" data-mode="new">First-time view</button>
-    <button type="button" data-mode="returning">Returning view</button>`;
+    <button type="button" data-mode="returning">Returning view</button>
+    <button type="button" data-act="teammate" title="Demo: pretend a teammate re-ran the checks">Teammate re-run</button>
+    <label class="demo-role" title="Demo: make the next re-check fail (admins see the reason)"><input type="checkbox" id="demo-fail"> Fail re-check</label>
+    <label class="demo-role">Role <select id="demo-role" aria-label="Demo: sign in as">${Object.entries(DEMO_PERSONA_LABELS).map(([k,l])=>`<option value="${k}"${k===demoPersona?" selected":""}>${esc(l)}</option>`).join("")}</select></label>`;
+  /* Hidden until revealed. Reveal/hide: Ctrl+Shift+D, click the logo 5 times quickly, or open the page with ?demo=1.
+     It stays visible in this tab until hidden again. */
+  const DEMO_KEY="iqa_demo_ui";
+  if(new URLSearchParams(location.search).get("demo")==="1") sessionStorage.setItem(DEMO_KEY,"1");
+  const setVisible=v=>{ box.classList.toggle("is-hidden",!v); try{ v?sessionStorage.setItem(DEMO_KEY,"1"):sessionStorage.removeItem(DEMO_KEY); }catch(e){} };
+  setVisible(sessionStorage.getItem(DEMO_KEY)==="1");
+  const toggle=()=>{ const show=box.classList.contains("is-hidden"); setVisible(show); toast(show?"Demo controls shown.":"Demo controls hidden."); };
+  document.addEventListener("keydown",e=>{ if(e.ctrlKey && e.shiftKey && e.code==="KeyD"){ e.preventDefault(); toggle(); } });
+  let clicks=0, clickT;
+  document.querySelector(".brand")?.addEventListener("click",()=>{ clicks++; clearTimeout(clickT); clickT=setTimeout(()=>clicks=0,1500); if(clicks>=5){ clicks=0; toggle(); } });
   const bar = document.querySelector(".appbar-in"), user = bar && bar.querySelector(".user");
   if(bar && user) bar.insertBefore(box, user); else document.body.appendChild(box);
-  const paint = () => box.querySelectorAll("button").forEach(b=>{
+  const paint = () => box.querySelectorAll("button[data-mode]").forEach(b=>{
     const on = (b.dataset.mode==="returning") === !!connStore.get();
     b.classList.toggle("on", on); b.setAttribute("aria-pressed", on);
+  });
+  box.querySelector("#demo-role").addEventListener("change", e=>{
+    demoPersona=e.target.value; try{ sessionStorage.setItem("iqa_demo_role", demoPersona); }catch(_){}
+    USER.groups=DEMO_PERSONAS[demoPersona]||DEMO_PERSONAS.admin; refreshAccess(); toast(`Now viewing as ${DEMO_PERSONA_LABELS[demoPersona]}.`);
   });
   box.addEventListener("click", e=>{
     const b = e.target.closest("button[data-mode]"); if(!b) return;
     if(b.dataset.mode==="new") connStore.clear();
-    else connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK});
+    else connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK, connectedAt:Date.now()-2*864e5, lastUsedAt:Date.now()-26*36e5});
     sessionStorage.removeItem("iqa_intake_state");
-    if(window.IQA_TRIAGE) IQA_TRIAGE.clearAll();
+    if(b.dataset.mode==="new" && window.IQA_TRIAGE) IQA_TRIAGE.clearAll();   // returning view keeps the saved triage + audit log
     location.href = location.pathname;          // reload so the whole screen starts clean
   });
   paint();
@@ -1319,8 +2222,8 @@ initConnect();
 const FLOW_STEPS = [
   {id:"connect", label:"Connect"},
   {id:"upload",  label:"Upload"},
-  {id:"check",   label:"Check"},
-  {id:"compare", label:"Compare"},
+  {id:"check",   label:"Check"},   // shown as "Check & Re-Run" once a re-run has happened (see stepLabel)
+  {id:"compare", label:"Summary"},
 ];
 const flow = {current:1, reached:1, checked:false};
 const stepCheckSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4 4 10-10"/></svg>`;
@@ -1328,23 +2231,35 @@ const issueIds = () => ISSUES.map((_,i)=>"iss-"+i);
 const issueTally = () => IQA_TRIAGE.counts(issueIds());
 
 function stepSub(i){
-  if(i===1){ const c=connStore.get(); return c ? folderName(resolvePath(c.folder)) : (flow.reached>=2 ? "From your computer" : "Link your files"); }
+  if(i===1){ const c=connStore.get(); return c ? folderName(resolvePath(c.folder)) : "Link your files"; }
   if(i===2){ const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length; return n ? `${n} document${n===1?"":"s"}` : "Add documents"; }
   if(i===3){ if(!flow.checked) return "Run the checks"; const t=issueTally(); return t.open ? `${t.open} open` : "All resolved"; }
-  const s = window.IQA_COMPARE && IQA_COMPARE.summary();
-  return s ? (s.open ? `${s.open} open` : "All resolved") : "Line by line";
+  if(!flow.checked) return "After the checks";
+  return can("simulate") ? `${usd(qaNumbers().saved)} saved` : "QA outcome";
+}
+const rerunCount = () => Math.max(0,(window.IQA_TRIAGE?IQA_TRIAGE.runNumber():1)-1);
+const stepLabel = idx => (FLOW_STEPS[idx].id==="check" && rerunCount()>0) ? "Check & Re-Run" : FLOW_STEPS[idx].label;
+const qcTitle = () => `Intelligent Quality Check · ${campaign.name}`;
+function paintTitle(){
+  const h=$("#res-title"); if(!h) return;
+  const n=rerunCount(); h.innerHTML = esc(qcTitle()) + (n? `<span class="rtag">Re-Run ${n}</span>` : "");
+  if(flow.current>=3) document.title = `${qcTitle()}${n?" (Re-Run "+n+")":""} · IQA Programmatic display`;
 }
 function renderStepper(){
+  const n=FLOW_STEPS.length, pct=Math.round(flow.current/n*100);
+  $("#flow-step").innerHTML = `Step ${flow.current} of ${n} <span>· ${esc(stepLabel(flow.current-1))}</span>`;
+  $("#flow-fill").style.width = pct+"%"; $("#flow-fill").classList.toggle("full", flow.current===n);
+  $("#flow-pct").textContent = pct+"%";
+  $("#flow-bar").setAttribute("aria-valuenow", pct); $("#flow-bar").setAttribute("aria-valuetext", `Step ${flow.current} of ${n}, ${pct} percent`);
   $("#stepper").innerHTML = FLOW_STEPS.map((st,idx)=>{
     const i=idx+1;
     const state = i<flow.current ? "done" : i===flow.current ? "current" : i<=flow.reached ? "avail" : "locked";
     const note = state==="done" ? " (completed)" : state==="locked" ? " (not available yet)" : "";
-    return `<li class="step is-${state}">
-      <button type="button" class="step-btn" data-step="${i}"${state==="current"?' aria-current="step"':""}${state==="locked"?' aria-disabled="true"':""}>
-        <span class="step-dot" aria-hidden="true">${state==="done"?stepCheckSvg:i}</span>
-        <span class="step-txt"><span class="step-name">${st.label}<span class="sr">${note}</span></span><span class="step-sub">${esc(stepSub(i))}</span></span>
+    return `<li class="pth is-${state}">
+      <button type="button" class="pth-btn step-btn" data-step="${i}"${state==="current"?' aria-current="step"':""}${state==="locked"?' aria-disabled="true"':""}>
+        <span class="pth-ic" aria-hidden="true">${state==="done"?stepCheckSvg:i}</span>
+        <span class="pth-txt"><span class="pth-name">${esc(stepLabel(idx))}<span class="sr">${note}</span></span><span class="pth-sub">${esc(stepSub(i))}</span></span>
       </button>
-      ${i<FLOW_STEPS.length?'<span class="step-line" aria-hidden="true"></span>':""}
     </li>`;
   }).join("");
 }
@@ -1355,10 +2270,12 @@ function focusHeading(n){
 }
 function setStep(n,{focus=false}={}){
   flow.current=n;
+  document.body.classList.toggle("is-results", n>=3);
   if(n>=3) flow.checked=true;
   flow.reached = flow.checked ? 4 : Math.max(flow.reached,n);
   renderStepper();
-  document.title = `${FLOW_STEPS[n-1].label} · IQA Programmatic display`;
+  document.title = n>=3 ? `${qcTitle()} · IQA Programmatic display` : `${stepLabel(n-1)} · IQA Programmatic display`;
+  paintTitle();
   if(focus) focusHeading(n);
 }
 function showConnectView(){
@@ -1375,7 +2292,7 @@ function goStep(i){
 $("#stepper").addEventListener("click", e=>{
   const b=e.target.closest("[data-step]"); if(!b) return;
   const i=+b.dataset.step;
-  if(b.getAttribute("aria-disabled")==="true"){ toast(i===2 ? "Connect SharePoint or upload files first." : "Add your documents, then choose “Check documents”."); return; }
+  if(b.getAttribute("aria-disabled")==="true"){ toast(i===2 ? "Connect SharePoint first." : "Add your documents, then choose “Check documents”."); return; }
   if(i!==flow.current) goStep(i);
 });
 
@@ -1407,31 +2324,64 @@ const money = n => "$"+(n>=1000?Math.round(n/1000)+"K":n);
 const checkSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"/></svg>`;
 const warnSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 16.5h.01M10.3 3.9 2.6 17.5a1.7 1.7 0 0 0 1.5 2.5h15.8a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/></svg>`;
 
-function renderValidation(){
-  $("#val-campaign-line").textContent = `Campaign: ${campaign.name}, cloned from Spring_Auto_2025`;
+/* Confidence score. Two factors, weights are illustrative and easy to change:
+   1. the Claude contract's own confidence (a placeholder number until the contract is attached), and
+   2. reviewer feedback: each issue marked Resolved is logged as a human correction or an AI correction.
+      An AI correction means Claude's suggested fix was right (supports the score). A human correction means a
+      person had to fix it their own way (pulls it down). With few corrections the feedback factor leans on
+      the contract score (prior = 3 pseudo-corrections) so one click can't swing the number. */
+const CONFIDENCE_MODEL = {contract:0.7, feedback:0.3, prior:3};
+function confidenceParts(){
+  const fb=IQA_TRIAGE.feedback(), c=VALIDATION.confidence, M=CONFIDENCE_MODEL;
+  const fbScore=(fb.ai + M.prior*c/100)/(fb.total + M.prior)*100;
+  return {contract:c, fb, fbScore, score:Math.round((c*M.contract + fbScore*M.feedback)*10)/10};
+}
+let checkedAt=null;
+function renderRecordHeader(){
+  const T=IQA_TRIAGE, cp=confidenceParts(), sim=can("simulate"), lr=T.lastRerun(), t=issueTally(), cs=window.IQA_COMPARE&&IQA_COMPARE.summary();
+  paintTitle();
+  const open=t.open+(cs?cs.open:0);
+  const f=[["Campaign ID",campaign.id],["QA’d by",USER.name],[lr?`Last re-check · Run ${lr.run}`:"Checked", lr?lr.when:T.stamp(checkedAt||new Date().toISOString())],["Confidence",cp.score+"%"],["Open items",String(open)]];
+  if(sim) f.push(["Revenue saved", usd(qaNumbers().saved), "pos"]);
+  $("#rec-hl").innerHTML = f.map(([k,v,c])=>`<div><dt>${esc(k)}</dt><dd${c?` class="${c}"`:""}>${esc(v)}</dd></div>`).join("");
+}
+function renderFacts(){
+  renderRecordHeader();
+  const cp=confidenceParts(), sim=can("simulate");
   $("#val-facts").innerHTML = `
-    <div class="fact"><span>Overall confidence</span><b style="color:var(--ok)">${VALIDATION.confidence}%</b></div>
+    <div class="fact"><span>Overall confidence</span><b style="color:var(--ok)">${cp.score}%</b></div>
     <div class="fact"><span>Parameters checked</span><b>${VALIDATION.paramsChecked}</b></div>
     <div class="fact"><span>Flags raised</span><b style="color:var(--bad)">${VALIDATION.flagsRaised}</b></div>
-    <div class="fact"><span>Est. write-off avoided</span><b>${money(VALIDATION.writeOffAvoided)}</b></div>`;
+    ${sim?`<div class="fact"><span>Revenue saved so far</span><b>${usd(qaNumbers().saved)}</b></div>`:""}`;
+}
+const issueExpanded=new Set();
+function renderValidation(){
+  $("#val-campaign-line").textContent = `Campaign: ${campaign.name}, cloned from Spring_Auto_2025`;
+  renderFacts();
+  const flagged=VALIDATION.rows.filter(r=>r.tag).length, passed=VALIDATION.rows.length-flagged;
+  $("#pv-sum").innerHTML = `${flagged?`<span class="pv-chip bad">${flagged} flagged</span>`:""}<span class="pv-chip ok">${passed} passed</span>`;
   $("#val-rows").innerHTML = VALIDATION.rows.map(r=>{
     const cls = r.tag==="critical"?"crit":r.tag==="review"?"review":"";
-    return `<div class="conf-row ${cls}">
-      <span class="cr-ic">${r.tag?warnSvg:checkSvg}</span>
-      <span class="cr-body"><span class="cr-title">${esc(r.label)}${r.tag?` - ${r.tag}`:""}</span><span class="cr-desc">${esc(r.desc)}</span></span>
-      <span class="cr-right"><span class="cr-pct">${r.conf}% conf.</span></span>
+    return `<div class="pv-row ${cls}">
+      <span class="pv-ic">${r.tag?warnSvg:checkSvg}</span>
+      <span class="pv-l">${esc(r.label)}${r.tag?` <em>${r.tag}</em>`:""}</span>
+      <span class="pv-pct">${r.conf}%</span>
+      <span class="pv-d">${esc(r.desc)}</span>
     </div>`;
   }).join("");
   $("#issue-list").innerHTML = ISSUES.map((i,n)=>{
     const id="iss-"+n, t=IQA_TRIAGE.get(id);
+    const open=issueExpanded.has(id);
     return `<div class="issue-card ${i.sev==="critical"?"":"high"} is-${t.status}" data-issue="${id}">
-    <h3>${esc(i.title)}</h3>
-    <p>${esc(i.desc)}</p>
-    <div class="issue-meta"><span class="pill ${i.sev==="critical"?"bad":"warn"}">${i.sev==="critical"?"Critical":"High"}</span><b>Est. impact: ${money(i.impact)}</b><span>Source: ${esc(i.source)}</span></div>
-    <div class="issue-triage">${IQA_TRIAGE.controlsHtml(id, i.title)}</div>
+    <h3><button type="button" class="issue-toggle" aria-expanded="${open}" aria-controls="${id}-d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span>${esc(i.title)}</span></button></h3>
+    <div class="issue-meta"><span class="pill ${i.sev==="critical"?"bad":"warn"}">${i.sev==="critical"?"Critical":"High"}</span>${can("simulate")?`<b>Est. impact: ${money(i.impact)}</b>`:""}<span>Source: ${esc(i.source)}</span></div>
+    <p class="issue-desc" id="${id}-d"${open?"":" hidden"}>${esc(i.desc)}</p>
+    <div class="issue-triage tri-pop">${IQA_TRIAGE.controlsHtml(id, i.title)}</div>
   </div>`;
   }).join("");
   updateTally();
+  const fixMin=FIXES.reduce((t,f)=>t+(parseInt(f.time,10)||0),0);
+  $("#fix-sum").textContent=`${FIXES.length} priority fixes · about ${fixMin} min`;
   $("#fix-list").innerHTML = FIXES.map((f,i)=>`<div class="fix-row">
     <span class="fix-num">${i+1}</span>
     <div><h4>${esc(f.title)}</h4><p>${esc(f.desc)} Time: ${esc(f.time)}.</p></div>
@@ -1440,7 +2390,11 @@ function renderValidation(){
 function showResults(tab="summary"){
   $("#pagehead").hidden=true; $("#docs-area").hidden=true; $("#connect-view").hidden=true;
   $("#validation-view").hidden=false;
+  if(!checkedAt) checkedAt=new Date().toISOString();
+  setStickyTop(); renderNotif(); paintRecheck();
   renderValidation();
+  renderSim();
+  renderQaSummary();
   mountCompare();
   updateBadges();
   setResultsTab(tab);
@@ -1461,7 +2415,7 @@ $("#rtabs").addEventListener("keydown", e=>{
   setResultsTab(toCmp?"compare":"summary"); $(toCmp?"#rtab-compare":"#rtab-summary").focus();
 });
 function mountCompare(){
-  if(window.IQA_COMPARE) IQA_COMPARE.mount($("#cmp-root"), {campaign:{id:campaign.id, name:campaign.name}, onData:()=>{ updateBadges(); renderStepper(); }});
+  if(window.IQA_COMPARE) IQA_COMPARE.mount($("#cmp-root"), {campaign:{id:campaign.id, name:campaign.name}, onData:()=>{ updateBadges(); renderStepper(); renderFacts(); renderQaSummary(); }});
 }
 function updateTally(){
   const t=issueTally();
@@ -1469,23 +2423,462 @@ function updateTally(){
 }
 function updateBadges(){
   const t=issueTally(), sb=$("#rbadge-summary"), cb=$("#rbadge-compare"), s=window.IQA_COMPARE&&IQA_COMPARE.summary();
-  sb.textContent = t.open ? t.open : "✓"; sb.classList.toggle("okb", !t.open);
-  if(s){ cb.textContent = s.open ? s.open : "✓"; cb.classList.toggle("okb", !s.open); } else cb.textContent="";
+  const openAll = t.open + (s ? s.open : 0);
+  sb.textContent = openAll ? openAll : "✓"; sb.classList.toggle("okb", !openAll);
+  cb.textContent = ""; cb.classList.remove("okb");
 }
 /* Any status/owner change (on an issue or a compare row) refreshes counts everywhere. */
 IQA_TRIAGE.setCampaign(campaign.id);
 IQA_TRIAGE.bind($("#issue-list"));
 IQA_TRIAGE.onChange(()=>{
   document.querySelectorAll("[data-issue]").forEach(c=>{ const t=IQA_TRIAGE.get(c.dataset.issue); c.classList.remove("is-open","is-resolved","is-waived"); c.classList.add("is-"+t.status); });
-  updateTally(); updateBadges(); renderStepper();
+  updateTally(); updateBadges(); renderStepper(); paintTitle(); renderFacts(); renderQaSummary();
 });
-$("#back-to-upload").addEventListener("click", revealDocsArea);
-$("#recheck-btn").addEventListener("click", ()=>{
-  const btn=$("#recheck-btn");
-  btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Re-checking…`;
-  setTimeout(()=>{ btn.disabled=false; btn.textContent="Re-check"; renderValidation();
-    toast("Re-check complete. The same 2 flags remain until the fixes above are applied."); }, 900);
+$("#issue-list").addEventListener("click", e=>{
+  const b=e.target.closest(".issue-toggle"); if(!b) return;
+  const d=document.getElementById(b.getAttribute("aria-controls")), id=b.getAttribute("aria-controls").replace(/-d$/,""), open=d.hidden;
+  d.hidden=!open; b.setAttribute("aria-expanded",String(open)); open?issueExpanded.add(id):issueExpanded.delete(id);
 });
+document.addEventListener("click", e=>{ if(e.target.closest(".pv .tip-i")) e.preventDefault(); });   // the "i" must not open or close the list
+document.querySelectorAll(".js-back").forEach(b=>b.addEventListener("click", ()=>{ revealDocsArea(); window.scrollTo({top:0}); }));
+
+
+/* ============================ smooth scrolling ============================ */
+/* Mouse wheels move the page in big steps, which feels jumpy. Here each wheel notch is eased over a few frames
+   (like Apple's inertia). Trackpads, keyboard, scrollbar drags, modals and scrollable boxes keep native scrolling. */
+(function smoothWheel(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let target=0, current=0, raf=0;
+  const maxY=()=>Math.max(0, document.documentElement.scrollHeight-innerHeight);
+  const canScroll=(el,dy)=>{
+    for(; el && el!==document.body && el!==document.documentElement; el=el.parentElement){
+      const o=getComputedStyle(el).overflowY;
+      if((o==="auto"||o==="scroll") && el.scrollHeight>el.clientHeight+1){
+        if(dy<0 ? el.scrollTop>0 : el.scrollTop+el.clientHeight<el.scrollHeight-1) return true;
+      }
+    }
+    return false;
+  };
+  const isMouseWheel=e=> e.deltaMode===1 || (Number.isInteger(e.deltaY) && (e.wheelDeltaY ? e.wheelDeltaY%120===0 : Math.abs(e.deltaY)>=50));   // a notch reports 120 units; trackpads report odd values
+  const step=()=>{
+    const d=target-current;
+    if(Math.abs(d)<0.5){ current=target; scrollTo({top:current,behavior:"instant"}); raf=0; return; }
+    current+=d*0.14; scrollTo({top:current,behavior:"instant"}); raf=requestAnimationFrame(step);
+  };
+  addEventListener("wheel", e=>{
+    if(e.ctrlKey||e.metaKey||e.shiftKey||e.defaultPrevented||Math.abs(e.deltaX)>Math.abs(e.deltaY)) return;
+    if(!isMouseWheel(e)) return;
+    if(document.querySelector(".modal-backdrop:not([hidden]), [id$='-backdrop']:not([hidden])")) return;
+    if(canScroll(e.target,e.deltaY)) return;
+    e.preventDefault();
+    if(!raf){ current=scrollY; target=current; }
+    const dy=e.deltaMode===1 ? e.deltaY*40 : e.deltaY;
+    target=Math.min(maxY(), Math.max(0, target+dy));
+    if(!raf) raf=requestAnimationFrame(step);
+  },{passive:false});
+  addEventListener("scroll",()=>{ if(!raf){ current=target=scrollY; } },{passive:true});
+})();
+
+/* ============================ QA summary tab ============================ */
+/* Revenue saved = the simulated loss of every issue marked Resolved (uses the simulator's current assumptions).
+   Waived issues are risk the team accepted, so they are shown separately and are not counted as saved. */
+function qaNumbers(){
+  const n={saved:0, open:0, waived:0, total:0, nSaved:0, nOpen:0, nWaived:0};
+  ISSUES.forEach((_,i)=>{
+    const l=simLoss(simState[i]), st=IQA_TRIAGE.get("iss-"+i).status; n.total+=l;
+    if(st==="resolved"){ n.saved+=l; n.nSaved++; } else if(st==="waived"){ n.waived+=l; n.nWaived++; } else { n.open+=l; n.nOpen++; }
+  });
+  return n;
+}
+function renderQaSummary(){
+  const root=$("#qa-root"); if(!root) return;
+  const T=IQA_TRIAGE, n=qaNumbers(), sim=can("simulate"), cs=window.IQA_COMPARE&&IQA_COMPARE.summary(), cp=confidenceParts();
+  const logOpen=!!(root.querySelector(".qa-det") && root.querySelector(".qa-det").open);
+  const plural=(k,w)=>`${k} ${w}${k===1?"":"s"}`;
+  const hero = sim ? `<div class="qa-hero">
+      <div class="qa-stat good"><span>Revenue saved</span><b>${usd(n.saved)}</b><small>${n.nSaved?`from ${plural(n.nSaved,"resolved issue")}`:"No issues resolved yet"}</small></div>
+      <div class="qa-stat bad"><span>Still at risk</span><b>${usd(n.open)}</b><small>${plural(n.nOpen,"open issue")}</small></div>
+      <div class="qa-stat warn"><span>Risk accepted</span><b>${usd(n.waived)}</b><small>${plural(n.nWaived,"waived issue")}</small></div>
+      <div class="qa-stat"><span>Total exposure</span><b>${usd(n.total)}</b><small>If nothing had been fixed</small></div>
+    </div>` : `<p class="qa-lock">Revenue figures are available to ${esc(rolesWith("simulate"))}.</p>`;
+  const cmpLines = cs ? `<li><span>Rows compared</span><b>${cs.rows}</b></li><li><span>With differences</span><b>${cs.diffs}</b></li><li><span>Resolved</span><b>${cs.resolved}</b></li><li><span>Open</span><b>${cs.open}</b></li><li><span>Waived</span><b>${cs.waived}</b></li>` : `<li><span>Loading the comparison…</span></li>`;
+  const cls={open:"info",resolved:"ok",waived:"miss"}, lbl={open:"Open",resolved:"Resolved",waived:"Waived"};
+  const rows=ISSUES.map((it,i)=>{
+    const id="iss-"+i, st=T.get(id).status, c=T.correction(id);
+    const how=c ? (c.status==="resolved" ? c.methodLabel : "Risk accepted") : "";
+    return `<tr><td>${esc(it.title)}</td>${sim?`<td class="n">${usd(simLoss(simState[i]))}</td>`:""}<td><span class="pill ${cls[st]}">${lbl[st]}</span></td>
+      <td>${c?`<span class="corr-who">${esc(c.name)}</span><span class="corr-meta">${esc(how)} · Run ${c.run}</span>${c.reason?`<span class="tri-why">“${esc(c.reason)}”</span>`:""}`:`<span class="muted">Not corrected yet</span>`}</td>
+      <td class="ts">${c?esc(c.whenFull):`<span class="muted">—</span>`}</td></tr>`;
+  }).join("");
+  const fb=cp.fb, lr=T.lastRerun();
+  const log=T.log(can("admin"));
+  root.innerHTML = `
+    <div><h2>QA summary</h2><p style="margin:4px 0 0;font-size:14px;color:var(--ink-2,#5A6675)">${esc(campaign.name)} · ${esc(campaign.id)} · Run ${T.runNumber()}</p></div>
+    ${hero}
+    <div class="qa-grid">
+      <div class="qa-col">
+        <div class="qa-card"><h2>Issues</h2><ul class="qa-lines"><li><span>Flagged</span><b>${ISSUES.length}</b></li><li><span>Resolved</span><b>${n.nSaved}</b></li><li><span>Open</span><b>${n.nOpen}</b></li><li><span>Waived</span><b>${n.nWaived}</b></li></ul></div>
+        <div class="qa-card"><h2>Line-by-line differences</h2><ul class="qa-lines">${cmpLines}</ul></div>
+      </div>
+      <div class="qa-col">
+        <div class="qa-card"><h2>Re-Check Summary</h2><p class="qa-sub">${lr?`Latest re-check: run ${lr.run}, ${esc(lr.when)}, by ${esc(lr.by)}.`:`Run ${T.runNumber()}. No re-checks yet. Use “Re-check” on the Mismatches tab after fixes are made.`} Each correction below shows who made it, how, and when.</p><div class="qa-tbl-wrap"><table class="qa-tbl"><thead><tr><th scope="col">Issue</th>${sim?'<th scope="col">Impact</th>':""}<th scope="col">Status</th><th scope="col">Corrected by</th><th scope="col">Date and time</th></tr></thead><tbody>${rows}</tbody></table></div></div>
+        <details class="qa-det"${logOpen?" open":""}><summary>Audit log <span class="sum-n">${log.length} ${log.length===1?"entry":"entries"}</span></summary><div>${T.logHtml(can("admin"))}</div></details>
+      </div>
+      <div class="qa-col">
+        <div class="qa-card"><h2>Confidence score</h2>
+          <div class="qa-conf"><div class="qa-conf-n">${cp.score}%<small>Overall</small></div>
+          <ul class="qa-fac">
+            <li><span class="tip"><b>AI correction</b> <button type="button" class="tip-i" aria-label="About AI correction" aria-describedby="tip-ai">i</button><span class="tip-b" role="tooltip" id="tip-ai">How sure the AI is that it got things right.</span></span><b>${cp.contract}%</b><div class="qa-bar"><i style="width:${cp.contract}%"></i></div><small>Counts ${Math.round(CONFIDENCE_MODEL.contract*100)}%. A placeholder until the Claude contract is attached.</small></li>
+            <li><span class="tip"><b>Human correction</b> <button type="button" class="tip-i" aria-label="About Human correction" aria-describedby="tip-human">i</button><span class="tip-b" role="tooltip" id="tip-human">Did the AI's fix work? If a person had to redo it, the score drops.</span></span><b>${Math.round(cp.fbScore*10)/10}%</b><div class="qa-bar"><i style="width:${cp.fbScore}%"></i></div><small>Counts ${Math.round(CONFIDENCE_MODEL.feedback*100)}%. ${fb.total ? `${fb.total} fixed: ${fb.ai} by AI, ${fb.human} by a person.` : "No fixes logged yet."}</small></li>
+          </ul></div>
+          <p>Weights are examples for now.</p></div>
+      </div>
+    </div>`;
+}
+
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ document.querySelectorAll(".tip").forEach(t=>t.classList.add("tip-off")); } });
+document.addEventListener("mouseover",e=>{ const t=e.target.closest&&e.target.closest(".tip"); if(t) t.classList.remove("tip-off"); });
+document.addEventListener("focusin",e=>{ const t=e.target.closest&&e.target.closest(".tip"); if(t) t.classList.remove("tip-off"); });
+
+/* ---- revenue loss simulator: collapsible, closed by default; the total stays visible in the header ---- */
+function setSimOpen(on){
+  $("#sim-card").classList.toggle("is-open", on); $("#sim-body").hidden=!on;
+  $("#sim-toggle").setAttribute("aria-expanded", String(on)); if(!on) closeLib();
+}
+$("#sim-head").addEventListener("click", ()=>setSimOpen($("#sim-body").hidden));
+
+/* ============================ revenue loss simulator ============================ */
+/* Loss = daily budget × line items affected × detection lag (days) × share of spend affected.
+   Two modes: this campaign's issues (starting values reproduce each issue's "Est. impact" above,
+   and feed the "If you proceed now" total), and a library of known geo error scenarios. */
+const SIM_DEFAULTS = [
+  {name:"Geographic mismatch (EU targeting)", budget:12000, lag:35, share:100, desc:"DV360 also targets EU, UK and CA while the brief budgets for 12 US DMAs, so part of the spend reaches the wrong markets."},
+  {name:"Frequency cap 8/day instead of 3/day", budget:9750, lag:40, share:60,  desc:"Users see ads far more often than planned, so a share of spend goes on impressions with little extra value."},
+  {name:"12 line items without creatives", budget:5200, lag:30, share:100, desc:"Line items without creatives can't serve, so their planned delivery is lost until creatives are mapped."},
+  {name:"Budget split undefined for 3 line items", budget:2300, lag:20, share:50,  desc:"Without split rules, budget is allocated by hand in DV360 and part of it can land on the wrong line items."},
+];
+/* Geo error scenario library (from the PRG test cases). kind decides what the percentage means:
+   misdirected = spend served outside the approved geo; missed = required geo not reached;
+   inefficient = spend concentrated on overlapping areas. Starting values are demo assumptions
+   ($200 a day per line item, as in the example). */
+const KIND = {
+  misdirected:{label:"Spend misdirected", verb:"of spend served outside the approved geo"},
+  missed:{label:"Delivery missed", verb:"of planned delivery that never reaches the required geo"},
+  inefficient:{label:"Spend wasted on overlap", verb:"of spend lost to duplicated reach"},
+};
+const SCENARIOS = [
+  {id:"TC-01",name:"Extra DMA added to geo targeting",sev:"High",kind:"misdirected",lis:1,lag:10,share:25,
+   result:"Ads also serve in the unintended DMA, so impressions are delivered outside the approved area and budget is wasted.",
+   cause:"Human data entry error: one extra DMA was targeted."},
+  {id:"TC-02",name:"Required ZIP code missing",sev:"High",kind:"missed",lis:1,lag:14,share:15,
+   result:"Ads never serve in the missing ZIP area, so impressions for the intended geo are lost.",
+   cause:"Human data entry error: required ZIP codes were not targeted."},
+  {id:"TC-03",name:"Excluded ZIP set to Include",sev:"High",kind:"misdirected",lis:1,lag:10,share:10,
+   result:"The excluded ZIP receives impressions, diverting budget away from approved ZIP codes into an unapproved territory.",
+   cause:"Human data entry error: Include chosen instead of Exclude."},
+  {id:"TC-04",name:"Wrong tier targeted",sev:"Critical",kind:"misdirected",lis:1,lag:7,share:100,
+   result:"Ads serve in the wrong locations instead of the required ones, wasting significant impressions and budget.",
+   cause:"Interpretation error: the required tier was misread."},
+  {id:"TC-05",name:"Duplicate or overlapping geos (DMA + County)",sev:"Medium",kind:"inefficient",lis:1,lag:21,share:15,
+   result:"Delivery concentrates in the same area, reducing unique reach and allocating budget inefficiently.",
+   cause:"Configuration error: the same market added with two overlapping geo types."},
+  {id:"TC-06",name:"Wrong location picked in geo search",sev:"High",kind:"misdirected",lis:1,lag:10,share:33,
+   result:"The wrong location is targeted, so the required geo misses impressions and budget is spent in an unintended area.",
+   cause:"Human selection error: wrong location chosen from search results."},
+  {id:"TC-07",name:"Wrong geo copied by duplicating line items",sev:"Critical",kind:"misdirected",lis:4,lag:10,share:100,
+   result:"All affected tactics deliver in unintended locations, multiplying missed impressions and wasted budget.",
+   cause:"Human copy error: the incorrect setup was duplicated across line items."},
+  {id:"TC-08",name:"Bulk ZIP paste applied without validation",sev:"High",kind:"missed",lis:1,lag:14,share:20,
+   result:"The unprocessed ZIPs or DMAs are never targeted, so those required locations get no delivery.",
+   cause:"Human validation error: the list was applied without checking every entry processed."},
+  {id:"TC-09",name:"Same ZIP both included and excluded",sev:"High",kind:"missed",lis:1,lag:14,share:50,
+   result:"The ZIP may be excluded or behave unpredictably, causing under- or over-delivery against the plan.",
+   cause:"Human configuration error plus platform behaviour: conflicting include and exclude."},
+  {id:"TC-10",name:"City selected instead of DMA",sev:"High",kind:"missed",lis:1,lag:10,share:60,
+   result:"The targeted area is much smaller than required, reducing coverage and causing under-delivery.",
+   cause:"Human geo-selection error: city chosen instead of DMA."},
+  {id:"TC-11",name:"Previous campaign's geo retained",sev:"Critical",kind:"misdirected",lis:3,lag:5,share:100,
+   result:"The campaign serves in the wrong markets, missing delivery in the intended geo and skewing performance.",
+   cause:"Human cloning error: inherited geo targeting wasn't reviewed."},
+  {id:"TC-12",name:"Geo updated in only one line item",sev:"Critical",kind:"missed",lis:2,lag:14,share:100,
+   result:"Line items serve different areas, so delivery is inconsistent across tactics and budget is misallocated.",
+   cause:"Human execution error: the update wasn't applied to every line item."},
+  {id:"TC-13",name:"Geos removed while editing a line item",sev:"High",kind:"missed",lis:1,lag:14,share:67,
+   result:"Previously approved locations stop receiving delivery, reducing coverage.",
+   cause:"Human configuration error: the geo list was overwritten instead of added to."},
+  {id:"TC-14",name:"Outdated geo list file used",sev:"High",kind:"missed",lis:1,lag:21,share:33,
+   result:"Newly added locations are missed, or removed ones are still targeted.",
+   cause:"Human version-control error: an outdated list was used."},
+  {id:"TC-15",name:"Spreadsheet rows misaligned",sev:"Critical",kind:"misdirected",lis:2,lag:10,share:100,
+   result:"Line items target the wrong locations or miss required ZIPs.",
+   cause:"Human spreadsheet handling error: rows became misaligned."},
+  {id:"TC-16",name:"Outdated targeting template applied",sev:"Critical",kind:"misdirected",lis:1,lag:10,share:100,
+   result:"The new line item targets outdated locations, missing the intended geo.",
+   cause:"Human validation error: the template wasn't checked against the brief."},
+  {id:"TC-17",name:"Incorrect advertiser-level geo list reused",sev:"Critical",kind:"missed",lis:6,lag:30,share:33,
+   result:"The same error spreads to every campaign and line item using the list.",
+   cause:"Human validation error: the shared list wasn't checked against the source of truth."},
+  {id:"TC-18",name:"Geo spelled differently in search",sev:"High",kind:"missed",lis:1,lag:14,share:50,
+   result:"The required geo is missed or the wrong entity is targeted, reducing coverage.",
+   cause:"Human selection error: an abbreviated geo name wasn't recognised."},
+  {id:"TC-19",name:"Two campaigns' geo lists swapped",sev:"Critical",kind:"misdirected",lis:2,lag:7,share:100,
+   result:"Both campaigns serve in the wrong markets, misdirecting budget and missing their approved geos.",
+   cause:"Human data handling error: lists swapped during upload."},
+  {id:"TC-20",name:"Whole DMA targeted instead of franchisee ZIPs",sev:"High",kind:"misdirected",lis:1,lag:28,share:50,
+   result:"Franchisee A's budget (about $2,800) is spent in Franchisee B's territory, a budget and business conflict.",
+   cause:"Human configuration error: DMA used instead of franchisee ZIP codes."},
+  {id:"TC-21",name:"Blank or national geo on a tiered line item",sev:"Critical",kind:"misdirected",lis:1,lag:3,share:95,
+   result:"The line item serves nationally, wasting most of the budget outside the intended markets.",
+   cause:"Human data entry omission: no geo entered."},
+  {id:"TC-22",name:"ZIP excluded inside an included DMA",sev:"High",kind:"missed",lis:1,lag:21,share:20,
+   result:"The exclusion carves a hole in the approved DMA, causing under-delivery that's hard to spot.",
+   cause:"Human configuration error: ZIP-level exclusion inside a DMA-level inclusion."},
+  {id:"TC-23",name:"Leading zero dropped from ZIP code",sev:"Medium",kind:"missed",lis:1,lag:21,share:10,
+   result:"The ZIP is dropped or matches an unrelated area, so the intended location misses delivery.",
+   cause:"Human data handling error: spreadsheet stripped the leading zero."},
+];
+const LIB_BUDGET = 200;
+const libFresh = () => SCENARIOS.map(x=>({budget:LIB_BUDGET, lis:x.lis, lag:x.lag, share:x.share}));
+let simState = SIM_DEFAULTS.map(d=>({...d})), simIdx = 0;
+let libState = libFresh(), libIdx = SCENARIOS.findIndex(x=>x.id==="TC-11"), simMode = "campaign";
+const usd = n => "$" + Math.round(n).toLocaleString("en-US");
+const simLoss = s => (+s.budget||0) * (+(s.lis??1)||0) * (+s.lag||0) * ((+s.share||0)/100);
+const issueOpen = i => IQA_TRIAGE.get("iss-"+i).status === "open";
+const sevPill = sev => ({Critical:"bad",High:"warn",Medium:"info"}[sev]||"info");
+function cur(){ return simMode==="campaign" ? simState[simIdx] : libState[libIdx]; }
+function renderSim(fillInputs=true){
+  const lib=simMode==="library", s=cur();
+  $("#lib-count").textContent = `(${SCENARIOS.length})`;
+  document.querySelectorAll(".sim-mode").forEach(b=>{ const on=b.dataset.mode===simMode; b.setAttribute("aria-selected",String(on)); b.tabIndex=on?0:-1; });
+  $("#sim-campaign-pick").hidden=lib; $("#sim-library-pick").hidden=!lib; $("#lib-detail").hidden=!lib;
+  document.querySelectorAll(".lib-only").forEach(e=>e.hidden=!lib);
+  $("#sim-budget-lbl").textContent = lib ? "Daily budget per line item (USD)" : "Planned daily budget (USD)";
+  if(lib){
+    const sc=SCENARIOS[libIdx], k=KIND[sc.kind];
+    $("#lib-btn-name").textContent=sc.name;
+    $("#lib-btn-sev").textContent=sc.sev; ["#lib-btn","#lib-result-box","#lib-cause-box"].forEach(q=>$(q).dataset.sev=sc.sev);
+    $("#sim-desc").textContent=""; $("#sim-desc").hidden=true; $("#lib-result").textContent=sc.result; $("#lib-cause").textContent=sc.cause;
+    $("#sim-share-lbl").textContent=k.label;
+    $("#sim-note").textContent="Scenario only: not counted in the total above.";
+    $("#sim-foot-text").textContent=`Loss = daily budget per line item × line items affected × detection lag × share ${k.verb}. Starting values are demo assumptions; change them to match your campaign.`;
+  } else {
+    const issue=ISSUES[simIdx], crit=issue.sev==="critical";
+    if(fillInputs) $("#sim-scenario").innerHTML = simState.map((x,i)=>`<option value="${i}"${i===simIdx?" selected":""}>${esc(x.name)}</option>`).join("");
+    $("#sim-sev").className="pill "+(crit?"bad":"warn"); $("#sim-sev").textContent=crit?"Critical":"High";
+    $("#sim-desc").hidden=false; $("#sim-desc").textContent=s.desc; $("#sim-share-lbl").textContent="Spend misdirected";
+    const st=IQA_TRIAGE.get("iss-"+simIdx).status;
+    $("#sim-note").textContent = st==="open" ? "" : `This issue is marked ${st}, so it isn't counted in the total.`;
+    $("#sim-foot-text").textContent="Loss = daily budget × detection lag × share of spend misdirected. Starting values match each issue's estimated impact; resolved or waived issues are left out of the total.";
+  }
+  if(fillInputs){ $("#sim-budget").value=s.budget; $("#sim-lag").value=s.lag; $("#sim-share").value=s.share; if(lib) $("#sim-lis").value=s.lis; }
+  $("#sim-lag-out").textContent=`${s.lag} day${+s.lag===1?"":"s"}`;
+  $("#sim-share-out").textContent=`${s.share}%`;
+  const loss=simLoss(s);
+  $("#sim-loss").textContent=usd(loss);
+  $("#sim-calc").textContent = lib
+    ? `${usd(s.budget)} × ${s.lis} line item${+s.lis===1?"":"s"} × ${s.lag} days × ${s.share}% = ${usd(loss)}`
+    : `${usd(s.budget)} × ${s.lag} days × ${s.share}% = ${usd(loss)}`;
+  const open=simState.map((x,i)=>i).filter(issueOpen);
+  $("#sim-total").textContent=usd(open.reduce((t,i)=>t+simLoss(simState[i]),0));
+  $("#sim-total-sub").textContent = open.length ? `across ${open.length} open issue${open.length===1?"":"s"} in this campaign` : "all issues resolved or waived";
+  renderFacts(); renderQaSummary(); renderStepper();
+}
+document.querySelectorAll(".sim-mode").forEach(b=>b.addEventListener("click",()=>{ simMode=b.dataset.mode; closeLib(); renderSim(); }));
+$("#sim-scenario").addEventListener("change",e=>{ simIdx=+e.target.value; renderSim(); });
+$("#sim-budget").addEventListener("input",e=>{ cur().budget=Math.max(0,+e.target.value||0); renderSim(false); });
+$("#sim-lis").addEventListener("input",e=>{ cur().lis=Math.max(1,Math.round(+e.target.value||1)); renderSim(false); });
+$("#sim-lag").addEventListener("input",e=>{ cur().lag=+e.target.value; renderSim(false); });
+$("#sim-share").addEventListener("input",e=>{ cur().share=+e.target.value; renderSim(false); });
+$("#sim-reset").addEventListener("click",()=>{
+  if(simMode==="campaign") simState=SIM_DEFAULTS.map(d=>({...d})); else libState=libFresh();
+  renderSim(); toast("Assumptions reset.");
+});
+IQA_TRIAGE.onChange(()=>{ if(!$("#validation-view").hidden) renderSim(false); });
+
+/* compact, searchable scenario picker: shows about 6 at a time and scrolls */
+let libActive=0, libView=[];
+function renderLibList(){
+  const q=$("#lib-search").value.trim().toLowerCase();
+  libView=SCENARIOS.map((x,i)=>i).filter(i=>{ const x=SCENARIOS[i]; return !q || (x.name+" "+x.result+" "+x.cause+" "+x.sev).toLowerCase().includes(q); });
+  libActive=Math.max(0,Math.min(libActive,libView.length-1));
+  $("#lib-list").innerHTML = libView.map((i,pos)=>{ const x=SCENARIOS[i];
+    return `<li role="option" id="lib-opt-${i}" data-i="${i}" aria-selected="${i===libIdx}" class="${pos===libActive?"active":""}" data-sev="${x.sev}"><span class="t">${esc(x.name)}</span><span class="sev-chip">${x.sev}</span></li>`; }).join("")
+    || `<li class="empty">No scenarios match “${esc(q)}”.</li>`;
+  const act=$("#lib-list .active"); if(act){ act.scrollIntoView({block:"nearest"}); $("#lib-search").setAttribute("aria-activedescendant",act.id); }
+}
+function openLib(){ $("#lib-pop").hidden=false; $("#lib-btn").setAttribute("aria-expanded","true"); $("#lib-search").value=""; libActive=Math.max(0,libIdx); renderLibList(); $("#lib-search").focus(); }
+function closeLib(focusBtn){ if($("#lib-pop").hidden) return; $("#lib-pop").hidden=true; $("#lib-btn").setAttribute("aria-expanded","false"); if(focusBtn) $("#lib-btn").focus(); }
+function pickLib(i){ libIdx=i; closeLib(true); renderSim(); }
+$("#lib-btn").addEventListener("click",()=> $("#lib-pop").hidden ? openLib() : closeLib());
+$("#lib-search").addEventListener("input",()=>{ libActive=0; renderLibList(); });
+$("#lib-search").addEventListener("keydown",e=>{
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); libActive=(libActive+(e.key==="ArrowDown"?1:-1)+libView.length)%Math.max(1,libView.length); renderLibList(); }
+  else if(e.key==="Enter"){ e.preventDefault(); if(libView.length) pickLib(libView[libActive]); }
+  else if(e.key==="Escape"){ e.preventDefault(); closeLib(true); }
+});
+$("#lib-list").addEventListener("click",e=>{ const li=e.target.closest("li[data-i]"); if(li) pickLib(+li.dataset.i); });
+document.addEventListener("click",e=>{ if(!$("#lib-pop").hidden && !e.target.closest("#sim-library-pick")) closeLib(); });
+
+/* ============================ Download SDF for review ============================ */
+/* Downloads the QA SDF line items as a CSV that opens in Excel, with a review flag, priority,
+   the Media Plan value for every mismatched field, and the note. Built from the comparison data. */
+$("#download-sdf").addEventListener("click", async ()=>{
+  const btn=$("#download-sdf"), label=btn.innerHTML;
+  btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Preparing…`;
+  try{
+    const d=await IQA_API.getCompareResult(campaign.id);
+    const L=d.sources.left.label, R=d.sources.right.label;
+    const csvCell=v=>{ const t=v==null?"":String(v); return /[",\n]/.test(t)?`"${t.replace(/"/g,'""')}"`:t; };
+    const flag={match:"OK",changed:"Changed",missing_in_right:`Missing in ${R}`,extra_in_right:`Not in ${L}`};
+    const lines=[];
+    d.sheets.forEach((sh,si)=>{
+      if(si) lines.push("");
+      lines.push(csvCell(`${sh.name} (${R} values)`));
+      lines.push(["Review flag","Priority",...sh.columns.map(c=>c.label),`${L} values that differ`,"Note"].map(csvCell).join(","));
+      sh.rows.forEach(r=>{
+        const vals=sh.columns.map(c=>{ const x=r.cells[c.key]||{}; return x.right ?? (r.rowStatus==="missing_in_right" ? x.left : ""); });
+        const diffs=sh.columns.filter(c=>r.cells[c.key]?.status==="changed").map(c=>`${c.label}: ${r.cells[c.key].left}`).join("; ");
+        const pr=r.severity?r.severity[0].toUpperCase()+r.severity.slice(1):"";
+        lines.push([flag[r.rowStatus]||r.rowStatus, pr, ...vals, diffs, r.note||""].map(csvCell).join(","));
+      });
+    });
+    const blob=new Blob(["\ufeff"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement("a"), name=(d.campaign?.name||campaign.name).replace(/[^\w-]+/g,"_")+"_QA_SDF_for_review.csv";
+    a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+    toast(`Downloaded ${name}`);
+  }catch(err){ toast("We couldn't prepare the SDF. Try again in a moment."); }
+  finally{ btn.disabled=false; btn.innerHTML=label; }
+});
+/* ============================ re-check nudge + notifications ============================ */
+/* The Re-check button nudges until the checks have been run again after the latest fix. The bell tells the user
+   when a re-run is needed, and when a teammate has re-run the campaign. */
+function pendingFixes(){ let n=0; for(const e of IQA_TRIAGE.log()){ if(e.type==="rerun") break; n++; } return n; }   // log() is newest first
+function needsRecheck(){ return pendingFixes()>0 || IQA_TRIAGE.runNumber()===1; }
+function paintRecheck(){ const b=$("#recheck-btn"); if(b) b.classList.toggle("nudge", needsRecheck()); }
+/* Re-check asks first: it says what will be re-run, runs it with a progress read-out, then reports success or failure.
+   A failure's real reason is shown and logged for admins only; everyone else gets a plain message. */
+const RC_REASONS=[
+  "SharePoint returned 403 while reading Geo_Mapping_DMAs.csv (access token expired). Reconnect SharePoint and retry.",
+  "The QA SDF has a column the contract does not recognise (\"Geo Target Type\"). The field mapping needs an update.",
+  "The comparison service timed out after 30 s (HTTP 504). Safe to retry."
+];
+let rcBusy=false, rcFails=0, rcTimers=[];
+const rcSvg={
+  refresh:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>`,
+  folder:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`,
+  list:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>`,
+  check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4 4 10-10"/></svg>`,
+  x:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>`
+};
+function rcFolder(){ try{ const c=connStore.get(); return c ? folderName(resolvePath(c.folder)) : "your SharePoint folder"; }catch(e){ return "your SharePoint folder"; } }
+function rcDocs(){ try{ return allSlots().filter(s=>docs[s.key]?.status==="ready").length; }catch(e){ return 0; } }
+function rcOpenCount(){ const s=window.IQA_COMPARE&&IQA_COMPARE.summary(); return issueTally().open + (s?s.open:0); }
+function rcShow(on){ $("#rc-backdrop").hidden=!on; }
+function rcClose(){ if(rcBusy) return; rcTimers.forEach(clearTimeout); rcTimers=[]; rcShow(false); const b=$("#recheck-btn"); if(b) b.focus(); }
+function rcConfirm(){
+  const T=IQA_TRIAGE, run=T.runNumber(), n=pendingFixes(), nd=rcDocs();
+  $("#rc-body").innerHTML=`<div style="display:grid;gap:12px"><div class="rc-ic">${rcSvg.refresh}</div>
+    <h3 id="rc-title">Re-run the checks?</h3><p class="rc-sub">${esc(campaign.name)} · run ${run} → run ${run+1}</p>
+    <div class="rc-read"><b>Here's what you're about to re-run</b><ul>
+      <li>${rcSvg.folder}<span>Read the files again from <b>${esc(rcFolder())}</b>${nd?` (${nd} documents)`:""}</span></li>
+      <li>${rcSvg.list}<span>Re-check <b>${VALIDATION.paramsChecked} parameters</b> against the QA SDF</span></li>
+      <li>${rcSvg.list}<span>Re-compare every line item and insertion order</span></li>
+      <li>${rcSvg.check}<span>${n?`Verify the <b>${n} fix${n===1?"":"es"}</b> you logged since run ${run}`:"No new fixes logged since the last run"}</span></li></ul></div>
+    <div class="rc-heads"><b>Heads up:</b> the results will be replaced by the new run. Your Resolved and Waived choices are kept, and the run is recorded in the audit log.</div>
+    <div class="rc-actions"><button type="button" class="rc-btn ghost" id="rc-cancel">Cancel</button><button type="button" class="rc-btn" id="rc-go">Run re-check</button></div></div>`;
+  $("#rc-cancel").addEventListener("click", rcClose); $("#rc-go").addEventListener("click", rcRun); $("#rc-go").focus();
+}
+function rcRun(){
+  rcBusy=true;
+  const steps=[`Reading files from ${rcFolder()}`,"Matching fields with the QA SDF",`Re-checking ${VALIDATION.paramsChecked} parameters`,"Comparing line items and insertion orders"];
+  $("#rc-body").innerHTML=`<div style="display:grid;gap:12px"><div class="rc-ic">${rcSvg.refresh}</div><h3 id="rc-title">Re-running the checks…</h3>
+    <ul class="rc-steps" aria-live="polite">${steps.map((t,i)=>`<li data-i="${i}" class="${i===0?"now":""}"><span class="d"></span>${esc(t)}</li>`).join("")}</ul></div>`;
+  const li=i=>$(`#rc-body li[data-i="${i}"]`);
+  steps.forEach((_,i)=>rcTimers.push(setTimeout(()=>{ li(i).className="done"; if(li(i+1)) li(i+1).className="now"; }, 450*(i+1))));
+  rcTimers.push(setTimeout(()=>{
+    const forceFail = !!($("#demo-fail") && $("#demo-fail").checked);
+    if(forceFail) rcFailed(RC_REASONS[rcFails++ % RC_REASONS.length]); else rcDone();
+  }, 450*steps.length+250));
+}
+function rcDone(){
+  rcBusy=false; rcTimers=[];
+  const run=IQA_TRIAGE.rerun(); paintRecheck(); renderValidation(); renderQaSummary();
+  $("#rc-body").innerHTML=`<div style="display:grid;gap:12px"><div class="rc-ic ok">${rcSvg.check}</div><h3 id="rc-title">Updated campaign successfully</h3>
+    <p class="rc-sub">Run ${run} complete · ${rcOpenCount()} item${rcOpenCount()===1?"":"s"} still open</p>
+    <div class="rc-actions"><button type="button" class="rc-btn" id="rc-done">Done</button></div></div>`;
+  $("#rc-done").addEventListener("click", rcClose); $("#rc-done").focus();
+  toast("Updated campaign successfully");
+}
+function rcFailed(reason){
+  rcBusy=false; rcTimers=[];
+  IQA_TRIAGE.fail(reason); renderQaSummary();
+  const adm=can("admin");
+  $("#rc-body").innerHTML=`<div style="display:grid;gap:12px"><div class="rc-ic bad">${rcSvg.x}</div><h3 id="rc-title">The re-check couldn't finish</h3>
+    <p class="rc-sub">${esc(campaign.name)} was not updated. Nothing you logged was lost.</p>
+    ${adm?`<div class="rc-reason"><b>Reason (admins only)</b>${esc(reason)}<br>Logged in the audit log.</div>`:`<div class="rc-reason">Something went wrong on our side. Try again in a moment. If it keeps happening, ask an admin to check the audit log.</div>`}
+    <div class="rc-actions"><button type="button" class="rc-btn ghost" id="rc-close2">Close</button><button type="button" class="rc-btn" id="rc-retry">Try again</button></div></div>`;
+  $("#rc-close2").addEventListener("click", rcClose); $("#rc-retry").addEventListener("click", rcConfirm); $("#rc-retry").focus();
+}
+$("#recheck-btn").addEventListener("click", ()=>{ if(rcBusy) return; rcConfirm(); rcShow(true); });
+$("#rc-backdrop").addEventListener("click", e=>{ if(e.target.id==="rc-backdrop") rcClose(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("#rc-backdrop").hidden) rcClose(); });
+
+var notifSeen=(()=>{ let a=[]; try{ a=JSON.parse(sessionStorage.getItem("iqa_notif_seen")||"[]"); }catch(e){} return new Set(a); })();
+var notifPrev=0;
+const bellSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9Z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>`;
+function ago(iso){ const m=Math.round((Date.now()-new Date(iso))/6e4); if(m<1) return "Just now"; if(m<60) return `${m} min ago`; const h=Math.round(m/60); return h<24 ? `${h} h ago` : IQA_TRIAGE.stamp(iso); }
+function notifList(){
+  const T=IQA_TRIAGE, list=[];
+  if(flow.checked && can("run") && pendingFixes()>0){
+    const n=pendingFixes();
+    list.push({id:"act", kind:"action", title:"Re-run the checks", body:`${n} fix${n===1?"":"es"} logged since run ${T.runNumber()}. Re-run to confirm they worked.`, time:"Action needed", cta:"Re-check now", act:"recheck", unread:true});
+  }
+  T.log().filter(e=>e.type==="rerun" && e.by!==USER.name).slice(0,5).forEach(e=>list.push({id:"rr-"+e.at, kind:"team", title:`${e.by} re-ran the checks`, body:`Run ${e.run}${e.role?` · ${e.role}`:""}. Results may have changed since you last looked.`, time:ago(e.at), cta:"View audit log", act:"log", unread:!notifSeen.has("rr-"+e.at)}));
+  return list;
+}
+function paintBadge(list){
+  const btn=$("#notif-btn"); if(!btn) return;
+  const act=list.filter(x=>x.kind==="action").length, n=act+list.filter(x=>x.kind==="team" && !notifSeen.has(x.id)).length, bd=$("#notif-badge");
+  bd.hidden=!n; bd.textContent=n; btn.classList.toggle("has-action", act>0);
+  btn.setAttribute("aria-label", n ? `Notifications, ${n} need your attention` : "Notifications");
+  if(n>notifPrev){ btn.classList.remove("ring"); void btn.offsetWidth; btn.classList.add("ring"); }
+  notifPrev=n;
+}
+function renderNotif(){
+  if(!notifSeen || !$("#notif")) return;
+  const list=notifList();
+  if(!$("#notif-panel").hidden){
+    const act=list.filter(x=>x.kind==="action").length;
+    $("#notif-panel").innerHTML=`<div class="np-head"><b>Notifications</b><span class="np-sub">${act?"1 needs action":"Nothing needs action"}</span></div>`+
+      (list.length ? `<ul class="np-list">${list.map((x,i)=>`<li class="np-item ${x.kind}${x.unread?" unread":""}"><span class="np-ic">${x.kind==="action"?warnSvg:bellSvg}</span><div class="np-body"><b>${esc(x.title)}</b><p>${esc(x.body)}</p><span class="np-time">${esc(x.time)}</span><button type="button" class="np-cta" data-np="${x.act}">${esc(x.cta)}</button></div></li>`).join("")}</ul>` : `<p class="np-empty">You're all caught up. Nothing needs your attention.</p>`);
+    list.forEach(x=>{ if(x.kind==="team") notifSeen.add(x.id); }); try{ sessionStorage.setItem("iqa_notif_seen", JSON.stringify([...notifSeen])); }catch(e){}
+  }
+  paintBadge(list);
+}
+(function mountNotif(){
+  const bar=document.querySelector(".appbar-in"), user=bar&&bar.querySelector(".user"); if(!bar||!user) return;
+  const box=document.createElement("div"); box.className="notif"; box.id="notif";
+  box.innerHTML=`<button class="iconbtn notif-btn" type="button" id="notif-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="notif-panel" aria-label="Notifications" title="Notifications">${bellSvg}<span class="notif-badge" id="notif-badge" hidden></span></button><div class="notif-panel" id="notif-panel" role="dialog" aria-label="Notifications" hidden></div>`;
+  bar.insertBefore(box,user);
+  const close=(focus)=>{ if($("#notif-panel").hidden) return; $("#notif-panel").hidden=true; $("#notif-btn").setAttribute("aria-expanded","false"); if(focus) $("#notif-btn").focus(); renderNotif(); };
+  $("#notif-btn").addEventListener("click",e=>{ e.stopPropagation(); const open=$("#notif-panel").hidden; if(!open) return close(); $("#user-menu").hidden=true; $("#notif-panel").hidden=false; $("#notif-btn").setAttribute("aria-expanded","true"); renderNotif(); });
+  document.addEventListener("click",e=>{ if(!$("#notif-panel").hidden && !e.target.closest("#notif")) close(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") close(true); });
+  $("#notif-panel").addEventListener("click",e=>{
+    const b=e.target.closest("[data-np]"); if(!b) return; close();
+    if(b.dataset.np==="recheck"){ if($("#validation-view").hidden) goStep(3); else if($("#rtab-summary").getAttribute("aria-selected")!=="true") setResultsTab("summary"); setTimeout(()=>{ $("#recheck-btn").scrollIntoView({block:"center"}); $("#recheck-btn").click(); },250); }
+    else { goStep(4); setTimeout(()=>{ const d=document.querySelector("#qa-root .qa-det"); if(d){ d.open=true; d.scrollIntoView({block:"center"}); } },200); }
+  });
+  document.addEventListener("click",e=>{ if(e.target.closest("[data-act=teammate]")){ const run=IQA_TRIAGE.rerun({name:"Siddharth Rao",role:"QA"}); toast(`Demo: Siddharth Rao re-ran the checks (run ${run}).`); } });
+  IQA_TRIAGE.onChange(()=>{ paintRecheck(); renderNotif(); });
+})();
+function setStickyTop(){
+  const h=document.querySelector("header"), pos=h?getComputedStyle(h).position:"";
+  document.documentElement.style.setProperty("--sticky-top", (pos==="sticky"||pos==="fixed") ? Math.round(h.getBoundingClientRect().height)+"px" : "0px");
+}
+addEventListener("resize",setStickyTop); setStickyTop();
+renderNotif(); paintRecheck();
 
 renderBanners();
 renderSlots();
