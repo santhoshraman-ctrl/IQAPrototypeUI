@@ -733,6 +733,14 @@ body .demo-switch.is-hidden{display:none !important}
             <div class="fact"><span>Platform</span><b>Google DV360</b></div>
           </div>
         </section>
+        <section class="panel" id="review-found-panel" style="padding:16px 20px" aria-label="Files found" hidden>
+          <h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Here's what we found</h3>
+          <div id="review-found-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
+        </section>
+        <section class="panel" id="review-required-panel" style="padding:16px 20px" aria-label="Files required" hidden>
+          <h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Here's what we need</h3>
+          <div id="review-required-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px"></div>
+        </section>
         <section aria-label="Documents" class="slots" id="slots"></section>
 
     <section class="panel" id="extract-panel" aria-label="Extracted campaign details">
@@ -1877,7 +1885,19 @@ const fileSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 const folderSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`;
 
 function showConnectState(id){ ["connect-welcome","connect-returning","connect-reading","connect-found"].forEach(s=>$("#"+s).hidden = s!==id); $("#connect-view").classList.toggle("wide", id==="connect-found"||id==="connect-returning"); }
-function revealDocsArea(){ $("#connect-view").hidden=true; $("#validation-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; setStep(2); }
+function renderReviewTiles(){
+  const fp=$("#review-found-panel"), rp=$("#review-required-panel");
+  if(!foundFiles.length){ fp.hidden=true; rp.hidden=true; return; }
+  const rows=evalFiles(foundFiles, foundCtx.choice), missing=missingRequired(rows);
+  fp.hidden=false;
+  $("#review-found-grid").innerHTML = rows.map(({f,ok,reason})=>`<div style="padding:8px 10px;background:${ok?'#E1F4EA':'#FBE4E2'};border-radius:6px;font-size:12px" title="${esc(f.name)}${ok?"":" — "+esc(reason)}">
+    <div style="font-weight:600;color:${ok?'#1B6B3C':'#8A1C1C'}">${ok?"✓":"✗"} ${esc(f.name.length>22?f.name.slice(0,20)+"…":f.name)}</div>
+  </div>`).join("");
+  rp.hidden=false;
+  $("#review-required-grid").innerHTML = REQUIRED_FILES.map(req=>{ const isMissing=missing.includes(req);
+    return `<div style="padding:8px 10px;background:${isMissing?'#FBE4E2':'#E1F4EA'};border-radius:6px;font-size:12px;font-weight:600;color:${isMissing?'#B3261E':'#1B6B3C'}">${isMissing?"✗":"✓"} ${esc(req)}</div>`; }).join("");
+}
+function revealDocsArea(){ $("#connect-view").hidden=true; $("#validation-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; renderReviewTiles(); setStep(2); }
 
 function openSpModal(){
   $("#sp-modal-backdrop").hidden=false;
@@ -2270,7 +2290,7 @@ const issueTally = () => IQA_TRIAGE.counts(issueIds());
 
 function stepSub(i){
   if(i===1){ return "Connect SharePoint"; }
-  if(i===2){ const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length; return n ? `${n} document${n===1?"":"s"}` : "Add documents"; }
+  if(i===2){ const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length; return n ? `${n} document${n===1?"":"s"}` : "Add and review campaign artefacts"; }
   if(i===3){ if(!flow.checked) return "Run the checks"; const t=issueTally(); return t.open ? `${t.open} open` : "All resolved"; }
   if(!flow.checked) return "After the checks";
   return can("simulate") ? `${usd(qaNumbers().saved)} saved` : "QA outcome";
