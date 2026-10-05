@@ -712,10 +712,7 @@ body .demo-switch.is-hidden{display:none !important}
       <div id="found-confirm" hidden></div>
       <div class="found-stats" id="found-summary"></div>
       <div style="margin-top:20px"><h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Here's what we found</h3>
-      <div class="tbl-wrap"><table class="found-table">
-        <thead><tr><th>File</th><th>Matched to</th><th>Size</th><th>Status</th></tr></thead>
-        <tbody id="found-list"></tbody>
-      </table></div></div>
+      <div id="found-files-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px"></div></div>
       <div style="margin-top:20px"><h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Here's what we want</h3>
       <div id="required-files-list" style="display:grid;gap:8px"></div></div>
     </div>
@@ -1991,13 +1988,18 @@ function renderFound(files){
     <div class="fact"><span class="ic">${ic.found}</span><div><span>Files found</span><b>${files.length}</b></div></div>
     <div class="fact ok"><span class="ic">${ic.ok}</span><div><span>Ready to use</span><b>${ready.length}</b></div></div>
     <div class="fact skip"><span class="ic">${ic.skip}</span><div><span>Skipped</span><b>${skipped.length}</b></div></div>`;
-  $("#found-list").innerHTML = rows.map(({f,ok,reason})=>{ const d=describeFile(f);
-    return `<tr class="${ok?"":"is-skip"}">
-      <td><div class="fcell">${fileSvg}<div class="fname2"><span class="fn" title="${esc(f.name)}">${esc(f.name)}</span>${ok&&d.kind?`<small class="fsub"><b>${esc(d.kind)}</b> · ${esc(d.help)}</small>`:""}</div></div></td>
-      <td>${ok?esc(boxTitle(f.slot.replace(/^grp:/,""))||"—"):"—"}</td>
-      <td class="num">${fmt(f.size)}</td>
-      <td><span class="pill ${ok?"ok":"miss"}">${ok?"Ready":"Skipped"}</span>${ok?"":`<span class="why">${esc(reason)}</span>`}</td>
-    </tr>`; }).join("");
+  const filesByType = {}; rows.forEach(({f})=>{ const type=f.name.split('.').pop()?.toUpperCase()||'FILE'; if(!filesByType[type]) filesByType[type]=[]; filesByType[type].push(f); });
+  const hasDupes = Object.values(filesByType).some(files=>files.length>1);
+  $("#found-files-grid").innerHTML = rows.map(({f,ok,reason})=>{ const d=describeFile(f); const type=f.name.split('.').pop()?.toUpperCase()||'FILE'; const count=filesByType[type].length;
+    return `<div style="padding:14px;background:${ok?'#E1F4EA':'#FBE4E2'};border:1px solid ${ok?'#6FC39C':'#B3261E'};border-radius:10px;display:grid;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <span style="font-size:12px;font-weight:600;color:${ok?'#1B6B3C':'#8A1C1C'}">${ok?"✓ Ready":"✗ Skipped"}</span>
+        ${count>1?`<span style="font-size:10px;background:#FFD700;color:#000;padding:2px 6px;border-radius:4px;font-weight:600">${count}x ${type}</span>`:``}
+      </div>
+      <div><span style="font-size:13px;font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(f.name)}">${esc(f.name)}</span></div>
+      <div style="font-size:12px;color:var(--ink-2)"><span>${esc(boxTitle(f.slot.replace(/^grp:/,"")))||"—"}</span> · <span>${fmt(f.size)}</span></div>
+      ${!ok?`<div style="font-size:11px;color:#8A1C1C">${esc(reason)}</div>`:``}
+    </div>`; }).join("");
 
   $("#required-files-list").innerHTML = REQUIRED_FILES.map(req=>{
     const isMissing = missing.includes(req);
