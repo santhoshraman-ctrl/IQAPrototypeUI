@@ -1903,7 +1903,9 @@ $("#sp-modal-connect").addEventListener("click", ()=>{
       setMsg(msg,[],["We couldn't connect to this location. Check the link and that you have access, then try again."]);
       return;
     }
-    setMsg(msg); openFolderBrowser();
+    setMsg(msg); closeSpModal();
+    connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK, connectedAt:Date.now(), lastUsedAt:Date.now()});
+    runIngestion(DEMO_DEFAULT_FOLDER, true);
   }, 800);
 });
 
