@@ -14,6 +14,9 @@
    They look like the single-file boxes; the file list opens as a dropdown so the boxes stay the same size. */
 body .slots{grid-template-columns:repeat(4,minmax(0,1fr))}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+@keyframes sync-rot{to{transform:rotate(360deg)}}
+.sync-spin svg{width:15px;height:15px;animation:sync-rot 1.4s linear infinite}
+#found-sync-now svg{width:18px;height:18px}
 @media (max-width:1100px){body .slots{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){body .slots{grid-template-columns:1fr}}
 .slot.group{position:relative}
@@ -1852,9 +1855,21 @@ function defaultChoice(files, folder, saved){
   const byName=c.find(x=>leaf && norm(x.name)===leaf); if(byName) return byName.name;
   return (c.find(x=>x.brief&&x.sdf)||c[0]).name;
 }
+/* Matches a required-file label to the files that actually fulfil it. Uses the real
+   category (f.slot) where one exists, and a name pattern for the labels that all live
+   inside the catch-all "Supporting documents" box. */
+const REQUIRED_FILE_MATCH = {
+  "Campaign Briefs": f => f.slot === "grp:briefs",
+  "Geo Targeting Mapping document": f => f.slot === "geo",
+  "Budget Tracker": f => /budget[\s_-]*tracker/i.test(f.name),
+  "Taxonomy sheet": f => /taxonom/i.test(f.name),
+  "T-Sheets": f => /t[\s_-]?sheet/i.test(f.name) && !/tag[\s_-]?sheet/i.test(f.name),
+  "Tag sheet": f => /tag[\s_-]?sheet/i.test(f.name),
+  "MAP": f => /\bmaf\b|media[\s_-]*auth/i.test(f.name.replace(/_/g," ")),
+};
 function missingRequired(rows){
-  const found = rows.filter(r=>r.ok).map(r=>r.f.name.toLowerCase());
-  return REQUIRED_FILES.filter(req => !found.some(f => f.includes(req.toLowerCase())));
+  const found = rows.filter(r=>r.ok).map(r=>r.f);
+  return REQUIRED_FILES.filter(req => !found.some(REQUIRED_FILE_MATCH[req]));
 }
 function applyCampaign(name){
   const c=candidatesOf(foundFiles).find(x=>x.name===name) || (name?{name,id:""}:null);
@@ -1885,19 +1900,37 @@ const fileSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 const folderSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`;
 
 function showConnectState(id){ ["connect-welcome","connect-returning","connect-reading","connect-found"].forEach(s=>$("#"+s).hidden = s!==id); $("#connect-view").classList.toggle("wide", id==="connect-found"||id==="connect-returning"); }
+/* One tile per category (not per file) — e.g. "Campaign Briefs (2)" listing both file names,
+   instead of a separate box for every single file. Skipped files group under "Skipped". */
+function renderFoundGroups(rows, elId){
+  const groups={};
+  rows.forEach(({f,ok,reason})=>{
+    const label = ok ? (boxTitle((f.slot||"").replace(/^grp:/,""))||"Other") : "Skipped";
+    (groups[label] ||= {ok, items:[]}).items.push({name:f.name, reason});
+  });
+  const labels = Object.keys(groups).sort((a,b)=>(a==="Skipped")-(b==="Skipped"));
+  $(elId).innerHTML = labels.map(label=>{
+    const g=groups[label];
+    return `<div style="padding:10px 12px;background:${g.ok?"#E1F4EA":"#FBE4E2"};border-radius:8px">
+      <div style="font-weight:600;font-size:13px;color:${g.ok?"#1B6B3C":"#8A1C1C"}">${g.ok?"✓":"✗"} ${esc(label)} <span style="font-weight:400;opacity:.75">(${g.items.length})</span></div>
+      <div style="font-size:11px;color:${g.ok?"#1B6B3C":"#8A1C1C"};opacity:.85;margin-top:2px">${g.items.map(i=>esc(i.name)).join(", ")}</div>
+    </div>`;
+  }).join("");
+}
+function renderRequiredGrid(missing, elId){
+  $(elId).innerHTML = REQUIRED_FILES.map(req=>{ const isMissing=missing.includes(req);
+    return `<div style="padding:8px 10px;background:${isMissing?"#FBE4E2":"#E1F4EA"};border-radius:6px;font-size:12px;font-weight:600;color:${isMissing?"#B3261E":"#1B6B3C"}">${isMissing?"✗":"✓"} ${esc(req)}</div>`; }).join("");
+}
 function renderReviewTiles(){
   const fp=$("#review-found-panel"), rp=$("#review-required-panel");
   if(!foundFiles.length){ fp.hidden=true; rp.hidden=true; return; }
   const rows=evalFiles(foundFiles, foundCtx.choice), missing=missingRequired(rows);
   fp.hidden=false;
-  $("#review-found-grid").innerHTML = rows.map(({f,ok,reason})=>`<div style="padding:8px 10px;background:${ok?'#E1F4EA':'#FBE4E2'};border-radius:6px;font-size:12px" title="${esc(f.name)}${ok?"":" — "+esc(reason)}">
-    <div style="font-weight:600;color:${ok?'#1B6B3C':'#8A1C1C'}">${ok?"✓":"✗"} ${esc(f.name.length>22?f.name.slice(0,20)+"…":f.name)}</div>
-  </div>`).join("");
+  renderFoundGroups(rows, "#review-found-grid");
   rp.hidden=false;
-  $("#review-required-grid").innerHTML = REQUIRED_FILES.map(req=>{ const isMissing=missing.includes(req);
-    return `<div style="padding:8px 10px;background:${isMissing?'#FBE4E2':'#E1F4EA'};border-radius:6px;font-size:12px;font-weight:600;color:${isMissing?'#B3261E':'#1B6B3C'}">${isMissing?"✗":"✓"} ${esc(req)}</div>`; }).join("");
+  renderRequiredGrid(missing, "#review-required-grid");
 }
-function revealDocsArea(){ $("#connect-view").hidden=true; $("#validation-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; renderReviewTiles(); setStep(2); }
+function revealDocsArea(){ stopAutoSync(); $("#connect-view").hidden=true; $("#validation-view").hidden=true; $("#pagehead").hidden=false; $("#docs-area").hidden=false; renderReviewTiles(); setStep(2); }
 
 function openSpModal(){
   $("#sp-modal-backdrop").hidden=false;
@@ -1994,7 +2027,13 @@ function runIngestion(folder, autoFinish){
     foundCtx={folder, choice:defaultChoice(files,folder,connStore.get()?.campaign), confirmed:false};
     $("#found-where").innerHTML=`From <b>${esc(pathLabel(folder))}</b> on SharePoint`;
     renderFound(files); showConnectState("connect-found");
-    if(autoFinish) setTimeout(finishIngest, 100);
+    /* Only skip straight to Campaign Review when the folder actually has every required file.
+       Otherwise let the user see the found/nudge screen — auto-sync keeps checking the
+       folder in the background, so they don't need to click a manual "check again" button. */
+    if(autoFinish){
+      const rows=evalFiles(files, foundCtx.choice), missing=missingRequired(rows);
+      if(!missing.length){ foundCtx.confirmed=true; setTimeout(finishIngest, 100); }
+    }
   }, 1200);
 }
 const tickSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4 4 10-10"/></svg>`;
@@ -2010,37 +2049,25 @@ function renderFound(files){
     <div class="fact"><span class="ic">${ic.found}</span><div><span>Files found</span><b>${files.length}</b></div></div>
     <div class="fact ok"><span class="ic">${ic.ok}</span><div><span>Ready to use</span><b>${ready.length}</b></div></div>
     <div class="fact skip"><span class="ic">${ic.skip}</span><div><span>Skipped</span><b>${skipped.length}</b></div></div>`;
-  const filesByType = {}; rows.forEach(({f})=>{ const type=f.name.split('.').pop()?.toUpperCase()||'FILE'; if(!filesByType[type]) filesByType[type]=[]; filesByType[type].push(f); });
-  const hasDupes = Object.values(filesByType).some(files=>files.length>1);
-  $("#found-files-grid").innerHTML = rows.map(({f,ok,reason})=>{ const d=describeFile(f); const type=f.name.split('.').pop()?.toUpperCase()||'FILE'; const count=filesByType[type].length;
-    return `<div style="padding:14px;background:${ok?'#E1F4EA':'#FBE4E2'};border:1px solid ${ok?'#6FC39C':'#B3261E'};border-radius:10px;display:grid;gap:8px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <span style="font-size:12px;font-weight:600;color:${ok?'#1B6B3C':'#8A1C1C'}">${ok?"✓ Ready":"✗ Skipped"}</span>
-        ${count>1?`<span style="font-size:10px;background:#FFD700;color:#000;padding:2px 6px;border-radius:4px;font-weight:600">${count}x ${type}</span>`:``}
-      </div>
-      <div><span style="font-size:13px;font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(f.name)}">${esc(f.name)}</span></div>
-      <div style="font-size:12px;color:var(--ink-2)"><span>${ok&&f.slot?esc(boxTitle(f.slot.replace(/^grp:/,""))||"—"):"—"}</span> · <span>${fmt(f.size)}</span></div>
-      ${!ok?`<div style="font-size:11px;color:#8A1C1C">${esc(reason)}</div>`:``}
-    </div>`; }).join("");
+  renderFoundGroups(rows, "#found-files-grid");
+  renderRequiredGrid(missing, "#required-files-list");
 
-  $("#required-files-list").innerHTML = REQUIRED_FILES.map(req=>{
-    const isMissing = missing.includes(req);
-    return `<div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:${isMissing?"#FBE4E2":"#E1F4EA"};border-left:4px solid ${isMissing?"#B3261E":"#6FC39C"}">
-      <span style="font-size:18px">${isMissing?"❌":"✓"}</span>
-      <span style="flex:1;font-weight:500;color:${isMissing?"#B3261E":"#1B6B3C"}">${esc(req)}</span>
-    </div>`; }).join("");
-
-  /* 1. Required files still missing: nudge */
+  /* 1. Required files still missing: nudge. SharePoint syncs automatically in the background
+     (autoSyncTick), so there is no manual "check again" button — just a sync status and a
+     small icon button for an immediate check. */
   const nudge=$("#found-nudge");
   if(missing.length){
     const forWhat = foundCtx.choice && cands.length>1 ? ` for ${foundCtx.choice}` : "";
     nudge.hidden=false;
     nudge.innerHTML=`<div class="nudge" role="alert">${nudgeSvg}<div class="nb">
       <strong>Add the ${esc(missing.join(" and the "))}${esc(forWhat)} to continue</strong>
-      <p>${missing.includes("DV360 QA SDF")?"The DV360 QA SDF is required. It's the export from DV360 that we check your campaign brief against. ":""}${missing.includes("Campaign Briefs")?"A campaign brief is required. It's the plan we check the SDF against. ":""}Add ${missing.length>1?"them":"it"} to your SharePoint folder, then check again.</p>
-      <div class="nact"><button class="btn btn-primary btn-sm" type="button" id="found-recheck">Check folder again</button>
-      <button class="linkbtn" type="button" id="found-link">Paste a file link instead</button></div></div></div>`;
-  } else nudge.hidden=true;
+      <p>${missing.includes("DV360 QA SDF")?"The DV360 QA SDF is required. It's the export from DV360 that we check your campaign brief against. ":""}${missing.includes("Campaign Briefs")?"A campaign brief is required. It's the plan we check the SDF against. ":""}Add ${missing.length>1?"them":"it"} to your SharePoint folder — we'll pick it up automatically.</p>
+      <div class="nact">
+        <span id="found-sync-status" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)"><span class="sync-spin" style="display:inline-flex">${rcSvg.refresh}</span>Syncing with SharePoint…</span>
+        <button class="iconbtn" type="button" id="found-sync-now" title="Sync now" aria-label="Sync now">${rcSvg.refresh}</button>
+        <button class="linkbtn" type="button" id="found-link">Paste a file link instead</button></div></div></div>`;
+    startAutoSync();
+  } else { nudge.hidden=true; stopAutoSync(); }
 
   /* 2. Which campaign is this? Asked once the required files are in (or whenever several campaigns are in the folder). */
   const conf=$("#found-confirm");
@@ -2075,19 +2102,25 @@ $("#connect-found").addEventListener("click", e=>{
   else if(id==="found-change"){ foundCtx.confirmed=false; renderFound(foundFiles); }
   else if(id==="found-no") $("#connect-back-btn").click();
   else if(id==="found-link"){ finishIngest(true); pickFor("qasdf"); }
-  else if(id==="found-recheck"){
-    const b=e.target.closest("button"); b.disabled=true; b.textContent="Checking…";
-    setTimeout(()=>{
-      /* Demo: files waiting in node.later "arrive" as if the user had just added them to SharePoint. */
-      const node=nodeAt(foundCtx.folder);
-      if(node?.later?.length){ const n=node.later.length; node.files.push(...node.later); node.later=[];
-        foundCtx.choice=defaultChoice(node.files,foundCtx.folder,connStore.get()?.campaign); foundCtx.confirmed=false;
-        toast(`Found ${n} new file${n===1?"":"s"} in the folder.`); renderFound(node.files); }
-      else { toast("No new files yet. Add the file to your SharePoint folder, then check again."); renderFound(foundFiles); }
-    }, 900);
-  }
+  else if(id==="found-sync-now") syncCheck(true);
 });
-$("#connect-back-btn").addEventListener("click", ()=>{ const c=connStore.get(); openSpModal(); openFolderBrowser(c ? pathParts(resolvePath(c.folder)).slice(0,-1).join("/") : ""); });
+/* Auto-sync: while required files are missing, poll the SharePoint folder in the background
+   (simulated) so files "arrive" the moment they're added — no manual re-check needed. */
+let autoSyncTimer=null;
+function syncCheck(manual){
+  const btn=$("#found-sync-now"); if(btn) btn.disabled=true;
+  setTimeout(()=>{
+    const node=nodeAt(foundCtx.folder);
+    if(node?.later?.length){ const n=node.later.length; node.files.push(...node.later); node.later=[];
+      foundCtx.choice=defaultChoice(node.files,foundCtx.folder,connStore.get()?.campaign); foundCtx.confirmed=false;
+      toast(`Found ${n} new file${n===1?"":"s"} in the folder.`); renderFound(node.files); return; }
+    if(btn) btn.disabled=false;
+    if(manual) toast("No new files yet. We'll keep checking automatically.");
+  }, 700);
+}
+function startAutoSync(){ if(autoSyncTimer) return; autoSyncTimer=setInterval(()=>syncCheck(false), 4000); }
+function stopAutoSync(){ clearInterval(autoSyncTimer); autoSyncTimer=null; }
+$("#connect-back-btn").addEventListener("click", ()=>{ stopAutoSync(); const c=connStore.get(); openSpModal(); openFolderBrowser(c ? pathParts(resolvePath(c.folder)).slice(0,-1).join("/") : ""); });
 function finishIngest(quiet){
   const ready=evalFiles(foundFiles, foundCtx.choice).filter(r=>r.ok);
   ready.forEach(r=>place(r.f.slot, {name:r.f.name, size:r.f.size, source:"sharepoint"}, {skipConfirm:true}));
