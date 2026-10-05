@@ -2834,10 +2834,26 @@ function rcDocs(){ try{ return allSlots().filter(s=>docs[s.key]?.status==="ready
 function rcOpenCount(){ const s=window.IQA_COMPARE&&IQA_COMPARE.summary(); return issueTally().open + (s?s.open:0); }
 function rcShow(on){ $("#rc-backdrop").hidden=!on; }
 function rcClose(){ if(rcBusy) return; rcTimers.forEach(clearTimeout); rcTimers=[]; rcShow(false); const b=$("#recheck-btn"); if(b) b.focus(); }
+let rcChoice=null;
+function rcPickerHTML(cands){
+  return `<div class="rc-pick" style="border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:8px">
+    <b style="font-size:13px">Which version do you want to re-validate?</b>
+    <span style="font-size:12px;color:var(--ink-2)">This SharePoint folder has files for ${cands.length} campaigns/versions. Pick the one to re-check.</span>
+    ${cands.map(c=>`<label style="display:flex;gap:8px;align-items:flex-start;padding:8px;border:1px solid ${c.name===rcChoice?"var(--accent)":"var(--line)"};border-radius:8px;cursor:pointer">
+      <input type="radio" name="rc-cand" value="${esc(c.name)}" ${c.name===rcChoice?"checked":""} style="margin-top:3px">
+      <span><b>${esc(c.name)}</b>${c.id?` <span class="mono" style="color:var(--ink-3);font-size:12px">${esc(c.id)}</span>`:""}<br>
+      <span style="font-size:12px;color:var(--ink-3)">Found in ${c.files.map(esc).join(", ")}</span></span>
+    </label>`).join("")}
+  </div>`;
+}
 function rcConfirm(){
   const T=IQA_TRIAGE, run=T.runNumber(), n=pendingFixes(), nd=rcDocs();
+  const cands = foundFiles.length ? candidatesOf(foundFiles) : [];
+  if(cands.length>1 && !rcChoice) rcChoice = foundCtx.choice || campaign.name;
+  const picker = cands.length>1 ? rcPickerHTML(cands) : "";
   $("#rc-body").innerHTML=`<div style="display:grid;gap:12px"><div class="rc-ic">${rcSvg.refresh}</div>
     <h3 id="rc-title">Re-run the checks?</h3><p class="rc-sub">${esc(campaign.name)} · run ${run} → run ${run+1}</p>
+    ${picker}
     <div class="rc-read"><b>Here's what you're about to re-run</b><ul>
       <li>${rcSvg.folder}<span>Read the files again from <b>${esc(rcFolder())}</b>${nd?` (${nd} documents)`:""}</span></li>
       <li>${rcSvg.list}<span>Re-check <b>${VALIDATION.paramsChecked} parameters</b> against the QA SDF</span></li>
@@ -2845,10 +2861,12 @@ function rcConfirm(){
       <li>${rcSvg.check}<span>${n?`Verify the <b>${n} fix${n===1?"":"es"}</b> you logged since run ${run}`:"No new fixes logged since the last run"}</span></li></ul></div>
     <div class="rc-heads"><b>Heads up:</b> the results will be replaced by the new run. Your Resolved and Waived choices are kept, and the run is recorded in the audit log.</div>
     <div class="rc-actions"><button type="button" class="rc-btn ghost" id="rc-cancel">Cancel</button><button type="button" class="rc-btn" id="rc-go">Run re-check</button></div></div>`;
+  if(cands.length>1) $("#rc-body").querySelectorAll('input[name="rc-cand"]').forEach(r=>r.addEventListener("change",e=>{ rcChoice=e.target.value; rcConfirm(); }));
   $("#rc-cancel").addEventListener("click", rcClose); $("#rc-go").addEventListener("click", rcRun); $("#rc-go").focus();
 }
 function rcRun(){
   rcBusy=true;
+  if(rcChoice && rcChoice!==foundCtx.choice){ foundCtx.choice=rcChoice; applyCampaign(rcChoice); const c=connStore.get(); if(c) connStore.set({...c, campaign:rcChoice}); }
   const steps=[`Reading files from ${rcFolder()}`,"Matching fields with the QA SDF",`Re-checking ${VALIDATION.paramsChecked} parameters`,"Comparing line items and insertion orders"];
   $("#rc-body").innerHTML=`<div style="display:grid;gap:12px"><div class="rc-ic">${rcSvg.refresh}</div><h3 id="rc-title">Re-running the checks…</h3>
     <ul class="rc-steps" aria-live="polite">${steps.map((t,i)=>`<li data-i="${i}" class="${i===0?"now":""}"><span class="d"></span>${esc(t)}</li>`).join("")}</ul></div>`;
