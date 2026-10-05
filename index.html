@@ -1761,8 +1761,10 @@ const DEMO_TREE = {
         {name:"MediaPlan_OLD_v1.pdf", size:790*1024, skip:"An older version, already replaced"},
         {name:"meeting_notes.txt", size:3*1024, skip:"This file type isn't supported"},
       ], later:[
-        /* Demo only: the QA SDF "appears" after the user adds it to SharePoint and taps Check again. */
+        /* Demo only: these files "appear" on the next auto-sync after the user connects,
+           simulating them being added to SharePoint. */
         {name:"DV360_QA_SDF_Q3_2026.csv", size:33*1024, slot:"qasdf", camp:"Q3 2026 Display", cid:"CMP-4710", items:12},
+        {name:"Taxonomy_Sheet_Q3.xlsx", size:42*1024, slot:"grp:extra"},
       ]},
       "Q2 2026 Display": { folders:{}, files: [
         {name:"Q2_2026_Display_Brief.pdf", size:1100*1024, slot:"grp:briefs", camp:"Q2 2026 Display", cid:"CMP-4609"},
@@ -2286,7 +2288,7 @@ applyAccess();
   box.innerHTML = `<button type="button" data-mode="new">First-time view</button>
     <button type="button" data-mode="returning">Returning view</button>
     <button type="button" data-act="teammate" title="Demo: pretend a teammate re-ran the checks">Teammate re-run</button>
-    <label class="demo-role" title="Demo: make the next re-check fail (admins see the reason)"><input type="checkbox" id="demo-fail"> Fail re-check</label>
+    <label class="demo-role" title="Demo: toggle fail_Flag to make the next re-check fail (admins see the error reason)"><input type="checkbox" id="demo-fail"> fail_Flag</label>
     <label class="demo-role">Role <select id="demo-role" aria-label="Demo: sign in as">${Object.entries(DEMO_PERSONA_LABELS).map(([k,l])=>`<option value="${k}"${k===demoPersona?" selected":""}>${esc(l)}</option>`).join("")}</select></label>`;
   /* Hidden until revealed. Reveal/hide: Ctrl+Shift+D, click the logo 5 times quickly, or open the page with ?demo=1.
      It stays visible in this tab until hidden again. */
