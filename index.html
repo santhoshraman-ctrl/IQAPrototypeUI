@@ -960,9 +960,19 @@ body .demo-switch.is-hidden{display:none !important}
         <div class="field">
           <label for="sp-client-select">Client</label>
           <select id="sp-client-select" class="inp">
+            <option value="">Select a client</option>
             <option value="Driven Brands">Driven Brands</option>
             <option value="Acme Retail Co.">Acme Retail Co.</option>
             <option value="Nova Health Group">Nova Health Group</option>
+            <option value="Pinnacle Manufacturing">Pinnacle Manufacturing</option>
+            <option value="Stellar Financial Group">Stellar Financial Group</option>
+            <option value="Zenith Hospitality">Zenith Hospitality</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="sp-campaign-select">Campaign</label>
+          <select id="sp-campaign-select" class="inp" disabled>
+            <option value="">Select a campaign</option>
           </select>
         </div>
         <div class="field">
@@ -973,6 +983,29 @@ body .demo-switch.is-hidden{display:none !important}
         <p class="msg" id="sp-modal-msg" role="status"></p>
         <div class="row" style="justify-content:flex-end">
           <button class="btn btn-primary" type="button" id="sp-modal-connect">Connect</button>
+        </div>
+      </div>
+      <div id="sp-step-confirm" hidden>
+        <p class="hint">Review campaign details before proceeding.</p>
+        <div id="sp-campaign-details" style="display:grid;gap:16px;margin:16px 0">
+          <div style="padding:14px;background:#F3F4F6;border-radius:8px">
+            <div style="font-size:12px;color:var(--ink-2);font-weight:500">Campaign</div>
+            <div id="sp-confirm-name" style="font-size:16px;font-weight:600;margin-top:4px">—</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="padding:10px;background:#F3F4F6;border-radius:8px">
+              <div style="font-size:11px;color:var(--ink-2);font-weight:500">Campaign ID</div>
+              <div id="sp-confirm-id" style="font-size:14px;font-weight:600;margin-top:3px">—</div>
+            </div>
+            <div style="padding:10px;background:#F3F4F6;border-radius:8px">
+              <div style="font-size:11px;color:var(--ink-2);font-weight:500">Flight Duration</div>
+              <div id="sp-confirm-duration" style="font-size:14px;font-weight:600;margin-top:3px">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="justify-content:flex-end;gap:8px">
+          <button class="btn btn-ghost btn-sm" type="button" id="sp-confirm-back">Back</button>
+          <button class="btn btn-primary" type="button" id="sp-confirm-proceed">Proceed</button>
         </div>
       </div>
       <div id="sp-step-browse" hidden>
@@ -1956,9 +1989,49 @@ $("#sp-modal-close").addEventListener("click", closeSpModal);
 $("#sp-modal-backdrop").addEventListener("click", e=>{ if(e.target.id==="sp-modal-backdrop") closeSpModal(); });
 $("#sp-use-demo").addEventListener("click", ()=>{ $("#sp-modal-url").value=DEMO_LINK; });
 
+/* Populate campaign dropdown when SharePoint connects */
+function populateCampaignDropdown(files){
+  const cands=candidatesOf(files), sel=$("#sp-campaign-select");
+  if(!cands.length){ sel.disabled=true; sel.innerHTML='<option value="">No campaigns found</option>'; return; }
+  sel.disabled=false;
+  sel.innerHTML = `<option value="">Select a campaign</option>${cands.map(c=>`<option value="${esc(c.name)}" data-id="${esc(c.id)}">${esc(c.name)}</option>`).join("")}`;
+}
+
+function showCampaignConfirm(campName){
+  const cands=candidatesOf(foundFiles), camp=cands.find(c=>c.name===campName);
+  if(!camp) return;
+  applyCampaign(campName);
+  $("#sp-confirm-name").textContent=esc(camp.name);
+  $("#sp-confirm-id").textContent=camp.id?esc(camp.id):"—";
+  /* Flight duration: placeholder, could be parsed from budget tracker if available */
+  $("#sp-confirm-duration").textContent="—";
+  $("#sp-step-link").hidden=true; $("#sp-step-confirm").hidden=false;
+}
+
+$("#sp-client-select").addEventListener("change", ()=>{
+  const sel=$("#sp-campaign-select");
+  sel.value=""; sel.disabled=true; sel.innerHTML='<option value="">Select a campaign</option>';
+});
+
+$("#sp-campaign-select").addEventListener("change", ()=>{
+  const camp=$("#sp-campaign-select").value;
+  if(camp) showCampaignConfirm(camp);
+});
+
+$("#sp-confirm-back").addEventListener("click", ()=>{
+  $("#sp-step-confirm").hidden=true; $("#sp-step-link").hidden=false;
+  $("#sp-campaign-select").value="";
+});
+
+$("#sp-confirm-proceed").addEventListener("click", ()=>{
+  connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK, campaign:$("#sp-campaign-select").value, connectedAt:Date.now(), lastUsedAt:Date.now()});
+  closeSpModal(); runIngestion(DEMO_DEFAULT_FOLDER, true);
+});
+
 $("#sp-modal-connect").addEventListener("click", ()=>{
   const raw=$("#sp-modal-url").value.trim(), msg=$("#sp-modal-msg"), btn=$("#sp-modal-connect");
   const client=$("#sp-client-select").value;
+  if(!client){ setMsg(msg,[],["Select a client to continue."]); return; }
   if(!raw){ setMsg(msg,[],["Enter a SharePoint link to continue."]); return; }
   if(client!==DEMO_SITE){ setMsg(msg,[],[`No demo data is configured for ${client} yet. Switch the client to ${DEMO_SITE} to continue the demo.`]); return; }
   btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Connecting.`;
@@ -1968,9 +2041,13 @@ $("#sp-modal-connect").addEventListener("click", ()=>{
       setMsg(msg,[],["We couldn't connect to this location. Check the link and that you have access, then try again."]);
       return;
     }
-    setMsg(msg); closeSpModal();
-    connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK, connectedAt:Date.now(), lastUsedAt:Date.now()});
-    runIngestion(DEMO_DEFAULT_FOLDER, true);
+    setMsg(msg);
+    /* Get the campaigns from the folder structure and populate the selector */
+    foundFiles = (nodeAt(DEMO_DEFAULT_FOLDER)?.files) || [];
+    foundCtx={folder: DEMO_DEFAULT_FOLDER, choice: null, confirmed: false};
+    populateCampaignDropdown(foundFiles);
+    /* Show the campaign confirmation screen */
+    $("#sp-step-link").hidden=true; $("#sp-step-confirm").hidden=false;
   }, 800);
 });
 
