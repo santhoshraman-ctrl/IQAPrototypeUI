@@ -60,13 +60,13 @@ body #connect-view:not(.wide){max-width:920px;width:100%;box-sizing:border-box;m
 }
 /* SharePoint window: wider, with larger rows that are easy to click */
 body .modal{width:min(760px,calc(100vw - 32px));max-width:none}
-body .modal .modal-body{padding:20px 24px 24px}
+body .modal .modal-body{padding:20px 24px 24px;position:relative;z-index:1}
 /* The folder browser gets a much larger window so long file lists and their read-outs fit. */
 body .modal.browsing{width:min(1120px,calc(100vw - 48px));max-height:calc(100vh - 48px);display:flex;flex-direction:column}
 body .modal.browsing .modal-body{flex:1;min-height:0;overflow:auto}
 body .modal.browsing .browse-list{max-height:clamp(340px,calc(100vh - 340px),760px)}
 body .modal.browsing .browse-row .bs{font-size:13px}
-body .modal .field input{min-height:44px;font-size:15px}
+body .modal .field input, body .modal .field select{min-height:44px;font-size:15px;position:relative;z-index:10}
 .browse-bar{padding:4px 0 10px;border-bottom:1px solid var(--line,#DCE1E7);margin-bottom:6px}
 .browse-bar .iconbtn{width:36px;height:36px}
 .crumbs{font-size:14px}
