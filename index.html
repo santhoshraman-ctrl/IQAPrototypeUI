@@ -2290,7 +2290,7 @@ const issueTally = () => IQA_TRIAGE.counts(issueIds());
 
 function stepSub(i){
   if(i===1){ return "Connect SharePoint"; }
-  if(i===2){ const n=allSlots().filter(s=>docs[s.key]?.status==="ready").length; return n ? `${n} document${n===1?"":"s"}` : "Add and review campaign artefacts"; }
+  if(i===2){ return "Add and review campaign artefacts"; }
   if(i===3){ if(!flow.checked) return "Run the checks"; const t=issueTally(); return t.open ? `${t.open} open` : "All resolved"; }
   if(!flow.checked) return "After the checks";
   return can("simulate") ? `${usd(qaNumbers().saved)} saved` : "QA outcome";
