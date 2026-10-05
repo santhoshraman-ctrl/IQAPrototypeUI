@@ -958,6 +958,14 @@ body .demo-switch.is-hidden{display:none !important}
       <div id="sp-step-link">
         <p class="hint">Paste the link to the SharePoint location where your campaign files are stored.</p>
         <div class="field">
+          <label for="sp-client-select">Client</label>
+          <select id="sp-client-select" class="inp">
+            <option value="Driven Brands">Driven Brands</option>
+            <option value="Acme Retail Co.">Acme Retail Co.</option>
+            <option value="Nova Health Group">Nova Health Group</option>
+          </select>
+        </div>
+        <div class="field">
           <label for="sp-modal-url">SharePoint link</label>
           <input type="url" id="sp-modal-url" placeholder="https://yourcompany.sharepoint.com/sites/...">
           <small style="color:var(--ink-3);font-size:12px">Demo: <button type="button" class="linkbtn" id="sp-use-demo" style="font-size:12px">use the sample link</button></small>
@@ -1948,7 +1956,9 @@ $("#sp-use-demo").addEventListener("click", ()=>{ $("#sp-modal-url").value=DEMO_
 
 $("#sp-modal-connect").addEventListener("click", ()=>{
   const raw=$("#sp-modal-url").value.trim(), msg=$("#sp-modal-msg"), btn=$("#sp-modal-connect");
+  const client=$("#sp-client-select").value;
   if(!raw){ setMsg(msg,[],["Enter a SharePoint link to continue."]); return; }
+  if(client!==DEMO_SITE){ setMsg(msg,[],[`No demo data is configured for ${client} yet. Switch the client to ${DEMO_SITE} to continue the demo.`]); return; }
   btn.disabled=true; btn.innerHTML=`<span class="spin" aria-hidden="true"></span>Connecting.`;
   setTimeout(()=>{
     btn.disabled=false; btn.textContent="Connect";
