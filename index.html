@@ -970,12 +970,6 @@ body .demo-switch.is-hidden{display:none !important}
           </select>
         </div>
         <div class="field">
-          <label for="sp-campaign-select">Campaign</label>
-          <select id="sp-campaign-select" class="inp" disabled>
-            <option value="">Select a campaign</option>
-          </select>
-        </div>
-        <div class="field">
           <label for="sp-modal-url">SharePoint link</label>
           <input type="url" id="sp-modal-url" placeholder="https://yourcompany.sharepoint.com/sites/...">
           <small style="color:var(--ink-3);font-size:12px">Demo: <button type="button" class="linkbtn" id="sp-use-demo" style="font-size:12px">use the sample link</button></small>
@@ -983,6 +977,15 @@ body .demo-switch.is-hidden{display:none !important}
         <p class="msg" id="sp-modal-msg" role="status"></p>
         <div class="row" style="justify-content:flex-end">
           <button class="btn btn-primary" type="button" id="sp-modal-connect">Connect</button>
+        </div>
+      </div>
+      <div id="sp-step-campaign" hidden>
+        <p class="hint">Select the campaign to validate.</p>
+        <div class="field">
+          <label for="sp-campaign-select">Campaign</label>
+          <select id="sp-campaign-select" class="inp">
+            <option value="">Select a campaign</option>
+          </select>
         </div>
       </div>
       <div id="sp-step-confirm" hidden>
@@ -2019,7 +2022,7 @@ $("#sp-campaign-select").addEventListener("change", ()=>{
 });
 
 $("#sp-confirm-back").addEventListener("click", ()=>{
-  $("#sp-step-confirm").hidden=true; $("#sp-step-link").hidden=false;
+  $("#sp-step-confirm").hidden=true; $("#sp-step-campaign").hidden=false;
   $("#sp-campaign-select").value="";
 });
 
@@ -2046,8 +2049,8 @@ $("#sp-modal-connect").addEventListener("click", ()=>{
     foundFiles = (nodeAt(DEMO_DEFAULT_FOLDER)?.files) || [];
     foundCtx={folder: DEMO_DEFAULT_FOLDER, choice: null, confirmed: false};
     populateCampaignDropdown(foundFiles);
-    /* Show the campaign confirmation screen */
-    $("#sp-step-link").hidden=true; $("#sp-step-confirm").hidden=false;
+    /* Show the campaign selection screen (new sp-step-campaign) */
+    $("#sp-step-link").hidden=true; $("#sp-step-campaign").hidden=false;
   }, 800);
 });
 
