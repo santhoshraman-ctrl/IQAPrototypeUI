@@ -710,10 +710,13 @@ body .demo-switch.is-hidden{display:none !important}
       <div id="found-nudge" hidden></div>
       <div id="found-confirm" hidden></div>
       <div class="found-stats" id="found-summary"></div>
+      <div style="margin-top:20px"><h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Here's what we found</h3>
       <div class="tbl-wrap"><table class="found-table">
         <thead><tr><th>File</th><th>Matched to</th><th>Size</th><th>Status</th></tr></thead>
         <tbody id="found-list"></tbody>
-      </table></div>
+      </table></div></div>
+      <div style="margin-top:20px"><h3 style="margin:0 0 10px;font-size:14px;font-weight:600">Here's what we want</h3>
+      <div id="required-files-list" style="display:grid;gap:8px"></div></div>
     </div>
   </section>
 
@@ -1744,6 +1747,13 @@ const DEMO_TREE = {
         /* Demo only: the QA SDF "appears" after the user adds it to SharePoint and taps Check again. */
         {name:"DV360_QA_SDF_Q3_2026.csv", size:33*1024, slot:"qasdf", camp:"Q3 2026 Display", cid:"CMP-4710", items:12},
       ]},
+      "Q2 2026 Display": { folders:{}, files: [
+        {name:"Q2_2026_Display_Brief.pdf", size:1100*1024, slot:"grp:briefs", camp:"Q2 2026 Display", cid:"CMP-4609"},
+        {name:"Budget_Tracker_Q2.xlsx", size:62*1024, slot:"grp:extra"},
+        {name:"Geo_Mapping_Q2.csv", size:15*1024, slot:"geo"},
+        {name:"Tag_Sheet_Q2.xlsx", size:31*1024, slot:"grp:extra"},
+        {name:"DV360_QA_SDF_Q2.csv", size:28*1024, slot:"qasdf", camp:"Q2 2026 Display", cid:"CMP-4609", items:8},
+      ]},
       "Q4 Regional Auto": { folders:{}, files: [
         {name:"Q4_Regional_Auto_Media_Plan.xlsx", size:214*1024, slot:"grp:briefs", camp:"Q4 Regional Auto", cid:"CMP-4821"},
         {name:"Q4_Regional_Auto_Creative_Brief.pdf", size:1240*1024, slot:"grp:briefs", camp:"Q4 Regional Auto", cid:"CMP-4821"},
@@ -1987,6 +1997,13 @@ function renderFound(files){
       <td class="num">${fmt(f.size)}</td>
       <td><span class="pill ${ok?"ok":"miss"}">${ok?"Ready":"Skipped"}</span>${ok?"":`<span class="why">${esc(reason)}</span>`}</td>
     </tr>`; }).join("");
+
+  $("#required-files-list").innerHTML = REQUIRED_FILES.map(req=>{
+    const isMissing = missing.includes(req);
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:${isMissing?"#FBE4E2":"#E1F4EA"};border-left:4px solid ${isMissing?"#B3261E":"#6FC39C"}">
+      <span style="font-size:18px">${isMissing?"❌":"✓"}</span>
+      <span style="flex:1;font-weight:500;color:${isMissing?"#B3261E":"#1B6B3C"}">${esc(req)}</span>
+    </div>`; }).join("");
 
   /* 1. Required files still missing: nudge */
   const nudge=$("#found-nudge");
