@@ -2089,13 +2089,14 @@ $("#sp-modal-connect").addEventListener("click", ()=>{
     const cands=candidatesOf(foundFiles);
     populateCampaignDropdown(foundFiles);
 
-    /* Auto-select first campaign and display it */
+    /* Auto-select first campaign and mark as confirmed (success path) */
     if(cands.length > 0){
       const firstCamp=cands[0];
       applyCampaign(firstCamp.name);
       $("#sp-campaign-select").value=firstCamp.name;
       $("#sp-campaign-name-display").textContent=esc(firstCamp.name);
       foundCtx.choice=firstCamp.name;
+      foundCtx.confirmed=true;  /* Mark as confirmed to show success state */
     }
 
     /* Show the campaign selection screen (new sp-step-campaign) */
@@ -2165,7 +2166,10 @@ function runIngestion(folder, autoFinish){
   folder = resolvePath(folder);
   const files = (nodeAt(folder)?.files) || [];
   setTimeout(()=>{
-    foundCtx={folder, choice:defaultChoice(files,folder,connStore.get()?.campaign), confirmed:false};
+    const choice=defaultChoice(files,folder,connStore.get()?.campaign);
+    /* If we just connected and selected a campaign, mark as confirmed for success path */
+    const wasJustConnected = foundCtx.confirmed === true && foundCtx.choice === choice;
+    foundCtx={folder, choice, confirmed: wasJustConnected};
     $("#found-where").innerHTML=`From <b>${esc(pathLabel(folder))}</b> on SharePoint`;
     renderFound(files); showConnectState("connect-found");
     /* Only skip straight to Campaign Review when the folder actually has every required file.
@@ -2212,9 +2216,9 @@ function renderFound(files){
 
   /* 2. Which campaign is this? Asked once the required files are in (or whenever several campaigns are in the folder). */
   const conf=$("#found-confirm");
-  if(cands.length && (!missing.length || cands.length>1)){
+  if(cands.length && (!missing.length || cands.length>1 || foundCtx.confirmed)){
     const cur=cands.find(c=>c.name===foundCtx.choice)||cands[0];
-    if(foundCtx.confirmed && !missing.length){
+    if(foundCtx.confirmed){
       conf.innerHTML=`<div class="confirmed">${tickSvg}<span>Validating <b>${esc(cur.name)}</b>${cur.id?` <span class="mono">${esc(cur.id)}</span>`:""}</span><button class="linkbtn" type="button" id="found-change">Change</button></div>`;
     } else {
       const tag=(ok,yes,no)=>`<span class="tg ${ok?"ok":"warn"}">${ok?tickSvg:""}${ok?yes:no}</span>`;
