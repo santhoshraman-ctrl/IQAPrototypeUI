@@ -980,12 +980,23 @@ body .demo-switch.is-hidden{display:none !important}
         </div>
       </div>
       <div id="sp-step-campaign" hidden>
-        <p class="hint">Select the campaign to validate.</p>
+        <p class="hint">Campaign found in SharePoint.</p>
         <div class="field">
-          <label for="sp-campaign-select">Campaign</label>
+          <label for="sp-campaign-name-display">Campaign Name</label>
+          <div id="sp-campaign-name-display" style="padding:12px;background:#F3F4F6;border-radius:6px;font-size:15px;font-weight:500;color:var(--ink-1);border-left:4px solid #0066CC">
+            —
+          </div>
+        </div>
+        <div class="field">
+          <label for="sp-campaign-select">Select a different campaign (optional)</label>
           <select id="sp-campaign-select" class="inp">
             <option value="">Select a campaign</option>
           </select>
+        </div>
+        <p class="msg" id="sp-campaign-msg" role="status" style="margin-top:12px;font-size:13px;color:var(--ink-3)"></p>
+        <div class="row" style="justify-content:flex-end;gap:8px;margin-top:16px">
+          <button class="btn btn-ghost btn-sm" type="button" id="sp-campaign-back">Back</button>
+          <button class="btn btn-primary" type="button" id="sp-campaign-proceed">Continue</button>
         </div>
       </div>
       <div id="sp-step-confirm" hidden>
@@ -2018,7 +2029,34 @@ $("#sp-client-select").addEventListener("change", ()=>{
 
 $("#sp-campaign-select").addEventListener("change", ()=>{
   const camp=$("#sp-campaign-select").value;
-  if(camp) showCampaignConfirm(camp);
+  if(camp){
+    const cands=candidatesOf(foundFiles), found=cands.find(c=>c.name===camp);
+    if(found){
+      applyCampaign(camp);
+      $("#sp-campaign-name-display").textContent=esc(found.name);
+      foundCtx.choice=camp;
+    }
+  }
+});
+
+$("#sp-campaign-back").addEventListener("click", ()=>{
+  $("#sp-step-campaign").hidden=true;
+  $("#sp-step-link").hidden=false;
+  $("#sp-campaign-select").value="";
+  $("#sp-modal-url").value="";
+  $("#sp-client-select").value="";
+});
+
+$("#sp-campaign-proceed").addEventListener("click", ()=>{
+  const selectedCamp=foundCtx.choice || $("#sp-campaign-select").value;
+  if(!selectedCamp){
+    const msg=$("#sp-campaign-msg");
+    setMsg(msg,[],["Please select a campaign to continue."]);
+    return;
+  }
+  connStore.set({site:DEMO_SITE, folder:DEMO_DEFAULT_FOLDER, url:DEMO_LINK, campaign:selectedCamp, connectedAt:Date.now(), lastUsedAt:Date.now()});
+  closeSpModal();
+  runIngestion(DEMO_DEFAULT_FOLDER, true);
 });
 
 $("#sp-confirm-back").addEventListener("click", ()=>{
@@ -2048,7 +2086,18 @@ $("#sp-modal-connect").addEventListener("click", ()=>{
     /* Get the campaigns from the folder structure and populate the selector */
     foundFiles = (nodeAt(DEMO_DEFAULT_FOLDER)?.files) || [];
     foundCtx={folder: DEMO_DEFAULT_FOLDER, choice: null, confirmed: false};
+    const cands=candidatesOf(foundFiles);
     populateCampaignDropdown(foundFiles);
+
+    /* Auto-select first campaign and display it */
+    if(cands.length > 0){
+      const firstCamp=cands[0];
+      applyCampaign(firstCamp.name);
+      $("#sp-campaign-select").value=firstCamp.name;
+      $("#sp-campaign-name-display").textContent=esc(firstCamp.name);
+      foundCtx.choice=firstCamp.name;
+    }
+
     /* Show the campaign selection screen (new sp-step-campaign) */
     $("#sp-step-link").hidden=true; $("#sp-step-campaign").hidden=false;
   }, 800);
