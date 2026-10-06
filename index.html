@@ -2259,9 +2259,44 @@ function syncCheck(manual){
   const btn=$("#found-sync-now"); if(btn) btn.disabled=true;
   setTimeout(()=>{
     const node=nodeAt(foundCtx.folder);
-    if(node?.later?.length){ const n=node.later.length; node.files.push(...node.later); node.later=[];
+    if(node?.later?.length){
+      const newFiles=node.later;
+      const n=newFiles.length;
+      node.files.push(...newFiles);
+      node.later=[];
+
+      /* Show summary of newly added files and version selection */
+      const summary = newFiles.map(f=>{
+        const filename = f.name;
+        const ext = (f.name.split('.').pop() || '').toUpperCase();
+        return `<div style="padding:6px 0;font-size:12px;color:#1B6B3C">✓ Added: <b>${esc(filename)}</b> <span style="opacity:.7">(${ext})</span></div>`;
+      }).join("");
+
+      /* Check for duplicate file types and show which version was selected */
+      const rows=evalFiles(node.files, foundCtx.choice);
+      const dupsByExt = {};
+      rows.filter(r=>r.ok).forEach(r=>{
+        const ext = (r.f.name.split('.').pop() || '').toUpperCase();
+        dupsByExt[ext] = (dupsByExt[ext] || 0) + 1;
+      });
+      const dupsSummary = Object.entries(dupsByExt)
+        .filter(([ext, count]) => count > 1)
+        .map(([ext, count]) => `<div style="padding:6px 0;font-size:12px;color:#FF6F00">ℹ Multiple ${ext} files found (${count}): Using latest version</div>`)
+        .join("");
+
+      const msg = summary + dupsSummary;
+      if(msg){
+        const msgEl = document.createElement('div');
+        msgEl.style.cssText='padding:10px 12px;background:#E1F4EA;border-radius:8px;border-left:4px solid #1B6B3C;margin-bottom:12px;font-size:12px';
+        msgEl.innerHTML=`<div style="font-weight:600;margin-bottom:6px">✓ Files synced from SharePoint</div>${msg}`;
+        const foundSummary = $("#found-summary");
+        if(foundSummary) foundSummary.parentElement.insertBefore(msgEl, foundSummary.nextElementSibling);
+        setTimeout(()=>msgEl.style.opacity='0.3', 3000);
+      }
+
       foundCtx.choice=defaultChoice(node.files,foundCtx.folder,connStore.get()?.campaign); foundCtx.confirmed=false;
-      toast(`Found ${n} new file${n===1?"":"s"} in the folder.`); renderFound(node.files); return; }
+      toast(`Found ${n} new file${n===1?"":"s"} in the folder.`); renderFound(node.files); return;
+    }
     if(btn) btn.disabled=false;
     if(manual) toast("No new files yet. We'll keep checking automatically.");
   }, 700);
