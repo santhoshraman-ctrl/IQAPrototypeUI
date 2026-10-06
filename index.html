@@ -1966,10 +1966,13 @@ function renderFoundGroups(rows, elId){
     (groups[label] ||= {ok, items:[]}).items.push({name:f.name, reason});
   });
   const labels = Object.keys(groups).sort((a,b)=>(a==="Skipped")-(b==="Skipped"));
+  const isMandatory = label => ["Campaign Briefs","DV360 QA SDF"].includes(label);
   $(elId).innerHTML = labels.map(label=>{
     const g=groups[label];
-    return `<div style="padding:10px 12px;background:${g.ok?"#E1F4EA":"#FBE4E2"};border-radius:8px">
-      <div style="font-weight:600;font-size:13px;color:${g.ok?"#1B6B3C":"#8A1C1C"}">${g.ok?"✓":"✗"} ${esc(label)} <span style="font-weight:400;opacity:.75">(${g.items.length})</span></div>
+    const mandatory = isMandatory(label);
+    const countBadge = g.items.length > 1 ? `<span style="display:inline-block;background:#FF9800;color:white;padding:2px 6px;border-radius:3px;font-size:11px;font-weight:600;margin-left:4px">${g.items.length}x</span>` : "";
+    return `<div style="padding:10px 12px;background:${g.ok?"#E1F4EA":"#FBE4E2"};border-radius:8px;border:${mandatory&&g.ok?"2px solid #1B6B3C":"none"}">
+      <div style="font-weight:600;font-size:13px;color:${g.ok?"#1B6B3C":"#8A1C1C"}">${g.ok?"✓":"✗"} ${esc(label)} <span style="font-weight:400;opacity:.75">(${g.items.length})</span>${countBadge}</div>
       <div style="font-size:11px;color:${g.ok?"#1B6B3C":"#8A1C1C"};opacity:.85;margin-top:2px">${g.items.map(i=>esc(i.name)).join(", ")}</div>
     </div>`;
   }).join("");
